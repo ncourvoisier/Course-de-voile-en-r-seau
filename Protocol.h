@@ -20,6 +20,16 @@ namespace sail {
         return ar | data.pos_x | data.pos_y | data.rotation | data.speed;
     }
 
+    struct Connect {
+        static constexpr gf::Id type = "Connect"_id;
+        std::string username;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, Connect& data) {
+        return ar | data.username;
+    }
+
 }
 
 #endif //SAILINSANE_PROTOCOL_H
