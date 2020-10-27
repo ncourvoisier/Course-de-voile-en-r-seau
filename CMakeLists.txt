@@ -3,8 +3,9 @@ project(SAILINSANE
   VERSION 0.1.0
 )
 find_package(gf REQUIRED)
+
 add_executable(sailinsane
-        sailinsane.cpp)
+        sailinsane.cpp Protocol.h)
 target_link_libraries(sailinsane
         gf::graphics
 )
