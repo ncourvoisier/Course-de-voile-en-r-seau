@@ -4,7 +4,7 @@ namespace sail
 {
 
     ClientNetworkHandler::ClientNetworkHandler()
-    : is_connected(false)
+    : m_connected(false)
     {
 
     }
@@ -12,17 +12,26 @@ namespace sail
     void ClientNetworkHandler::connect(const std::string& hostname,
                                        const std::string& service)
     {
-        socket = gf::TcpSocket(hostname, service);
-        is_connected = false || socket;
+        m_socket = gf::TcpSocket(hostname, service);
+        m_connected = false || socket;
+        m_socket.setNonBlocking(); // TODO : just an idea
     }
 
-    gf::Packet ClientNetworkHandler::receive()
+    gf::SocketStatus ClientNetworkHandler::receive(gf::Packet packet)
     {
-        gf::Packet packet;
-        socket.recvPacket(packet);
-        return packet;
+        return m_socket.recvPacket(packet);
     }
 
-    bool ClientNetworkHandler::isConnected() { return is_connected; }
+    bool ClientNetworkHandler::isConnected() { return m_connected; }
+
+    void ClientNetworkHandler::setBlocking()
+    {
+        m_socket.setBlocking();
+    }
+
+    void ClientNetworkHandler::setNonBlocking()
+    {
+        m_socket.setNonBlocking();
+    }
 
 }

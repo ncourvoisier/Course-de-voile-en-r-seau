@@ -12,13 +12,18 @@ namespace sail
     class ServerNetworkHandler
     {
     public:
-        ServerNetworkHandler(std::string service);
+        ServerNetworkHandler(const std::string service);
+
         void run();
 
+        void broadcast(const gf::Packet& packet);
+
     private:
-        gf::TcpListener listener;
-        gf::SocketSelector selector;
-        std::vector<Player> players;
+        gf::TcpListener m_listener;
+
+        gf::SocketSelector m_selector;
+
+        std::vector<Player> m_players;
     };
 
 }

@@ -13,22 +13,30 @@ namespace sail
     {
     public:
         ClientNetworkHandler();
+
         void connect(const std::string& hostname,
                 const std::string& service);
+
         bool isConnected();
+
+        gf::SocketStatus receive(gf::Packet packet);
 
         template <typename T>
         void send(const T& data)
         {
             gf::Packet packet;
             packet.is(data);
-            socket.sendPacket(packet); // TODO : handle errors
+            m_socket.sendPacket(packet); // TODO : handle errors
         }
-        gf::Packet receive();
+
+        void setBlocking();
+
+        void setNonBlocking();
 
     private:
-        gf::TcpSocket socket;
-        bool is_connected;
+        gf::TcpSocket m_socket;
+
+        bool m_connected;
     };
 
 }

@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "Protocol.h"
+#include "src/Protocol.h"
 
 class Square {
 public:
@@ -42,18 +42,6 @@ private:
 };
 
 int main() {
-    /// TO CREATE A PACKET / SERIALIZE AN OBJECT :
-    sail::Boat boat;
-    boat.speed = 10.0;
-    boat.rotation = 0.78;
-    boat.pos_y = 7854;
-    boat.pos_x = 785;
-    gf::Packet boatPacket;
-    boatPacket.is(boat);
-    /// TO EXTRACT FROM PACKET / DESERIALIZE :
-    sail::Boat boatBack {boatPacket.as<sail::Boat>()};
-    std::cout << "speed : " << boatBack.speed;
-
     // Create the main window and the renderer
     gf::Window window("Example", { 640, 480 });
     gf::RenderWindow renderer(window);

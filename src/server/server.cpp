@@ -1,5 +1,5 @@
 #include <gf/Packet.h>
-#include "../../Protocol.h"
+#include "../Protocol.h"
 #include "ServerNetworkHandler.h"
 
 int main() {
