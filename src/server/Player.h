@@ -3,18 +3,21 @@
 
 #include <gf/TcpSocket.h>
 
+#include "Boat.h"
+
 namespace sail
 {
 
     class Player
     {
     public:
-        Player(gf::TcpSocket& s);
-
+        Player(gf::TcpSocket s, Boat boat);
         gf::TcpSocket& getSocket();
+        Boat& getBoat();
 
     private:
-        gf::TcpSocket& p_socket;
+        gf::TcpSocket m_socket;
+        Boat m_boat;
     };
 
 }

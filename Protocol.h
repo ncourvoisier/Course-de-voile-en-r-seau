@@ -7,7 +7,7 @@ using namespace gf::literals;
 
 namespace sail {
 
-    struct Boat {
+    struct BoatPosition {
         static constexpr gf::Id type = "Boat"_id;
         long int pos_x;
         long int pos_y;
@@ -16,7 +16,7 @@ namespace sail {
     };
 
     template<typename Archive>
-    Archive operator|(Archive& ar, Boat& data) {
+    Archive operator|(Archive& ar, BoatPosition& data) {
         return ar | data.pos_x | data.pos_y | data.rotation | data.speed;
     }
 
