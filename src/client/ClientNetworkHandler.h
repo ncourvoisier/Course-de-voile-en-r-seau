@@ -19,7 +19,7 @@ namespace sail
 
         bool isConnected();
 
-        gf::SocketStatus receive(gf::Packet packet);
+        gf::SocketStatus receive(gf::Packet& packet);
 
         template <typename T>
         void send(const T& data)

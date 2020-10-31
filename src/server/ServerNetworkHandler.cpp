@@ -37,8 +37,6 @@ namespace sail
                 for (auto& player : m_players)
                 {
                     auto& socket = player.getSocket();
-                    //std::cout << "Searching for socket : " << socket << "\n";
-                    assert(m_selector.isReady(socket));
                     if (m_selector.isReady(socket))
                     {
                         gf::Packet packet;
@@ -50,21 +48,26 @@ namespace sail
                         switch (packet.getType())
                         {
                             case ClientGreeting::type:
-                            {
-                                ClientGreeting clientG{packet.as<ClientGreeting>()};
+                            { // TODO : UGLY PART, to rewrite
+                                ClientGreeting clientG {packet.as<ClientGreeting>()};
                                 std::cout << "New user : " << clientG.username << "\n";
                                 gf::Random rand;
-                                gf::Id newId{rand.computeId()};
-                                ServerGreeting serverG{newId};
+                                gf::Id newId = rand.computeId();
+                                std::vector<PlayerData> playersData;
+                                for (auto& p : m_players) {
+                                    if (p.isConnected())
+                                        playersData.push_back(p.getPlayerData());
+                                }
+                                ServerGreeting serverG = { newId, playersData }; ////
                                 gf::Packet serverGPacket;
-                                serverGPacket.is<ServerGreeting>(serverG);
+                                serverGPacket.is(serverG);
                                 socket.sendPacket(serverGPacket);
 
                                 gf::Packet broadcastPacket;
-                                broadcastPacket.is<PlayerJoins>(sail::PlayerJoins{newId});
+                                broadcastPacket.is<PlayerJoins>(PlayerJoins{{newId, clientG.username}});
                                 broadcast(broadcastPacket);
 
-                                player.setConnected(true);
+                                player.connect(newId, clientG.username);
                                 break;
                             }
                         }
@@ -74,8 +77,7 @@ namespace sail
                 {
                     // the listener is ready, accept a new connection
                     gf::TcpSocket socket = m_listener.accept();
-                    Boat boat(gf::Vector2f(0,0)); // TODO : change departure position
-                    Player player(std::move(socket), boat);
+                    Player player(std::move(socket));
                     m_players.push_back(std::move(player));
                     m_selector.addSocket(m_players.back().getSocket());
                 }

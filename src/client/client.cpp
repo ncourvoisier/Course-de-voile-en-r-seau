@@ -73,29 +73,41 @@ int main()
     renderer.clear(gf::Color::White);
     gf::Clock clock;
 
+    // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
+
     // Establishing connection
     sail::ClientGreeting greeting = {"username"}; // TODO : TEMPORARY
     clientHandler.send(greeting);
     clientHandler.setBlocking();
     gf::Packet serverGreetingP;
     clientHandler.receive(serverGreetingP);
-    sail::ServerGreeting serverGreeting {serverGreetingP.as<sail::ServerGreeting>()};
+    auto serverGreeting {serverGreetingP.as<sail::ServerGreeting>()};
     // Defining player Datas
     const gf::Id playerId {serverGreeting.playerId};
     sail::BoatEntity playerBoat(gf::Color::Green);
     std::cout << "Server sent ID : " << playerId << "\n";
 
-    // Define the opponent Datas TODO : TEMPORARY, will use a map for many players
-    gf::Packet opponentP;
-    clientHandler.receive(opponentP);
-    sail::PlayerJoins opponent {opponentP.as<sail::PlayerJoins>()};
-    const gf::Id opponentId {opponent.playerId};
-    sail::BoatEntity opponentBoat(gf::Color::Red);
-    std::cout << "Opponent ID : " << playerId << "\n";
+    for (auto& p : serverGreeting.players)
+    {
+        std::cout << "Player already here : " << p.name << "\n";
+    }
+
+    clientHandler.setNonBlocking();
+
+    while (true)
+    {
+        gf::Packet opponentP;
+        if (clientHandler.receive(opponentP) == gf::SocketStatus::Data) {
+            std::cout << "Opponent connected : " << opponentP.as<sail::PlayerJoins>().player.name << "\n";
+        }
+        sail::PlayerJoins opponent {opponentP.as<sail::PlayerJoins>()};
+    }
+
+    assert(false); // Don't go further this line, work in progress
 
     // Adding references to entities
     mainEntities.addEntity(playerBoat);
-    mainEntities.addEntity(opponentBoat);
+    //mainEntities.addEntity(opponentBoat);
 
     clientHandler.setNonBlocking();
     while (window.isOpen())
@@ -114,7 +126,7 @@ int main()
                             if (playerId == boat.playerId)
                                 boatE = &playerBoat;
                             else
-                                boatE = &opponentBoat;
+                                //boatE = &opponentBoat;
                             boatE->setPosition(boat.position);
                             boatE->setVelocity(boat.velocity);
                         }

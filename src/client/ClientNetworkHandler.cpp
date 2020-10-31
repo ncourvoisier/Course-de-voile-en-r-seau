@@ -17,7 +17,7 @@ namespace sail
         m_socket.setNonBlocking(); // TODO : just an idea
     }
 
-    gf::SocketStatus ClientNetworkHandler::receive(gf::Packet packet)
+    gf::SocketStatus ClientNetworkHandler::receive(gf::Packet& packet)
     {
         return m_socket.recvPacket(packet);
     }

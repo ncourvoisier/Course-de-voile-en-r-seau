@@ -23,6 +23,19 @@ namespace sail {
         return ar | data.playerId | data.position | data.velocity;
     }
 
+    struct PlayerData
+    {
+        static constexpr gf::Id type = "PlayerData"_id;
+        gf::Id id;
+        std::string name;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, PlayerData& data)
+    {
+        return ar | data.id | data.name;
+    }
+
     struct GameStatus
     {
         static constexpr gf::Id type = "GameStatus"_id;
@@ -48,27 +61,28 @@ namespace sail {
     }
 
     struct ServerGreeting
-    { // TODO : response status
+    {
         static constexpr gf::Id type = "ServerGreeting"_id;
         gf::Id playerId;
+        std::vector<PlayerData> players;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, ServerGreeting& data)
     {
-        return ar | data.playerId;
+        return ar | data.playerId | data.players;
     }
 
     struct PlayerJoins
     {
         static constexpr gf::Id type = "PlayerJoins"_id;
-        gf::Id playerId;
+        PlayerData player;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, PlayerJoins& data)
     {
-        return ar | data.playerId;
+        return ar | data.player;
     }
 
 }
