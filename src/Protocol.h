@@ -36,14 +36,14 @@ namespace sail {
         return ar | data.id | data.name;
     }
 
-    struct GameStatus
+    struct GameState
     {
-        static constexpr gf::Id type = "GameStatus"_id;
+        static constexpr gf::Id type = "GameState"_id;
         std::vector<BoatData> boats;
     };
 
     template<typename Archive>
-    Archive operator|(Archive& ar, GameStatus& data)
+    Archive operator|(Archive& ar, GameState& data)
     {
         return ar | data.boats;
     }
@@ -83,6 +83,37 @@ namespace sail {
     Archive operator|(Archive& ar, PlayerJoins& data)
     {
         return ar | data.player;
+    }
+
+    struct GameReady
+    {
+        static constexpr gf::Id type = "GameReady"_id;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, GameReady& data)
+    {
+        return ar;
+    }
+
+    struct PlayerAction
+    {
+        static constexpr gf::Id type = "PlayerAction"_id;
+
+        enum Type : uint16_t
+        { // TODO : replace with actual sailing boat controls
+            Up,
+            Down,
+            Right,
+            Left
+        };
+
+        Type action;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, PlayerAction& data) {
+        return ar | data.action;
     }
 
 }

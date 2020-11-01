@@ -14,13 +14,14 @@ namespace sail
 
     ServerNetworkHandler::ServerNetworkHandler(std::string service)
     : m_listener(service)
+    , m_game()
     {
 
     }
 
     void ServerNetworkHandler::broadcast(const gf::Packet& packet)
     {
-        for (auto& player : m_players) {
+        for (auto& player : m_game.getPlayers()) {
             if (player.isConnected())
                 player.getSocket().sendPacket(packet);
         }
@@ -29,12 +30,15 @@ namespace sail
     void ServerNetworkHandler::run()
     {
 
+        int playerNb = 0; // TODO : temporary stuff, create a gf::GameConfig or something
+        int neededPlayers = 2;
+
         m_selector.addSocket(m_listener);
         for (;;)
         {
             if (m_selector.wait() == gf::SocketSelectorStatus::Event)
             {
-                for (auto& player : m_players)
+                for (auto& player : m_game.getPlayers())
                 {
                     auto& socket = player.getSocket();
                     if (m_selector.isReady(socket))
@@ -52,9 +56,9 @@ namespace sail
                                 ClientGreeting clientG {packet.as<ClientGreeting>()};
                                 std::cout << "New user : " << clientG.username << "\n";
                                 gf::Random rand;
-                                gf::Id newId = rand.computeId();
+                                gf::Id newId {rand.computeId()};
                                 std::vector<PlayerData> playersData;
-                                for (auto& p : m_players) {
+                                for (auto& p : m_game.getPlayers()) {
                                     if (p.isConnected())
                                         playersData.push_back(p.getPlayerData());
                                 }
@@ -68,6 +72,22 @@ namespace sail
                                 broadcast(broadcastPacket);
 
                                 player.connect(newId, clientG.username);
+
+                                if (++playerNb == neededPlayers)
+                                { // TODO : temporary
+                                    gf::Packet readyPacket;
+                                    readyPacket.is(GameReady());
+                                    broadcast(readyPacket);
+                                    m_game.start();
+                                }
+                                break;
+                            }
+                            case PlayerAction::type:
+                            {
+                                if (! player.isConnected())
+                                    continue;
+                                PlayerAction action {packet.as<PlayerAction>()};
+                                m_game.playerAction(player, action);
                                 break;
                             }
                         }
@@ -78,8 +98,8 @@ namespace sail
                     // the listener is ready, accept a new connection
                     gf::TcpSocket socket = m_listener.accept();
                     Player player(std::move(socket));
-                    m_players.push_back(std::move(player));
-                    m_selector.addSocket(m_players.back().getSocket());
+                    m_game.getPlayers().push_back(std::move(player)); // TODO : change for an addPlayer function
+                    m_selector.addSocket(m_game.getPlayers().back().getSocket());
                 }
             }
         }

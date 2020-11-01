@@ -94,32 +94,50 @@ int main()
 
     clientHandler.setNonBlocking();
 
-    while (true)
+    bool gameReady = false;
+
+    while (! gameReady)
     {
-        gf::Packet opponentP;
-        if (clientHandler.receive(opponentP) == gf::SocketStatus::Data) {
-            std::cout << "Opponent connected : " << opponentP.as<sail::PlayerJoins>().player.name << "\n";
+        gf::Packet waitingP;
+        if (clientHandler.receive(waitingP) == gf::SocketStatus::Data) {
+            if (waitingP.getType() == sail::PlayerJoins::type)
+            {
+                std::cout << "Opponent connected : " << waitingP.as<sail::PlayerJoins>().player.name << "\n";
+            }
+            else if (waitingP.getType() == sail::GameReady::type)
+                gameReady = true;
         }
-        sail::PlayerJoins opponent {opponentP.as<sail::PlayerJoins>()};
     }
 
-    assert(false); // Don't go further this line, work in progress
+    std::cout << "Game is ready\n";
 
     // Adding references to entities
-    mainEntities.addEntity(playerBoat);
+    //mainEntities.addEntity(playerBoat);
     //mainEntities.addEntity(opponentBoat);
 
-    clientHandler.setNonBlocking();
     while (window.isOpen())
     {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// GF Socket's "Non Blocking" mode doesn't work (???), need to run the following part in an other Thread ///
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /*std::cout << "window opened...\n";
         gf::Packet packet;
-        switch (clientHandler.receive(packet))
+
+        gf::SocketStatus status = clientHandler.receive(packet);
+
+        std::cout << "Packet received\n";
+
+        switch (status)
         {
             case gf::SocketStatus::Data:
-                switch (packet.getType()) {
-                    case sail::GameStatus::type:
+            {
+                std::cout << "Data received...\n";
+                switch (packet.getType())
+                {
+                    case sail::GameState::type:
                     {
-                        sail::GameStatus status {packet.as<sail::GameStatus>()};
+                        *//*sail::GameState status {packet.as<sail::GameState>()};
                         for (auto& boat : status.boats)
                         {
                             sail::BoatEntity* boatE;
@@ -129,18 +147,34 @@ int main()
                                 //boatE = &opponentBoat;
                             boatE->setPosition(boat.position);
                             boatE->setVelocity(boat.velocity);
-                        }
+                        }*//*
                         break;
                     }
                 }
                 break;
+            }
             case gf::SocketStatus::Error:
-
+            {
+                std::cout << "Error...\n";
                 break;
+            }
             case gf::SocketStatus::Close:
-
+            {
+                std::cout << "Closed...\n";
                 break;
+            }
+            case gf::SocketStatus::Block:
+            {
+                std::cout << "Blocking...\n";
+                break;
+            }
+            default:
+                std::cout << "Something else ???\n";
         }
+
+        std::cout << "after switch\n";*/
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // 1. input
         gf::Event event;
@@ -157,24 +191,42 @@ int main()
         {
             window.toggleFullscreen();
         }
+
+        sail::PlayerAction::Type playerActionT;
+
         if (rightAction.isActive()) {
-            // do something
+            std::cout << "right\n";
+            playerActionT = sail::PlayerAction::Type::Right;
+            rightAction.reset();
         }
         else if (leftAction.isActive())
         {
-            // do something
+            std::cout << "left\n";
+            playerActionT = sail::PlayerAction::Type::Left;
+            leftAction.reset();
         }
         else if (upAction.isActive())
         {
-            // do something
+            std::cout << "up\n";
+            playerActionT = sail::PlayerAction::Type::Up;
+            upAction.reset();
         }
         else if (downAction.isActive())
         {
-            // do something
+            std::cout << "down\n";
+            playerActionT = sail::PlayerAction::Type::Down;
+            downAction.reset();
         } else
         {
             // do something
         }
+
+        if (playerActionT)
+        { // TODO : impossible to send packet every loop, need to send them every tick ... (yay, going to be fun)
+            sail::PlayerAction playerAction {playerActionT};
+            clientHandler.send(playerAction);
+        }
+
         // 2. update
         gf::Time time = clock.restart();
         mainEntities.update(time);

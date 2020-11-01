@@ -34,4 +34,9 @@ namespace sail
         m_socket.setNonBlocking();
     }
 
+    gf::TcpSocket &ClientNetworkHandler::getSocket()
+    {
+        return m_socket;
+    }
+
 }

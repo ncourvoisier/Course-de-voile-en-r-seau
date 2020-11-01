@@ -17,6 +17,12 @@ namespace sail
 
         void setVelocity(gf::Vector2f velocity);
 
+        gf::Vector2f getVelocity();
+
+        gf::Vector2f getPosition();
+
+        void setPosition(const gf::Vector2f &mPosition);
+
         void update(float dt);
 
         BoatData getBoatData();

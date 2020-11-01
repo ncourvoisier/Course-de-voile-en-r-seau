@@ -33,6 +33,8 @@ namespace sail
 
         void setNonBlocking();
 
+        gf::TcpSocket &getSocket();
+
     private:
         gf::TcpSocket m_socket;
 

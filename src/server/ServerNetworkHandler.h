@@ -5,6 +5,7 @@
 #include <gf/TcpListener.h>
 
 #include "Player.h"
+#include "Game.h"
 
 namespace sail
 {
@@ -19,11 +20,11 @@ namespace sail
         void broadcast(const gf::Packet& packet);
 
     private:
+        Game m_game;
+
         gf::TcpListener m_listener;
 
         gf::SocketSelector m_selector;
-
-        std::vector<Player> m_players;
     };
 
 }

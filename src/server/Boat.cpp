@@ -27,4 +27,19 @@ namespace sail
         return { m_playerId, m_position, m_velocity };
     }
 
+    gf::Vector2f Boat::getVelocity()
+    {
+        return m_velocity;
+    }
+
+    gf::Vector2f Boat::getPosition()
+    {
+        return m_position;
+    }
+
+    void Boat::setPosition(const gf::Vector2f &mPosition)
+    {
+        m_position = mPosition;
+    }
+
 }
