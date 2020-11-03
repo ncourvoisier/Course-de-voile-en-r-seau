@@ -5,6 +5,7 @@
 #include <gf/Packet.h>
 #include <gf/Random.h>
 #include <iostream>
+#include <chrono>
 
 #include "ServerNetworkHandler.h"
 #include "../Protocol.h"
@@ -27,20 +28,37 @@ namespace sail
         }
     }
 
+    uint64_t sinceEpochMs()
+    {
+        using namespace std::chrono;
+        return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    }
+
     void ServerNetworkHandler::run()
     {
-
         int playerNb = 0; // TODO : temporary stuff, create a gf::GameConfig or something
         int neededPlayers = 2;
 
         m_selector.addSocket(m_listener);
+
+        static constexpr gf::Time Timeout = gf::milliseconds(TickLength);
+
         for (;;)
         {
-            if (m_selector.wait() == gf::SocketSelectorStatus::Event)
+            //// SENDING DATAS ////
+            GameState gs = m_game.getGameState();
+            gf::Packet gsPacket;
+            gsPacket.is(gs);
+            broadcast(gsPacket);
+            std::cout << "sending packets\n";
+            ///////////////////////
+
+            std::cout << "waiting packets\n";
+            if (m_selector.wait(Timeout) == gf::SocketSelectorStatus::Event)
             {
-                for (auto& player : m_game.getPlayers())
+                for (auto &player : m_game.getPlayers())
                 {
-                    auto& socket = player.getSocket();
+                    auto &socket = player.getSocket();
                     if (m_selector.isReady(socket))
                     {
                         gf::Packet packet;
@@ -53,16 +71,17 @@ namespace sail
                         {
                             case ClientGreeting::type:
                             { // TODO : UGLY PART, to rewrite
-                                ClientGreeting clientG {packet.as<ClientGreeting>()};
+                                ClientGreeting clientG{packet.as<ClientGreeting>()};
                                 std::cout << "New user : " << clientG.username << "\n";
                                 gf::Random rand;
-                                gf::Id newId {rand.computeId()};
+                                gf::Id newId{rand.computeId()};
                                 std::vector<PlayerData> playersData;
-                                for (auto& p : m_game.getPlayers()) {
+                                for (auto &p : m_game.getPlayers())
+                                {
                                     if (p.isConnected())
                                         playersData.push_back(p.getPlayerData());
                                 }
-                                ServerGreeting serverG = { newId, playersData }; ////
+                                ServerGreeting serverG = {newId, playersData}; ////
                                 gf::Packet serverGPacket;
                                 serverGPacket.is(serverG);
                                 socket.sendPacket(serverGPacket);
@@ -84,9 +103,9 @@ namespace sail
                             }
                             case PlayerAction::type:
                             {
-                                if (! player.isConnected())
+                                if (!player.isConnected())
                                     continue;
-                                PlayerAction action {packet.as<PlayerAction>()};
+                                PlayerAction action{packet.as<PlayerAction>()};
                                 m_game.playerAction(player, action);
                                 break;
                             }
@@ -103,7 +122,5 @@ namespace sail
                 }
             }
         }
-
     }
-
 }

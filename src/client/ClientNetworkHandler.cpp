@@ -1,4 +1,5 @@
 #include "ClientNetworkHandler.h"
+#include "../Protocol.h"
 
 namespace sail
 {
@@ -37,6 +38,28 @@ namespace sail
     gf::TcpSocket &ClientNetworkHandler::getSocket()
     {
         return m_socket;
+    }
+
+    void ClientNetworkHandler::packetHandling()
+    {
+        for (;;)
+        {
+            gf::Packet packet;
+            gf::SocketStatus status = receive(packet);
+            if (status == gf::SocketStatus::Block)
+                continue;
+            queue.push(std::move(packet));
+        }
+    }
+
+    void ClientNetworkHandler::run()
+    {
+        thread = std::thread(&ClientNetworkHandler::packetHandling, this);
+    }
+
+    gf::Queue<gf::Packet> &ClientNetworkHandler::getQueue()
+    {
+        return queue;
     }
 
 }

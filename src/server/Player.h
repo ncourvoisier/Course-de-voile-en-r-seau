@@ -3,6 +3,7 @@
 
 #include <gf/TcpSocket.h>
 #include <gf/Id.h>
+#include <gf/Packet.h>
 
 #include "Boat.h"
 #include "../Protocol.h"
@@ -14,6 +15,8 @@ namespace sail
     {
     public:
         Player(gf::TcpSocket s);
+
+        Player();
 
         gf::TcpSocket& getSocket();
 

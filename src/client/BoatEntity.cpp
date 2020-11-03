@@ -1,5 +1,6 @@
 #include <gf/Shapes.h>
 #include <gf/RenderTarget.h>
+#include <iostream>
 
 #include "BoatEntity.h"
 
@@ -9,7 +10,7 @@ namespace sail
     BoatEntity::BoatEntity(gf::Color4f color)
     : m_position({0, 0})
     , m_velocity({0, 0})
-    , m_size(50.0f)
+    , m_size(10.0f)
     , m_color(color)
     {
 
@@ -22,8 +23,10 @@ namespace sail
 
     void BoatEntity::update(gf::Time time)
     {
-        // TODO : INSERT MOVE PREDICTION LOGIC SOMEWHERE HERE (I GUESS)
-
+        //std::cout << "dt : " << time.asSeconds() << "\n";
+        m_position += time.asSeconds() * m_velocity;
+        //std::cout << "Velocity : x = " << m_velocity.x << ", y = " << m_velocity.y << "\n";
+        //std::cout << "Pos : x = " << m_position.x << ", y = " << m_position.y << "\n";
     }
 
     void BoatEntity::render(gf::RenderTarget &target, const gf::RenderStates &states)
@@ -33,9 +36,10 @@ namespace sail
         shape.setColor(m_color);
         shape.setAnchor(gf::Anchor::Center);
         target.draw(shape, states);
+        std::cout << "Render with : " << m_position.x << ", " << m_position.y << "\n";
     }
 
-    const gf::Vector2f &BoatEntity::getPosition() const
+    gf::Vector2f BoatEntity::getPosition()
     {
         return m_position;
     }
@@ -45,7 +49,7 @@ namespace sail
         m_position = mPosition;
     }
 
-    const gf::Vector2f &BoatEntity::getVelocity() const
+    gf::Vector2f BoatEntity::getVelocity()
     {
         return m_velocity;
     }

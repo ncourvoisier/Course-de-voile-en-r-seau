@@ -18,11 +18,11 @@ namespace sail
 
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
-        const gf::Vector2f &getPosition() const;
+        gf::Vector2f getPosition();
 
         void setPosition(const gf::Vector2f &mPosition);
 
-        const gf::Vector2f &getVelocity() const;
+        gf::Vector2f getVelocity();
 
         void setVelocity(const gf::Vector2f &mVelocity);
 

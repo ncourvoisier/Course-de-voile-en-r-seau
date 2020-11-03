@@ -5,6 +5,8 @@
 
 #include <gf/Packet.h>
 #include <gf/TcpSocket.h>
+#include <gf/Queue.h>
+#include <thread>
 
 namespace sail
 {
@@ -18,6 +20,10 @@ namespace sail
                 const std::string& service);
 
         bool isConnected();
+
+        void run();
+
+        void packetHandling();
 
         gf::SocketStatus receive(gf::Packet& packet);
 
@@ -35,10 +41,16 @@ namespace sail
 
         gf::TcpSocket &getSocket();
 
+        gf::Queue<gf::Packet> &getQueue();
+
     private:
         gf::TcpSocket m_socket;
 
         bool m_connected;
+
+        std::thread thread;
+
+        gf::Queue<gf::Packet> queue;
     };
 
 }

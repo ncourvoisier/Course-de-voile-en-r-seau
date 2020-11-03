@@ -3,6 +3,8 @@
 
 #include <gf/SocketSelector.h>
 #include <gf/TcpListener.h>
+#include <gf/Queue.h>
+#include <thread>
 
 #include "Player.h"
 #include "Game.h"
@@ -13,11 +15,15 @@ namespace sail
     class ServerNetworkHandler
     {
     public:
+        static constexpr int TicksPerSecond = 10;
+
+        static constexpr int TickLength = 1000 / TicksPerSecond;
+
         ServerNetworkHandler(const std::string service);
 
-        void run();
-
         void broadcast(const gf::Packet& packet);
+
+        void run();
 
     private:
         Game m_game;

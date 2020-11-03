@@ -63,7 +63,8 @@ namespace sail
         std::vector<BoatData> boatsData;
         for (auto& p : m_players)
         {
-            boatsData.push_back(p.getBoat().getBoatData());
+            if (p.isConnected())
+                boatsData.push_back(p.getBoat().getBoatData());
         }
         return { boatsData };
     }
