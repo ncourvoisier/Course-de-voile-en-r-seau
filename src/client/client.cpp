@@ -148,18 +148,23 @@ int main()
         gf::Packet packet;
         if (clientHandler.getQueue().poll(packet))
         {
-            std::cout << "Data received...\n";
+            clientHandler.getQueue().clear(); // Fix a bit but ... there's too much packets
+            //std::cout << "Data received...\n";
             switch (packet.getType())
             {
                 case sail::GameState::type:
                 {
-                    std::cout << "Received a GameState\n";
+                    // Proceed to send our new position first (just an idea... probably a bad one :D)
+                    sail::ClientBoatData boatData = localBoat.getClientBoatData();
+                    clientHandler.send(boatData); // Concurrency with incoming packet in the other thread ? maybe ..?
+
                     sail::GameState state {packet.as<sail::GameState>()};
                     for (auto& boat : state.boats)
                     {
-                        /*sail::BoatEntity entity = players[boat.playerId].getBoat();
-                        entity.setVelocity(boat.velocity);
-                        entity.setPosition(boat.position);*/
+                        sail::BoatEntity& entity = players.at(boat.playerId).getBoat();
+                        std::cout << "position : " << boat.position.x << ", " << boat.position.y << "\n";
+                        /*entity.setVelocity(boat.velocity);*/
+                        entity.setPosition(boat.position);
                     }
                     break;
                 }

@@ -101,12 +101,13 @@ namespace sail
                                 }
                                 break;
                             }
-                            case PlayerAction::type:
+                            case ClientBoatData::type:
                             {
                                 if (!player.isConnected())
                                     continue;
-                                PlayerAction action{packet.as<PlayerAction>()};
-                                m_game.playerAction(player, action);
+                                ClientBoatData boatData {packet.as<ClientBoatData>()};
+                                player.getBoat().setVelocity(boatData.velocity);
+                                player.getBoat().setPosition(boatData.position); // TODO : NO VALIDITY CHECKS AT ALL, JUST A TEST
                                 break;
                             }
                         }

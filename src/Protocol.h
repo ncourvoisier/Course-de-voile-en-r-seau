@@ -23,6 +23,19 @@ namespace sail {
         return ar | data.playerId | data.position | data.velocity;
     }
 
+    struct ClientBoatData
+    {
+        static constexpr gf::Id type = "ClientBoatData"_id;
+        gf::Vector2f position;
+        gf::Vector2f velocity;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, ClientBoatData& data)
+    {
+        return ar | data.position | data.velocity;
+    }
+
     struct PlayerData
     {
         static constexpr gf::Id type = "PlayerData"_id;

@@ -15,7 +15,7 @@ namespace sail
     class ServerNetworkHandler
     {
     public:
-        static constexpr int TicksPerSecond = 10;
+        static constexpr int TicksPerSecond = 50;
 
         static constexpr int TickLength = 1000 / TicksPerSecond;
 

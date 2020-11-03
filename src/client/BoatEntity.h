@@ -3,6 +3,7 @@
 
 #include <gf/Entity.h>
 #include <gf/Vector.h>
+#include "../Protocol.h"
 
 namespace sail
 {
@@ -25,6 +26,8 @@ namespace sail
         gf::Vector2f getVelocity();
 
         void setVelocity(const gf::Vector2f &mVelocity);
+
+        ClientBoatData getClientBoatData();
 
     private:
         gf::Vector2f m_position;

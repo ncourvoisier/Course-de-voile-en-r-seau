@@ -36,7 +36,7 @@ namespace sail
         shape.setColor(m_color);
         shape.setAnchor(gf::Anchor::Center);
         target.draw(shape, states);
-        std::cout << "Render with : " << m_position.x << ", " << m_position.y << "\n";
+        //std::cout << "Render with : " << m_position.x << ", " << m_position.y << "\n";
     }
 
     gf::Vector2f BoatEntity::getPosition()
@@ -57,6 +57,11 @@ namespace sail
     void BoatEntity::setVelocity(const gf::Vector2f &mVelocity)
     {
         m_velocity = mVelocity;
+    }
+
+    ClientBoatData BoatEntity::getClientBoatData()
+    {
+        return { m_position, m_velocity };
     }
 
 }
