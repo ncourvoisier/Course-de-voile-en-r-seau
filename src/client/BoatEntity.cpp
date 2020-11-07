@@ -10,7 +10,7 @@ namespace sail
     BoatEntity::BoatEntity(gf::Color4f color)
     : m_position({0, 0})
     , m_velocity({0, 0})
-    , m_size(10.0f)
+    , m_size(20.0f)
     , m_color(color)
     {
 

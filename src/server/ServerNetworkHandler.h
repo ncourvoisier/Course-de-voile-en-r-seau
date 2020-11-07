@@ -15,13 +15,15 @@ namespace sail
     class ServerNetworkHandler
     {
     public:
-        static constexpr int TicksPerSecond = 50;
+        static constexpr int TicksPerSecond = 20;
 
         static constexpr int TickLength = 1000 / TicksPerSecond;
 
         ServerNetworkHandler(const std::string service);
 
         void broadcast(const gf::Packet& packet);
+
+        void processPackets();
 
         void run();
 

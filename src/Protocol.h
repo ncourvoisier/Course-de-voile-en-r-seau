@@ -118,7 +118,8 @@ namespace sail {
             Up,
             Down,
             Right,
-            Left
+            Left,
+            None
         };
 
         Type action;

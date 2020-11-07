@@ -16,16 +16,25 @@ namespace sail
 
         void start();
 
+       // gf::Id addPlayer(gf::TcpSocket socket);
+
+        bool connectPlayer(Player& player, gf::Id id, std::string userName);
+
         std::vector<Player>& getPlayers();
 
         void playerAction(Player& player, PlayerAction action);
 
-        GameState getGameState();
+        GameState updateGame(int dt);
 
     private:
-        static constexpr float Speed = 100.0f;
+        static constexpr int NeededPlayers = 2;
+
+        static constexpr float Speed = 10.0f;
+        static constexpr float MaxSpeed = Speed * 10;
 
         std::vector<Player> m_players;
+
+        int m_playersNb;
 
         bool m_started;
     };

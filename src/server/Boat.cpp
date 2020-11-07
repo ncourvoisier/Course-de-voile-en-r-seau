@@ -19,7 +19,7 @@ namespace sail
 
     void Boat::update(float dt)
     {
-        m_position += dt * m_velocity;
+        m_position += dt * 0.0001 *  m_velocity;
     }
 
     BoatData Boat::getBoatData()

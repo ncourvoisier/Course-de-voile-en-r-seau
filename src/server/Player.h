@@ -4,6 +4,7 @@
 #include <gf/TcpSocket.h>
 #include <gf/Id.h>
 #include <gf/Packet.h>
+#include <gf/Queue.h>
 
 #include "Boat.h"
 #include "../Protocol.h"
@@ -14,7 +15,7 @@ namespace sail
     class Player
     {
     public:
-        Player(gf::TcpSocket s);
+        Player(gf::TcpSocket);
 
         Player();
 
@@ -28,10 +29,11 @@ namespace sail
 
         gf::Id getId() const;
 
-        const std::string &getName() const;
+        const std::string& getName() const;
 
         PlayerData getPlayerData();
 
+        std::deque<gf::Packet>& getPendingPackets();
 
     private:
         gf::Id m_id;
@@ -39,6 +41,8 @@ namespace sail
         std::string m_name;
 
         gf::TcpSocket m_socket;
+
+        std::deque<gf::Packet> m_pendingPackets;
 
         Boat m_boat;
 

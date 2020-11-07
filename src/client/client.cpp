@@ -103,9 +103,7 @@ int main()
                 sail::ClientPlayer(p.id, p.name))); // TODO : create a player manager
     }
 
-    bool gameReady = false;
-
-    while (! gameReady)
+    for (;;)
     {
         gf::Packet waitingP;
         if (clientHandler.receive(waitingP) == gf::SocketStatus::Data)
@@ -119,7 +117,7 @@ int main()
             }
             else if (waitingP.getType() == sail::GameReady::type)
             {
-                gameReady = true;
+                break;
             }
         }
     }
@@ -127,7 +125,7 @@ int main()
     std::cout << "Game is ready\n";
 
     // Adding references to entities
-    for (std::map<gf::Id, sail::ClientPlayer>::iterator it = players.begin(); it != players.end(); ++it)
+    for (auto it = players.begin(); it != players.end(); ++it)
     {
         mainEntities.addEntity((it->second).getBoat());
     }
@@ -136,43 +134,19 @@ int main()
     // Launching the thread
     clientHandler.run();
 
-    static constexpr float Speed = 5.0f;
-    static constexpr float maxSpeed = Speed * 10;
+    static constexpr gf::Time UpdateDelayMs = gf::milliseconds(10);
+    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(200);
+    gf::Time lag = gf::milliseconds(0);
+    gf::Time keyDelay = gf::milliseconds(0);
+
+    auto lastAction = sail::PlayerAction::Type::None;
 
     while (window.isOpen())
     {
-        /////////////////////////
-        /// Receiving packets ///
-        /////////////////////////
-
-        gf::Packet packet;
-        if (clientHandler.getQueue().poll(packet))
-        {
-            clientHandler.getQueue().clear(); // Fix a bit but ... there's too much packets
-            //std::cout << "Data received...\n";
-            switch (packet.getType())
-            {
-                case sail::GameState::type:
-                {
-                    // Proceed to send our new position first (just an idea... probably a bad one :D)
-                    sail::ClientBoatData boatData = localBoat.getClientBoatData();
-                    clientHandler.send(boatData); // Concurrency with incoming packet in the other thread ? maybe ..?
-
-                    sail::GameState state {packet.as<sail::GameState>()};
-                    for (auto& boat : state.boats)
-                    {
-                        sail::BoatEntity& entity = players.at(boat.playerId).getBoat();
-                        std::cout << "position : " << boat.position.x << ", " << boat.position.y << "\n";
-                        /*entity.setVelocity(boat.velocity);*/
-                        entity.setPosition(boat.position);
-                    }
-                    break;
-                }
-            }
-        }
-
-        /////////////////////////
-
+        gf::Time time = clock.restart();
+        lag += time;
+        keyDelay += time;
+        
         // 1. input
         gf::Event event;
         while (window.pollEvent(event))
@@ -189,53 +163,83 @@ int main()
             window.toggleFullscreen();
         }
 
-        auto velocity = localBoat.getVelocity();
-
         if (rightAction.isActive()) {
-            std::cout << "right\n";
-            velocity.x += Speed;
-            if (velocity.x > maxSpeed)
-            {
-                velocity.x = maxSpeed;
-            }
+            //std::cout << "right\n";
+            lastAction = sail::PlayerAction::Type::Right;
+            rightAction.reset();
         }
         else if (leftAction.isActive())
         {
-            std::cout << "left\n";
-            velocity.x -= Speed;
-            if (velocity.x < -maxSpeed)
-            {
-                velocity.x = -maxSpeed;
-            }
+           // std::cout << "left\n";
+            lastAction = sail::PlayerAction::Type::Left;
+            leftAction.reset();
         }
         else if (upAction.isActive())
         {
-            std::cout << "up\n";
-            velocity.y -= Speed;
-            if (velocity.y < -maxSpeed)
-            {
-                velocity.y = -maxSpeed;
-            }
+            //std::cout << "up\n";
+            lastAction = sail::PlayerAction::Type::Up;
+            upAction.reset();
         }
         else if (downAction.isActive())
         {
-            std::cout << "down\n";
-            velocity.y += Speed;
-            if (velocity.y > maxSpeed)
-            {
-                velocity.y = maxSpeed;
-            }
+            //std::cout << "down\n";
+            lastAction = sail::PlayerAction::Type::Down;
+            downAction.reset();
         } else
         {
-            // do something
+
         }
 
-        localBoat.setVelocity(velocity);
+        if (keyDelay > SendKeyDelayMs && lastAction != sail::PlayerAction::Type::None)
+        {
+            std::cout << "action\n";
+            sail::PlayerAction action { lastAction };
+            clientHandler.send(action);
+            keyDelay = gf::milliseconds(0);
+            lastAction = sail::PlayerAction::Type::None;
+        }
+
+        while (lag > UpdateDelayMs)
+        {
+            /////////////////////////
+            /// Receiving packets ///
+            /////////////////////////
+
+            gf::Packet packet;
+            if (clientHandler.getQueue().poll(packet))
+            {
+                clientHandler.getQueue(); // Fix a bit but ... there's too much packets
+                //std::cout << "Data received...\n";
+                switch (packet.getType())
+                {
+                    case sail::GameState::type:
+                    {
+                        // Proceed to send our new position first (just an idea... probably a bad one :D)
+                        sail::ClientBoatData boatData = localBoat.getClientBoatData();
+                        clientHandler.send(boatData); // Concurrency with incoming packet in the other thread ? maybe ..?
+
+                        sail::GameState state {packet.as<sail::GameState>()};
+                        for (auto& boat : state.boats)
+                        {
+                            sail::BoatEntity& entity = players.at(boat.playerId).getBoat();
+                            std::cout << "position : " << boat.position.x << ", " << boat.position.y << "\n";
+                            /*entity.setVelocity(boat.velocity);*/
+                            entity.setPosition(boat.position);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            /////////////////////////
+
+            lag -= UpdateDelayMs;
+        }
+
         //std::cout << "x : " << localBoat.getVelocity().x << ", y : " << localBoat.getVelocity().y << "\n"; >>>>>> NO PROBLEM HERE
 
         // 2. update
-        gf::Time time = clock.restart();
-        localBoat.update(time);
+        //localBoat.update(time);
         //mainEntities.update(time);
         //hudEntities.update(time);
         // 3. draw

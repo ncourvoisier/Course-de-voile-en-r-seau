@@ -51,4 +51,9 @@ namespace sail {
         return { m_id, m_name };
     }
 
+    std::deque<gf::Packet>& Player::getPendingPackets()
+    {
+        return m_pendingPackets;
+    }
+
 }
