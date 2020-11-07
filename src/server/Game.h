@@ -29,8 +29,8 @@ namespace sail
     private:
         static constexpr int NeededPlayers = 2;
 
-        static constexpr float Speed = 10.0f;
-        static constexpr float MaxSpeed = Speed * 10;
+        static constexpr float Speed = 25.0f;
+        static constexpr float MaxSpeed = Speed * 4;
 
         std::vector<Player> m_players;
 

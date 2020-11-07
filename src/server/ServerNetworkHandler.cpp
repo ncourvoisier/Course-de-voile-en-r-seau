@@ -33,11 +33,13 @@ namespace sail
     {
         for (Player& p : m_game.getPlayers())
         {
+            int packetsNb = 0;
             gf::TcpSocket& socket = p.getSocket();
             auto& pendingQueue = p.getPendingPackets();
             gf::Packet packet;
             while (!pendingQueue.empty())
             {
+                packetsNb++;
                 packet = pendingQueue.front();
                 pendingQueue.pop_front();
                 switch (packet.getType())
@@ -85,6 +87,8 @@ namespace sail
                     }
                 }
             }
+            if (packetsNb > 0)
+                std::cout << packetsNb << " packets processed\n";
         }
     }
 
@@ -105,6 +109,8 @@ namespace sail
 
         gf::Clock clock;
 
+        int packS = 0;
+
         for (;;)
         {
             processPackets();
@@ -114,7 +120,7 @@ namespace sail
             gf::Packet gsPacket;
             gsPacket.is(gs);
             broadcast(gsPacket);
-            std::cout << "sending packets\n";
+            std::cout << "sending packets " << ++packS << "\n";
             ///////////////////////
 
             //std::this_thread::sleep_for(std::chrono::milliseconds(TickLength)); // Sleep to save some processing time
@@ -131,7 +137,12 @@ namespace sail
                         if (m_selector.isReady(socket))
                         {
                             gf::Packet packet;
-                            if (socket.recvPacket(packet) != gf::SocketStatus::Data)
+                            gf::SocketStatus status = socket.recvPacket(packet);
+                            if (status == gf::SocketStatus::Data)
+                            {
+                                std::cout << "Received packet\n"; // TODO : way too many packets are received here, why ?
+                            }
+                            else
                             {
                                 // TODO : Remove closed sockets
                                 continue;

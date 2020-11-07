@@ -82,7 +82,6 @@ int main()
     std::string userName = "username";
     sail::ClientGreeting greeting = { userName }; // TODO : TEMPORARY
     clientHandler.send(greeting);
-    clientHandler.setBlocking();
     gf::Packet serverGreetingP;
     clientHandler.receive(serverGreetingP);
     auto serverGreeting {serverGreetingP.as<sail::ServerGreeting>()};
@@ -134,12 +133,13 @@ int main()
     // Launching the thread
     clientHandler.run();
 
-    static constexpr gf::Time UpdateDelayMs = gf::milliseconds(10);
-    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(200);
+    static constexpr gf::Time UpdateDelayMs = gf::milliseconds(50);
+    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(100);
     gf::Time lag = gf::milliseconds(0);
     gf::Time keyDelay = gf::milliseconds(0);
 
     auto lastAction = sail::PlayerAction::Type::None;
+    int actionNb = 0;
 
     while (window.isOpen())
     {
@@ -192,7 +192,7 @@ int main()
 
         if (keyDelay > SendKeyDelayMs && lastAction != sail::PlayerAction::Type::None)
         {
-            std::cout << "action\n";
+            std::cout << "action : " << ++actionNb << "\n";
             sail::PlayerAction action { lastAction };
             clientHandler.send(action);
             keyDelay = gf::milliseconds(0);
@@ -214,23 +214,17 @@ int main()
                 {
                     case sail::GameState::type:
                     {
-                        // Proceed to send our new position first (just an idea... probably a bad one :D)
-                        sail::ClientBoatData boatData = localBoat.getClientBoatData();
-                        clientHandler.send(boatData); // Concurrency with incoming packet in the other thread ? maybe ..?
-
                         sail::GameState state {packet.as<sail::GameState>()};
                         for (auto& boat : state.boats)
                         {
                             sail::BoatEntity& entity = players.at(boat.playerId).getBoat();
-                            std::cout << "position : " << boat.position.x << ", " << boat.position.y << "\n";
-                            /*entity.setVelocity(boat.velocity);*/
                             entity.setPosition(boat.position);
                         }
                         break;
                     }
                 }
             }
-
+            
             /////////////////////////
 
             lag -= UpdateDelayMs;
@@ -246,6 +240,7 @@ int main()
         renderer.clear();
         renderer.setView(mainView);
         mainEntities.render(renderer);
+        std::cout << "rendering entities \n";
         renderer.setView(hudView);
         hudEntities.render(renderer);
         renderer.display();
