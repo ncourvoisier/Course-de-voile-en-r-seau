@@ -1,10 +1,10 @@
 #include <gf/RenderTarget.h>
-#include "Boat.h"
+#include "BoatWrapper.h"
 
 namespace sail
 {
 
-    Boat::Boat(gf::Id playerId, gf::Vector2f position)
+    BoatWrapper::BoatWrapper(gf::Id playerId, gf::Vector2f position)
     : m_playerId(playerId)
     , m_position(position)
     , m_velocity(0, 0)
@@ -12,32 +12,32 @@ namespace sail
 
     }
 
-    void Boat::setVelocity(gf::Vector2f velocity)
+    void BoatWrapper::setVelocity(gf::Vector2f velocity)
     {
         m_velocity = velocity;
     }
 
-    void Boat::update(float dt)
+    void BoatWrapper::update(float dt)
     {
         m_position += dt * 0.0001 *  m_velocity;
     }
 
-    BoatData Boat::getBoatData()
+    BoatData BoatWrapper::getBoatData()
     {
         return { m_playerId, m_position, m_velocity };
     }
 
-    gf::Vector2f Boat::getVelocity()
+    gf::Vector2f BoatWrapper::getVelocity()
     {
         return m_velocity;
     }
 
-    gf::Vector2f Boat::getPosition()
+    gf::Vector2f BoatWrapper::getPosition()
     {
         return m_position;
     }
 
-    void Boat::setPosition(const gf::Vector2f &mPosition)
+    void BoatWrapper::setPosition(const gf::Vector2f &mPosition)
     {
         m_position = mPosition;
     }

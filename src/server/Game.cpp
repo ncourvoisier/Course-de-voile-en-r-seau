@@ -56,7 +56,7 @@ namespace sail
         if (! m_started )
             return;
         std::cout << "Action of : " << player.getName() << "\n";
-        Boat& boat = player.getBoat();
+        BoatWrapper& boat = player.getBoat();
         gf::Vector2f velocity = boat.getVelocity();
         switch (action.action)
         {

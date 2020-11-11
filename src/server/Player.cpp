@@ -14,7 +14,7 @@ namespace sail {
         return m_socket;
     }
 
-    Boat& Player::getBoat()
+    BoatWrapper& Player::getBoat()
     {
         assert(m_connected);
         return m_boat;
@@ -30,7 +30,7 @@ namespace sail {
         m_connected = true;
         m_id = id;
         m_name = name;
-        m_boat = Boat(m_id, {0, 0}); // TODO : change this
+        m_boat = BoatWrapper(m_id, {0, 0}); // TODO : change this
     }
 
     gf::Id Player::getId() const

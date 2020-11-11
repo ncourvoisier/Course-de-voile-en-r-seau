@@ -1,5 +1,5 @@
-#ifndef SAILINSANE_BOAT_H
-#define SAILINSANE_BOAT_H
+#ifndef SAILINSANE_BOATWRAPPER_H
+#define SAILINSANE_BOATWRAPPER_H
 
 #include <gf/Shapes.h>
 #include <gf/Vector.h>
@@ -8,12 +8,12 @@
 namespace sail
 {
 
-    class Boat
+    class BoatWrapper
     {
     public:
-        Boat() = default;
+        BoatWrapper() = default;
 
-        Boat(gf::Id playerId, gf::Vector2f position);
+        BoatWrapper(gf::Id playerId, gf::Vector2f position);
 
         void setVelocity(gf::Vector2f velocity);
 
@@ -38,4 +38,4 @@ namespace sail
 }
 
 
-#endif //SAILINSANE_BOAT_H
+#endif //SAILINSANE_BOATWRAPPER_H
