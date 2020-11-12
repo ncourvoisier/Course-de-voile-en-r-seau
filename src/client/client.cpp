@@ -149,7 +149,7 @@ int main()
         keyDelay += time;
         
         // 1. input
-        gf::Event event;
+        struct gf::Event event;
         while (window.pollEvent(event))
         {
             actions.processEvent(event);

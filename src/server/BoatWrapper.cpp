@@ -1,4 +1,5 @@
 #include <gf/RenderTarget.h>
+#include <iostream>
 #include "BoatWrapper.h"
 
 namespace sail
@@ -9,6 +10,8 @@ namespace sail
     , m_position(position)
     , m_velocity(0, 0)
     {
+        //Boat b;
+        //std::cout << b.getMass() << std::endl;
 
     }
 
