@@ -7,32 +7,28 @@
 #include "Boat.h"
 #include "Wind.h"
 
-namespace {
+namespace sail
+{
 
-    class Physics {
-    public:
-        Physics() = default;
-        ~Physics() = default;
-        static void sailing_physics_update(sail::Boat boat, const sail::Wind& wind, const double dt);
-    private:
-        static double sign_of(double a);
-        static double apparent_wind_x(const sail::Boat& boat, const sail::Wind& wind) ;
-        static double apparent_wind_y(const sail::Boat& boat, const sail::Wind& wind) ;
-        static double apparent_wind_direction(const sail::Boat& boat, const sail::Wind& wind) ;
-        static double apparent_wind_speed(const sail::Boat& boat, const sail::Wind& wind) ;
+    static void sailing_physics_update(sail::Boat boat, const sail::Wind& wind, double dt);
 
-        static bool mainsheet_is_tight(const sail::Boat& boat, const sail::Wind& wind) ;
+    static double sign_of(double a);
+    static double apparent_wind_x(const sail::Boat& boat, const sail::Wind& wind) ;
+    static double apparent_wind_y(const sail::Boat& boat, const sail::Wind& wind) ;
+    static double apparent_wind_direction(const sail::Boat& boat, const sail::Wind& wind) ;
+    static double apparent_wind_speed(const sail::Boat& boat, const sail::Wind& wind) ;
 
-        static double force_on_rudder(const sail::Boat& boat, const sail::Wind& wind);
-        static double force_on_sail(const sail::Boat& boat, const sail::Wind& wind);
+    static bool mainsheet_is_tight(const sail::Boat& boat, const sail::Wind& wind) ;
 
-        static bool sail_is_bounds(const sail::Boat& boat);
+    static double force_on_rudder(const sail::Boat& boat, const sail::Wind& wind);
+    static double force_on_sail(const sail::Boat& boat, const sail::Wind& wind);
 
-        static double delta_y(const sail::Boat& boat, const sail::Wind& wind);
-        static double delta_x(const sail::Boat& boat, const sail::Wind& wind);
-        static double delta_relational_velocity(const sail::Boat& boat, const sail::Wind& wind);
-        static double delta_velocity(const sail::Boat& boat, const sail::Wind& wind);
-    };
+    static bool sail_is_bounds(const sail::Boat& boat);
+
+    static double delta_y(const sail::Boat& boat, const sail::Wind& wind);
+    static double delta_x(const sail::Boat& boat, const sail::Wind& wind);
+    static double delta_relational_velocity(const sail::Boat& boat, const sail::Wind& wind);
+    static double delta_velocity(const sail::Boat& boat, const sail::Wind& wind);
 
 }
 

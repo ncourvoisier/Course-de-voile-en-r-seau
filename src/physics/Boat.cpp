@@ -2,41 +2,28 @@
 
 namespace sail {
 
-    Boat::Boat(char* name)
-    : name(name)
+    Boat::Boat()
+    : x(0)
+    , y(0)
+    , angle(M_PI_4)
+    , sail_angle(0)
+    , rudder_angle(0)
+    , sail_is_free(0)
+    , v(5)
+    , sheet_length(1)
+    , rotational_velocity(0.0)
+    , inertia(10000.0)
+    , drift_coefficient(0.05)
+    , rudder_distance(4.0)
+    , angular_friction(8000)
+    , mass(300.0)
+    , tangential_friction(0.1)
+    , mast_distance(1)
+    , rudder_lift(8000.0)
+    , sail_center_of_effort(1.0)
+    , sail_lift(1000.0)
     {
-        sailing_boat_reset();
-    }
 
-    Boat::~Boat() {
-        free(name);
-    }
-
-    void Boat::sailing_boat_reset() {
-        x = 0;
-        y = 0;
-        angle = M_PI_4;
-        sail_angle = 0;
-        rudder_angle = 0;
-        sail_is_free = 0;
-
-        v = 5;
-        sheet_length = 1;
-        rotational_velocity = 0.0;
-        inertia = 10000.0;
-        drift_coefficient = 0.05;
-        rudder_distance = 4.0;
-        angular_friction = 8000;
-        mass = 300.0;
-        tangential_friction = 0.1;
-        mast_distance = 1;
-        rudder_lift = 8000.0;
-        sail_center_of_effort = 1.0;
-        sail_lift = 1000.0;
-    }
-
-    char* Boat::getName() {
-        return name;
     }
 
     double Boat::getAngle() const {

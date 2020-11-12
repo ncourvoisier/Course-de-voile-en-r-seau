@@ -9,13 +9,7 @@ namespace sail {
 
     class Boat {
     public:
-        Boat() = default;
-        Boat(char* name);
-        ~Boat();
-        Boat *sailing_boat_init();
-        void sailing_boat_reset();
-        void sailing_boat_free(Boat *boat);
-        char* getName();
+        Boat();
         double getLatitude() const;
         void setLatitude(double latitude);
         double getLongitude() const;
@@ -46,8 +40,6 @@ namespace sail {
         void setRotationalVelocity(double rotationalVelocity);
 
     private:
-        char* name;
-
         /* coordinates of boat */
         double x;
         double y;

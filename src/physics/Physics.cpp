@@ -1,8 +1,8 @@
 #include "Physics.h"
 
-namespace {
+namespace sail {
 
-    void Physics::sailing_physics_update(sail::Boat boat, const sail::Wind& wind, const double dt) {
+    void sailing_physics_update(Boat boat, const Wind& wind, const double dt) {
         if (sail_is_bounds(boat)) {
             boat.setSheetLength(boat.getSheetLength() + dt * boat.getSailIsFree());
         }
@@ -29,7 +29,7 @@ namespace {
         boat.setAngle(boat.getAngle() + boat.getRotationalVelocity() * dt);
     }
 
-    double Physics::sign_of(double a) {
+    double sign_of(double a) {
         if (a <= 0) {
             return -1;
         } else {
@@ -37,24 +37,24 @@ namespace {
         }
     }
 
-    double Physics::apparent_wind_x(const sail::Boat& boat, const sail::Wind& wind) {
+    double apparent_wind_x(const Boat& boat, const Wind& wind) {
         return wind.getSpeed() * cos(wind.getDirection() - boat.getAngle()) -
                boat.getVelocity();
     }
 
-    double Physics::apparent_wind_y(const sail::Boat& boat, const sail::Wind& wind) {
+    double apparent_wind_y(const Boat& boat, const Wind& wind) {
         return wind.getSpeed() * sin(wind.getDirection() - boat.getAngle());
     }
 
-    double Physics::apparent_wind_direction(const sail::Boat& boat, const sail::Wind& wind) {
+    double apparent_wind_direction(const Boat& boat, const Wind& wind) {
         return atan2(apparent_wind_y(boat, wind), apparent_wind_x(boat, wind));
     }
 
-    double Physics::apparent_wind_speed(const sail::Boat& boat, const sail::Wind& wind) {
+    double apparent_wind_speed(const Boat& boat, const Wind& wind) {
         return sqrt(pow(apparent_wind_x(boat, wind), 2) + pow(apparent_wind_y(boat, wind), 2));
     }
 
-    bool Physics::mainsheet_is_tight(const sail::Boat& boat, const sail::Wind& wind) {
+    bool mainsheet_is_tight(const Boat& boat, const Wind& wind) {
         if (cos(apparent_wind_direction(boat, wind)) + cos(boat.getSheetLength()) < 0) {
             return true;
         } else {
@@ -62,16 +62,16 @@ namespace {
         }
     }
 
-    double Physics::force_on_rudder(const sail::Boat& boat, const sail::Wind& wind) {
+    double force_on_rudder(const Boat& boat, const Wind& wind) {
         return boat.getRudderLift() * boat.getVelocity() * sin(boat.getRudderAngle());
     }
 
-    double Physics::force_on_sail(const sail::Boat& boat, const sail::Wind& wind) {
+    double force_on_sail(const Boat& boat, const Wind& wind) {
         return boat.getSailLift() * apparent_wind_speed(boat, wind) * sin(
                 boat.getSailAngle() - apparent_wind_direction(boat, wind));
     }
 
-    bool Physics::sail_is_bounds(const sail::Boat& boat) {
+    bool sail_is_bounds(const Boat& boat) {
         if (boat.getSheetLength() > -M_PI_2 && boat.getSheetLength() < M_PI_2) {
             return true;
         } else {
@@ -79,7 +79,7 @@ namespace {
         }
     }
 
-    double Physics::delta_y(const sail::Boat& boat, const sail::Wind& wind) {
+    double delta_y(const Boat& boat, const Wind& wind) {
         return boat.getVelocity()
             * cos(boat.getAngle())
             + boat.getDriftCoefficient()
@@ -87,7 +87,7 @@ namespace {
             * cos(wind.getDirection());
     }
 
-    double Physics::delta_x(const sail::Boat& boat, const sail::Wind& wind) {
+    double delta_x(const Boat& boat, const Wind& wind) {
         return boat.getVelocity()
             * sin(boat.getAngle())
             + boat.getDriftCoefficient()
@@ -95,7 +95,7 @@ namespace {
             * cos(wind.getDirection());
     }
 
-    double Physics::delta_relational_velocity(const sail::Boat& boat, const sail::Wind& wind) {
+    double delta_relational_velocity(const Boat& boat, const Wind& wind) {
         return ((boat.getSailCenterOfEffort()
             - boat.getMastDistance()
             * cos(boat.getSailAngle()))
@@ -109,7 +109,7 @@ namespace {
             / boat.getMass();
     }
 
-    double Physics::delta_velocity(const sail::Boat& boat, const sail::Wind& wind) {
+    double delta_velocity(const Boat& boat, const Wind& wind) {
         return (sin(boat.getSailAngle())
             * force_on_sail(boat, wind)
             - sin(boat.getRudderAngle())
