@@ -115,19 +115,18 @@ namespace sail {
 
         enum Type : uint16_t
         { // TODO : replace with actual sailing boat controls
-            Up,
-            Down,
             Right,
             Left,
             None
         };
 
-        Type action;
+        Type sailAction = None;
+        Type rubberAction = None;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, PlayerAction& data) {
-        return ar | data.action;
+        return ar | data.sailAction | data.rubberAction;
     }
 
 }

@@ -58,7 +58,7 @@ namespace sail
         std::cout << "Action of : " << player.getName() << "\n";
         BoatWrapper& boat = player.getBoat();
         gf::Vector2f velocity = boat.getVelocity();
-        switch (action.action)
+        /*switch (action.action) // TODO : to redefine
         {
             case PlayerAction::Type::Up:
             {
@@ -88,7 +88,7 @@ namespace sail
                     velocity.x = -MaxSpeed;
                 break;
             }
-        }
+        }*/
         boat.setVelocity(velocity);
     }
 

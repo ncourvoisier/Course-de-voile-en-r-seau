@@ -47,26 +47,26 @@ int main()
     gf::Action fullscreenAction("Fullscreen");
     fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
     actions.addAction(fullscreenAction);
-    gf::Action leftAction("Left");
-    leftAction.addScancodeKeyControl(gf::Scancode::A);
-    leftAction.addScancodeKeyControl(gf::Scancode::Left);
-    leftAction.setContinuous();
-    actions.addAction(leftAction);
-    gf::Action rightAction("Right");
-    rightAction.addScancodeKeyControl(gf::Scancode::D);
-    rightAction.addScancodeKeyControl(gf::Scancode::Right);
-    rightAction.setContinuous();
-    actions.addAction(rightAction);
-    gf::Action upAction("Up");
-    upAction.addScancodeKeyControl(gf::Scancode::W);
-    upAction.addScancodeKeyControl(gf::Scancode::Up);
-    upAction.setContinuous();
-    actions.addAction(upAction);
-    gf::Action downAction("Down");
-    downAction.addScancodeKeyControl(gf::Scancode::S);
-    downAction.addScancodeKeyControl(gf::Scancode::Down);
-    downAction.setContinuous();
-    actions.addAction(downAction);
+    gf::Action sailLeftAction("Sail left");
+    sailLeftAction.addScancodeKeyControl(gf::Scancode::A);
+    sailLeftAction.addScancodeKeyControl(gf::Scancode::Down);
+    sailLeftAction.setContinuous();
+    actions.addAction(sailLeftAction);
+    gf::Action sailRightAction("Sail right");
+    sailRightAction.addScancodeKeyControl(gf::Scancode::D);
+    sailRightAction.addScancodeKeyControl(gf::Scancode::Up);
+    sailRightAction.setContinuous();
+    actions.addAction(sailRightAction);
+    gf::Action rubberLeftAction("Rubber left");
+    rubberLeftAction.addScancodeKeyControl(gf::Scancode::K);
+    rubberLeftAction.addScancodeKeyControl(gf::Scancode::Left);
+    rubberLeftAction.setContinuous();
+    actions.addAction(rubberLeftAction);
+    gf::Action rubberRightAction("Rubber right");
+    rubberRightAction.addScancodeKeyControl(gf::Scancode::M);
+    rubberRightAction.addScancodeKeyControl(gf::Scancode::Right);
+    rubberRightAction.setContinuous();
+    actions.addAction(rubberRightAction);
     // entities
     gf::EntityContainer mainEntities;
     // add entities to mainEntities
@@ -138,7 +138,8 @@ int main()
     gf::Time lag = gf::milliseconds(0);
     gf::Time keyDelay = gf::milliseconds(0);
 
-    auto lastAction = sail::PlayerAction::Type::None;
+    auto lastActionSail = sail::PlayerAction::Type::None;
+    auto lastActionRubber = sail::PlayerAction::Type::None;
     int actionNb = 0;
 
     while (window.isOpen())
@@ -163,40 +164,43 @@ int main()
             window.toggleFullscreen();
         }
 
-        if (rightAction.isActive()) {
+        if (sailRightAction.isActive()) {
             //std::cout << "right\n";
-            lastAction = sail::PlayerAction::Type::Right;
-            rightAction.reset();
+            lastActionSail = sail::PlayerAction::Type::Right;
+            sailRightAction.reset();
         }
-        else if (leftAction.isActive())
+        else if (sailLeftAction.isActive())
         {
            // std::cout << "left\n";
-            lastAction = sail::PlayerAction::Type::Left;
-            leftAction.reset();
+            lastActionSail = sail::PlayerAction::Type::Left;
+            sailLeftAction.reset();
         }
-        else if (upAction.isActive())
+        else if (rubberLeftAction.isActive())
         {
             //std::cout << "up\n";
-            lastAction = sail::PlayerAction::Type::Up;
-            upAction.reset();
+            lastActionRubber = sail::PlayerAction::Type::Left;
+            rubberLeftAction.reset();
         }
-        else if (downAction.isActive())
+        else if (rubberRightAction.isActive())
         {
             //std::cout << "down\n";
-            lastAction = sail::PlayerAction::Type::Down;
-            downAction.reset();
+            lastActionRubber = sail::PlayerAction::Type::Right;
+            rubberRightAction.reset();
         } else
         {
 
         }
 
-        if (keyDelay > SendKeyDelayMs && lastAction != sail::PlayerAction::Type::None)
+        if (keyDelay > SendKeyDelayMs
+            && (lastActionSail != sail::PlayerAction::Type::None
+                || lastActionRubber != sail::PlayerAction::Type::None))
         {
             std::cout << "action : " << ++actionNb << "\n";
-            sail::PlayerAction action { lastAction };
+            sail::PlayerAction action { lastActionSail, lastActionRubber };
             clientHandler.send(action);
             keyDelay = gf::milliseconds(0);
-            lastAction = sail::PlayerAction::Type::None;
+            lastActionSail = sail::PlayerAction::Type::None;
+            lastActionRubber = sail::PlayerAction::Type::None;
         }
 
         while (lag > UpdateDelayMs)
@@ -208,7 +212,7 @@ int main()
             gf::Packet packet;
             if (clientHandler.getQueue().poll(packet))
             {
-                clientHandler.getQueue(); // Fix a bit but ... there's too much packets
+                //clientHandler.getQueue(); // Fix a bit but ... there's too much packets
                 //std::cout << "Data received...\n";
                 switch (packet.getType())
                 {
