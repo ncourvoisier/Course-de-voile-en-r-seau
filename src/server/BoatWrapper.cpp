@@ -13,6 +13,10 @@ namespace sail
         std::cout << "Mass of sail : " << boat.getMass() << std::endl;
     }
 
+    void BoatWrapper::trajectoryCalcul(float dt) {
+        sailing_physics_update(boat, wind, dt);
+    }
+
     void BoatWrapper::setVelocity(gf::Vector2f velocity)
     {
         m_velocity = velocity;

@@ -5,6 +5,8 @@
 #include <gf/Vector.h>
 #include "../Protocol.h"
 #include "../physics/Boat.h"
+#include "../physics/Wind.h"
+#include "../physics/Physics.h"
 
 namespace sail
 {
@@ -20,12 +22,14 @@ namespace sail
         void setPosition(const gf::Vector2f &mPosition);
         void update(float dt);
         BoatData getBoatData();
+        void trajectoryCalcul(float dt);
 
     private:
         gf::Id m_playerId;
         gf::Vector2f m_position;
         gf::Vector2f m_velocity;
         Boat boat;
+        Wind wind;
     };
 
 }
