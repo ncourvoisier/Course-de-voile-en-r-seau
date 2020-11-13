@@ -3,26 +3,33 @@
 namespace sail {
 
     Wind::Wind()
-    : speed(4)
-    , direction(M_PI_2)
+    : m_speed(4)
+    , m_direction(M_PI_2)
+    {
+
+    }
+
+    Wind::Wind(double speed, double direction)
+    : m_speed(speed)
+    , m_direction(direction)
     {
 
     }
 
     double Wind::getSpeed() const {
-        return speed;
+        return m_speed;
     }
 
     void Wind::setSpeed(double speed) {
-        Wind::speed = speed;
+        Wind::m_speed = speed;
     }
 
     double Wind::getDirection() const {
-        return direction;
+        return m_direction;
     }
 
     void Wind::setDirection(double direction) {
-        Wind::direction = direction;
+        Wind::m_direction = direction;
     }
 
 }

@@ -7,6 +7,7 @@
 #include <gf/Random.h>
 
 #include "Game.h"
+#include "../physics/Physics.h"
 
 namespace sail
 {
@@ -15,6 +16,8 @@ namespace sail
     : m_players()
     , m_started(false)
     , m_playersNb(0)
+    , m_boatControl()
+    , m_fixedWind()
     {
 
     }
@@ -56,50 +59,52 @@ namespace sail
         if (! m_started )
             return;
         std::cout << "Action of : " << player.getName() << "\n";
-        BoatWrapper& boat = player.getBoat();
-        gf::Vector2f velocity = boat.getVelocity();
-        /*switch (action.action) // TODO : to redefine
+        ServerBoat& boat = player.getBoat();
+
+        switch (action.sailAction)
         {
-            case PlayerAction::Type::Up:
-            {
-                velocity.y -= Speed;
-                if (velocity.y < -MaxSpeed)
-                    velocity.y = -MaxSpeed;
-                break;
-            }
-            case PlayerAction::Type::Down:
-            {
-                velocity.y += Speed;
-                if (velocity.y > MaxSpeed)
-                    velocity.y = MaxSpeed;
-                break;
-            }
             case PlayerAction::Type::Right:
             {
-                velocity.x += Speed;
-                if (velocity.x > MaxSpeed)
-                    velocity.x = MaxSpeed;
+                m_boatControl.moveSailRight(boat);
                 break;
             }
             case PlayerAction::Type::Left:
             {
-                velocity.x -= Speed;
-                if (velocity.x < -MaxSpeed)
-                    velocity.x = -MaxSpeed;
+                m_boatControl.moveSailLeft(boat);
                 break;
             }
-        }*/
-        boat.setVelocity(velocity);
+
+        }
+
+        switch (action.rudderAction)
+        {
+            case PlayerAction::Type::Right:
+            {
+                m_boatControl.moveRudderRight(boat);
+                break;
+            }
+            case PlayerAction::Type::Left:
+            {
+                m_boatControl.moveRudderLeft(boat);
+                break;
+            }
+
+        }
+
     }
 
-    GameState Game::updateGame(int dt)
+    GameState Game::updateGame(gf::Time dt)
     {
         std::vector<BoatData> boatsData;
         for (auto& p : m_players)
         {
             if (p.isConnected())
             {
-                p.getBoat().update(dt);
+                int updates = dt.asSeconds() / 0.0002;
+                for (int i = 0; i < updates; i++) // TODO : 0.0002 -> 250 loops for dt=50ms, taking 0.16ms, per player
+                { // TODO : JUST A TEST VERSION, shorter time spans are more likely to work with the sailing library
+                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.0002);
+                }
                 boatsData.push_back(p.getBoat().getBoatData());
             }
         }

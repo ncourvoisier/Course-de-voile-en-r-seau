@@ -9,25 +9,25 @@
 
 namespace sail
 {
-    static void sailing_physics_update(sail::Boat boat, const sail::Wind& wind, double dt);
+     void sailing_physics_update(Boat& boat, const Wind& wind, double dt);
 
-    static double sign_of(double a);
-    static double apparent_wind_x(const sail::Boat& boat, const sail::Wind& wind) ;
-    static double apparent_wind_y(const sail::Boat& boat, const sail::Wind& wind) ;
-    static double apparent_wind_direction(const sail::Boat& boat, const sail::Wind& wind) ;
-    static double apparent_wind_speed(const sail::Boat& boat, const sail::Wind& wind) ;
+     double sign_of(double a);
+     double apparent_wind_x(const Boat& boat, const Wind& wind) ;
+     double apparent_wind_y(const Boat& boat, const Wind& wind) ;
+     double apparent_wind_direction(const Boat& boat, const Wind& wind) ;
+     double apparent_wind_speed(const Boat& boat, const Wind& wind) ;
 
-    static bool mainsheet_is_tight(const sail::Boat& boat, const sail::Wind& wind) ;
+     bool mainsheet_is_tight(const Boat& boat, const Wind& wind) ;
 
-    static double force_on_rudder(const sail::Boat& boat, const sail::Wind& wind);
-    static double force_on_sail(const sail::Boat& boat, const sail::Wind& wind);
+     double force_on_rudder(const Boat& boat, const Wind& wind);
+     double force_on_sail(const Boat& boat, const Wind& wind);
 
-    static bool sail_is_bounds(const sail::Boat& boat);
+     bool sail_is_bounds(const Boat& boat);
 
-    static double delta_y(const sail::Boat& boat, const sail::Wind& wind);
-    static double delta_x(const sail::Boat& boat, const sail::Wind& wind);
-    static double delta_relational_velocity(const sail::Boat& boat, const sail::Wind& wind);
-    static double delta_velocity(const sail::Boat& boat, const sail::Wind& wind);
+     double delta_y(const Boat& boat, const Wind& wind);
+     double delta_x(const Boat& boat, const Wind& wind);
+     double delta_relational_velocity(const Boat& boat, const Wind& wind);
+     double delta_velocity(const Boat& boat, const Wind& wind);
 }
 
 #endif //SAILINSANE_PHYSICS_H

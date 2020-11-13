@@ -6,7 +6,7 @@
 #include <gf/Packet.h>
 #include <gf/Queue.h>
 
-#include "BoatWrapper.h"
+#include "ServerBoat.h"
 #include "../Protocol.h"
 
 namespace sail
@@ -21,7 +21,7 @@ namespace sail
 
         gf::TcpSocket& getSocket();
 
-        BoatWrapper& getBoat();
+        ServerBoat& getBoat();
 
         bool isConnected() const;
 
@@ -44,7 +44,7 @@ namespace sail
 
         std::deque<gf::Packet> m_pendingPackets;
 
-        BoatWrapper m_boat;
+        ServerBoat m_boat;
 
         bool m_connected;
     };

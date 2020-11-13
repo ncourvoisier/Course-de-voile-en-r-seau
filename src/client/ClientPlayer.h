@@ -7,7 +7,7 @@
 
 
 #include <gf/Id.h>
-#include "BoatEntity.h"
+#include "ClientBoat.h"
 
 namespace sail
 {
@@ -21,14 +21,14 @@ namespace sail
 
         const std::string &getUserName() const;
 
-        BoatEntity &getBoat();
+        ClientBoat &getBoat();
 
     private:
         gf::Id m_id;
 
         std::string m_userName;
 
-        BoatEntity m_boat;
+        ClientBoat m_boat;
     };
 
 }

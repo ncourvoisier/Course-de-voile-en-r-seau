@@ -39,7 +39,7 @@ namespace sail {
         double getInertia() const;
         void setRotationalVelocity(double rotationalVelocity);
 
-    private:
+    protected:
         /* coordinates of boat */
         double x;
         double y;

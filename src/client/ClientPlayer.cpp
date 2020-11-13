@@ -22,7 +22,7 @@ namespace sail
         return m_userName;
     }
 
-    BoatEntity& ClientPlayer::getBoat()
+    ClientBoat& ClientPlayer::getBoat()
     {
         return m_boat;
     }

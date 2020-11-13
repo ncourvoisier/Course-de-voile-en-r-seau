@@ -3,8 +3,10 @@
 
 
 #include <vector>
+#include <gf/Time.h>
 
 #include "Player.h"
+#include "../physics/BoatControl.h"
 
 namespace sail
 {
@@ -24,7 +26,7 @@ namespace sail
 
         void playerAction(Player& player, PlayerAction action);
 
-        GameState updateGame(int dt);
+        GameState updateGame(gf::Time dt);
 
     private:
         static constexpr int NeededPlayers = 2;
@@ -32,11 +34,15 @@ namespace sail
         static constexpr float Speed = 25.0f;
         static constexpr float MaxSpeed = Speed * 4;
 
+        BoatControl m_boatControl;
+
         std::vector<Player> m_players;
 
         int m_playersNb;
 
         bool m_started;
+
+        Wind m_fixedWind;
     };
 
 }

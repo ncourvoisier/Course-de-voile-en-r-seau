@@ -116,11 +116,11 @@ namespace sail
             processPackets();
 
             //// SENDING DATAS ////
-            GameState gs = m_game.updateGame(clock.restart().asMilliseconds());
+            GameState gs = m_game.updateGame(clock.restart());
             gf::Packet gsPacket;
             gsPacket.is(gs);
             broadcast(gsPacket);
-            std::cout << "sending packets " << ++packS << "\n";
+            //std::cout << "sending packets " << ++packS << "\n";
             ///////////////////////
 
             //std::this_thread::sleep_for(std::chrono::milliseconds(TickLength)); // Sleep to save some processing time

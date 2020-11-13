@@ -11,7 +11,7 @@
 #include <iostream>
 #include "ClientNetworkHandler.h"
 #include "../Protocol.h"
-#include "BoatEntity.h"
+#include "ClientBoat.h"
 #include "ClientPlayer.h"
 #include <gf/Queue.h>
 
@@ -93,7 +93,7 @@ int main()
 
     players.insert(std::pair<gf::Id, sail::ClientPlayer>(serverGreeting.playerId, sail::ClientPlayer(serverGreeting.playerId, userName)));
     sail::ClientPlayer& localPlayer = players.at(serverGreeting.playerId);
-    sail::BoatEntity& localBoat =  localPlayer.getBoat();
+    sail::ClientBoat& localBoat =  localPlayer.getBoat();
 
     for (auto& p : serverGreeting.players)
     {
@@ -221,8 +221,9 @@ int main()
                         sail::GameState state {packet.as<sail::GameState>()};
                         for (auto& boat : state.boats)
                         {
-                            sail::BoatEntity& entity = players.at(boat.playerId).getBoat();
-                            entity.setPosition(boat.position);
+                            sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
+                            //std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " and angle : " << boat.angle << "\n";
+                            entity.fromBoatData(boat);
                         }
                         break;
                     }
@@ -244,7 +245,7 @@ int main()
         renderer.clear();
         renderer.setView(mainView);
         mainEntities.render(renderer);
-        std::cout << "rendering entities \n";
+        //std::cout << "rendering entities \n";
         renderer.setView(hudView);
         hudEntities.render(renderer);
         renderer.display();

@@ -13,14 +13,15 @@ namespace sail {
     {
         static constexpr gf::Id type = "BoatData"_id;
         gf::Id playerId;
-        gf::Vector2f position;
-        gf::Vector2f velocity;
+        double xPos;
+        double yPos;
+        double angle;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, BoatData& data)
     {
-        return ar | data.playerId | data.position | data.velocity;
+        return ar | data.playerId | data.xPos | data.yPos | data.angle;
     }
 
     struct ClientBoatData
@@ -121,12 +122,12 @@ namespace sail {
         };
 
         Type sailAction = None;
-        Type rubberAction = None;
+        Type rudderAction = None;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, PlayerAction& data) {
-        return ar | data.sailAction | data.rubberAction;
+        return ar | data.sailAction | data.rudderAction;
     }
 
 }

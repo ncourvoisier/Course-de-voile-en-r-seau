@@ -2,7 +2,7 @@
 
 namespace sail {
 
-    void sailing_physics_update(Boat boat, const Wind& wind, const double dt) {
+    void sailing_physics_update(Boat& boat, const Wind& wind, const double dt) {
         if (sail_is_bounds(boat)) {
             boat.setSheetLength(boat.getSheetLength() + dt * boat.getSailIsFree());
         }
