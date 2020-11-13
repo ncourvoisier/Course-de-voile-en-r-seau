@@ -9,7 +9,6 @@
 
 namespace sail
 {
-
     static void sailing_physics_update(sail::Boat boat, const sail::Wind& wind, double dt);
 
     static double sign_of(double a);
@@ -29,7 +28,6 @@ namespace sail
     static double delta_x(const sail::Boat& boat, const sail::Wind& wind);
     static double delta_relational_velocity(const sail::Boat& boat, const sail::Wind& wind);
     static double delta_velocity(const sail::Boat& boat, const sail::Wind& wind);
-
 }
 
 #endif //SAILINSANE_PHYSICS_H

@@ -2,12 +2,10 @@
 
 namespace sail {
 
-    Wind::Wind() {
-        speed = 4;
-        direction = M_PI_2;
-    }
-
-    Wind::~Wind() {
+    Wind::Wind()
+    : speed(4)
+    , direction(M_PI_2)
+    {
 
     }
 
@@ -16,7 +14,7 @@ namespace sail {
     }
 
     void Wind::setSpeed(double speed) {
-        this->speed = speed;
+        Wind::speed = speed;
     }
 
     double Wind::getDirection() const {
@@ -24,7 +22,7 @@ namespace sail {
     }
 
     void Wind::setDirection(double direction) {
-        this->direction = direction;
+        Wind::direction = direction;
     }
 
 }

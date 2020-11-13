@@ -9,7 +9,6 @@ namespace sail {
     class Wind {
     public:
         Wind();
-        ~Wind();
         double getSpeed() const;
         void setSpeed(double speed);
         double getDirection() const;

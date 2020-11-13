@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sail {
 
