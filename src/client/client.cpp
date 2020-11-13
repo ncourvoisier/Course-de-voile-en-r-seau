@@ -14,6 +14,8 @@
 #include "BoatEntity.h"
 #include "ClientPlayer.h"
 #include <gf/Queue.h>
+#include <gf/ResourceManager.h>
+#include <gf/Sprite.h>
 
 int main()
 {
@@ -122,6 +124,7 @@ int main()
     }
 
     std::cout << "Game is ready\n";
+
 
     // Adding references to entities
     for (auto it = players.begin(); it != players.end(); ++it)
