@@ -69,7 +69,7 @@ int main() {
     // Init an entity
     static constexpr gf::Vector2u ScreenSize(500, 500);
     Square entity(ScreenSize / 2, 50.0f, gf::Color::Red);
-    // Init speed and velocity
+    // Init m_speed and velocity
     static constexpr float Speed = 100.0f;
     gf::Vector2f velocity(0, 0);
     // Start the game loop
