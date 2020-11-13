@@ -25,7 +25,7 @@ namespace sail
         gf::Id m_playerId;
         gf::Vector2f m_position;
         gf::Vector2f m_velocity;
-        //Boat boat;
+        Boat boat;
     };
 
 }
