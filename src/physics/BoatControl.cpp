@@ -1,3 +1,4 @@
+#include <iostream>
 #include "BoatControl.h"
 
 namespace sail
@@ -5,30 +6,36 @@ namespace sail
 
     void BoatControl::moveRudderRight(Boat &boat)
     {
-        boat.setRudderAngle(
-                boat.getRudderAngle()
-                + RudderStep);
+        double newAngle = boat.getRudderAngle() + RudderStep;
+        if (newAngle > RudderMaxAngle)
+            newAngle = RudderMaxAngle;
+        boat.setRudderAngle(newAngle);
     }
 
     void BoatControl::moveRudderLeft(Boat &boat)
     {
-        boat.setRudderAngle(
-                boat.getRudderAngle()
-                - RudderStep);
+        double newAngle = boat.getRudderAngle() - RudderStep;
+        if (newAngle < -RudderMaxAngle)
+            newAngle = -RudderMaxAngle;
+        boat.setRudderAngle(newAngle);
     }
 
-    void BoatControl::moveSailRight(Boat &boat)
+    void BoatControl::pullSheet(Boat &boat)
     {
-        boat.setSailAngle(
-                boat.getSailAngle()
-                + SailStep);
+        double newLength = boat.getSheetLength() + SheetStep;
+        if (newLength >= SheetMaxLength)
+            newLength = SheetMaxLength - 0.01;
+        std::cout << "moving with sheet : " << newLength << "\n";
+        boat.setSheetLength(newLength);
     }
 
-    void BoatControl::moveSailLeft(Boat &boat)
+    void BoatControl::releaseSheet(Boat &boat)
     {
-        boat.setSailAngle(
-                boat.getSailAngle()
-                - SailStep);
+        double newLength = boat.getSheetLength() - SheetStep;
+        if (newLength <= -SheetMaxLength)
+            newLength = - SheetMaxLength + 0.01;
+        std::cout << "moving with sheet : " << newLength << "\n";
+        boat.setSheetLength(newLength);
     }
 
 }

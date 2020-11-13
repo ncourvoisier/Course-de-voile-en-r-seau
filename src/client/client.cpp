@@ -14,6 +14,8 @@
 #include "ClientBoat.h"
 #include "ClientPlayer.h"
 #include <gf/Queue.h>
+#include <gf/ResourceManager.h>
+#include <gf/Sprite.h>
 
 int main()
 {
@@ -123,6 +125,7 @@ int main()
 
     std::cout << "Game is ready\n";
 
+
     // Adding references to entities
     for (auto it = players.begin(); it != players.end(); ++it)
     {
@@ -195,7 +198,7 @@ int main()
             && (lastActionSail != sail::PlayerAction::Type::None
                 || lastActionRubber != sail::PlayerAction::Type::None))
         {
-            std::cout << "action : " << ++actionNb << "\n";
+            //std::cout << "action : " << ++actionNb << "\n";
             sail::PlayerAction action { lastActionSail, lastActionRubber };
             clientHandler.send(action);
             keyDelay = gf::milliseconds(0);
@@ -222,7 +225,7 @@ int main()
                         for (auto& boat : state.boats)
                         {
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
-                            //std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " and angle : " << boat.angle << "\n";
+                            std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " | angle : " << boat.angle << "\n";
                             entity.fromBoatData(boat);
                         }
                         break;

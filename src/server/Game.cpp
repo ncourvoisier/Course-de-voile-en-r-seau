@@ -65,12 +65,12 @@ namespace sail
         {
             case PlayerAction::Type::Right:
             {
-                m_boatControl.moveSailRight(boat);
+                m_boatControl.pullSheet(boat);
                 break;
             }
             case PlayerAction::Type::Left:
             {
-                m_boatControl.moveSailLeft(boat);
+                m_boatControl.releaseSheet(boat);
                 break;
             }
 
@@ -100,10 +100,10 @@ namespace sail
         {
             if (p.isConnected())
             {
-                int updates = dt.asSeconds() / 0.0002;
-                for (int i = 0; i < updates; i++) // TODO : 0.0002 -> 250 loops for dt=50ms, taking 0.16ms, per player
+                int updates = dt.asSeconds() / 0.00002;
+                for (int i = 0; i < updates; i++) // TODO : 0.00002 -> 2.500 loops for dt=50ms, taking 1.6ms, per player
                 { // TODO : JUST A TEST VERSION, shorter time spans are more likely to work with the sailing library
-                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.0002);
+                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.00002);
                 }
                 boatsData.push_back(p.getBoat().getBoatData());
             }

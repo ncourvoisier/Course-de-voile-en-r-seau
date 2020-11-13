@@ -13,7 +13,7 @@ namespace sail
 
     BoatData ServerBoat::getBoatData()
     {
-        return { m_playerId, x, y, angle };
+        return { m_playerId, x, y, angle, sail_angle, rudder_angle };
     }
 
 }

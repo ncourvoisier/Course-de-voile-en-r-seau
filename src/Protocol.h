@@ -16,12 +16,14 @@ namespace sail {
         double xPos;
         double yPos;
         double angle;
+        double sailAngle;
+        double rudderAngle;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, BoatData& data)
     {
-        return ar | data.playerId | data.xPos | data.yPos | data.angle;
+        return ar | data.playerId | data.xPos | data.yPos | data.angle | data.sailAngle | data.rudderAngle;
     }
 
     struct ClientBoatData
