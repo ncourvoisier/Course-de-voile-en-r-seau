@@ -27,6 +27,14 @@ namespace sail {
         boat.setRotationalVelocity(boat.getRotationalVelocity() + delta_relational_velocity(boat, wind) *dt);
         boat.setVelocity(boat.getVelocity() + delta_velocity(boat, wind) * dt);
         boat.setAngle(boat.getAngle() + boat.getRotationalVelocity() * dt);
+
+        //keep angle between 0 and 2*pi
+
+        if (boat.getAngle() < 0) {
+            boat.setAngle(boat.getAngle() + M_PI * 2);
+        }
+
+        boat.setAngle(fmod(boat.getAngle(),M_PI*2));
     }
 
     double sign_of(double a) {
