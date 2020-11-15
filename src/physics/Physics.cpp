@@ -24,7 +24,7 @@ namespace sail {
                          ((delta_y(boat, wind) / R_EARTH) * ((180 / M_PI) / cos(boat.getLatitude() * M_PI / 180)) * dt));
 
         //set relational velocity
-        boat.setRotationalVelocity(boat.getRotationalVelocity() + delta_relational_velocity(boat, wind) *dt);
+        boat.setRotationalVelocity(boat.getRotationalVelocity() + delta_rotational_velocity(boat, wind) * dt);
         boat.setVelocity(boat.getVelocity() + delta_velocity(boat, wind) * dt);
         boat.setAngle(boat.getAngle() + boat.getRotationalVelocity() * dt);
 
@@ -100,10 +100,10 @@ namespace sail {
             * sin(boat.getAngle())
             + boat.getDriftCoefficient()
             * wind.getSpeed()
-            * cos(wind.getDirection());
+            * sin(wind.getDirection());
     }
 
-    double delta_relational_velocity(const Boat& boat, const Wind& wind) {
+    double delta_rotational_velocity(const Boat& boat, const Wind& wind) {
         return ((boat.getSailCenterOfEffort()
             - boat.getMastDistance()
             * cos(boat.getSailAngle()))
@@ -114,7 +114,7 @@ namespace sail {
             - boat.getAngularFriction()
             * boat.getRotationalVelocity()
             * boat.getVelocity())
-            / boat.getMass();
+            / boat.getInertia();
     }
 
     double delta_velocity(const Boat& boat, const Wind& wind) {

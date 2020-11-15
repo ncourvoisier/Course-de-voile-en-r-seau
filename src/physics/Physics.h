@@ -26,7 +26,7 @@ namespace sail
 
      double delta_y(const Boat& boat, const Wind& wind);
      double delta_x(const Boat& boat, const Wind& wind);
-     double delta_relational_velocity(const Boat& boat, const Wind& wind);
+     double delta_rotational_velocity(const Boat& boat, const Wind& wind);
      double delta_velocity(const Boat& boat, const Wind& wind);
 }
 
