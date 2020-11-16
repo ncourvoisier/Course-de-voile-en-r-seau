@@ -27,12 +27,16 @@ namespace sail
 
         void run();
 
+        static void terminationHandler(int signum);
+
     private:
         Game m_game;
 
         gf::TcpListener m_listener;
 
         gf::SocketSelector m_selector;
+
+        static std::atomic_bool g_running;
     };
 
 }

@@ -5,6 +5,7 @@
 #include <gf/Packet.h>
 #include <gf/Random.h>
 #include <iostream>
+#include <csignal>
 #include <chrono>
 #include <gf/Clock.h>
 
@@ -14,11 +15,19 @@
 namespace sail
 {
 
+    std::atomic_bool ServerNetworkHandler::g_running(true);
+
     ServerNetworkHandler::ServerNetworkHandler(std::string service)
     : m_listener(service)
     , m_game()
     {
+        std::signal(SIGINT, &ServerNetworkHandler::terminationHandler);
+        std::signal(SIGTERM, &ServerNetworkHandler::terminationHandler);
+    }
 
+    void ServerNetworkHandler::terminationHandler(int signum)
+    {
+        g_running = false;
     }
 
     void ServerNetworkHandler::broadcast(const gf::Packet& packet)
@@ -111,7 +120,7 @@ namespace sail
 
         int packS = 0;
 
-        for (;;)
+        while (g_running)
         {
             processPackets();
 
@@ -163,5 +172,6 @@ namespace sail
                 }
             }
         }
+        std::cout << "Closing the server.\n";
     }
 }

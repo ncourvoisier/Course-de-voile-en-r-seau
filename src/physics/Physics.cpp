@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Physics.h"
 
 namespace sail {
@@ -34,7 +35,7 @@ namespace sail {
             boat.setAngle(boat.getAngle() + M_PI * 2);
         }
 
-        boat.setAngle(fmod(boat.getAngle(),M_PI*2));
+        boat.setAngle(fmod(boat.getAngle(),M_PI * 2));
     }
 
     double sign_of(double a) {

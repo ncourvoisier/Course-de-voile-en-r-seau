@@ -25,6 +25,7 @@ namespace sail
     void Game::start()
     {
         m_started = true;
+        runSimulation();
     }
 
   /*  gf::Id Game::addPlayer(gf::TcpSocket socket)
@@ -61,6 +62,8 @@ namespace sail
         std::cout << "Action of : " << player.getName() << "\n";
         ServerBoat& boat = player.getBoat();
 
+        m_simulationMutex.lock();
+
         switch (action.sailAction)
         {
             case PlayerAction::Type::Right:
@@ -88,27 +91,66 @@ namespace sail
                 m_boatControl.moveRudderLeft(boat);
                 break;
             }
-
         }
 
+        m_simulationMutex.unlock();
     }
 
     GameState Game::updateGame(gf::Time dt)
     {
         std::vector<BoatData> boatsData;
+
+        m_simulationMutex.lock();
+
         for (auto& p : m_players)
         {
             if (p.isConnected())
             {
-                int updates = dt.asSeconds() / 0.00002;
-                for (int i = 0; i < updates; i++) // TODO : 0.00002 -> 2.500 loops for dt=50ms, taking 1.6ms, per player
+                /*int updates = dt.asSeconds() / 0.0002;
+                for (int i = 0; i < updates; i++) // TODO : 0.0002 -> 250 loops for dt=50ms, taking 0.16ms, per player
                 { // TODO : JUST A TEST VERSION, shorter time spans are more likely to work with the sailing library
-                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.00002);
-                }
+                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.0002);
+                }*/
                 boatsData.push_back(p.getBoat().getBoatData());
             }
         }
+
+        m_simulationMutex.unlock();
+
         return { boatsData };
+    }
+
+    void Game::runSimulation()
+    {
+        m_simulationRunning = true;
+        m_simulationThread = std::thread(&Game::simulation, this);
+    }
+
+    void Game::simulation()
+    {
+        struct timespec t, t1;
+        t.tv_sec  = 0;
+        t.tv_nsec = 5000000L;
+
+        for (;;) {
+            while(m_simulationRunning) {
+                m_simulationMutex.lock();
+
+                for (int i=0; i<10000; i++) {
+                    for (auto& player : m_players)
+                    {
+                        if (player.isConnected())
+                        {
+                            sailing_physics_update(player.getBoat(), m_fixedWind, 0.00002);
+                        }
+                    }
+                }
+
+                m_simulationMutex.unlock();
+                nanosleep(&t, &t1);
+            }
+            nanosleep(&t, &t1);
+        }
     }
 
 }

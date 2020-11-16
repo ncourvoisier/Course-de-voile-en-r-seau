@@ -131,7 +131,7 @@ namespace sail {
     }
 
     void Boat::setRotationalVelocity(double rotationalVelocity) {
-        rotational_velocity = rotationalVelocity;
+        Boat::rotational_velocity = rotationalVelocity;
     }
 
     void Boat::setVelocity(double v) {

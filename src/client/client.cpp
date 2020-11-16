@@ -225,7 +225,9 @@ int main()
                         for (auto& boat : state.boats)
                         {
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
-                            std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " | angle : " << boat.angle << "\n";
+                            if (boat.playerId == localPlayer.getId())
+                                std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " | angle : " << boat.angle
+                                << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";
                             entity.fromBoatData(boat);
                         }
                         break;

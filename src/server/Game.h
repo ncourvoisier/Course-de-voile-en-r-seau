@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <gf/Time.h>
+#include <thread>
 
 #include "Player.h"
 #include "../physics/BoatControl.h"
@@ -29,6 +30,11 @@ namespace sail
         GameState updateGame(gf::Time dt);
 
     private:
+        void runSimulation();
+
+        void simulation();
+
+    private:
         static constexpr int NeededPlayers = 2;
 
         static constexpr float Speed = 25.0f;
@@ -43,6 +49,12 @@ namespace sail
         bool m_started;
 
         Wind m_fixedWind;
+
+        std::thread m_simulationThread;
+
+        std::mutex m_simulationMutex;
+
+        std::atomic_bool m_simulationRunning;
     };
 
 }

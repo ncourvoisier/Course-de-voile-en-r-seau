@@ -17,8 +17,8 @@ namespace sail
         void releaseSheet(Boat& boat);
 
     private:
-        static constexpr int RudderStepsNumber = 5;
-        static constexpr int SheetStepsNumber = 5;
+        static constexpr int RudderStepsNumber = 10;
+        static constexpr int SheetStepsNumber = 10;
 
         static constexpr double RudderMaxAngle = M_PI_4;
         static constexpr double SheetMaxLength = M_PI_2;
