@@ -2,8 +2,6 @@
 #include <gf/RenderTarget.h>
 #include <iostream>
 
-#include "../physics/Conversions.h"
-
 #include "ClientBoat.h"
 
 namespace sail
@@ -31,7 +29,7 @@ namespace sail
 
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
     {
-        gf::Vector2f position = toFloatVectorPosition(x, y);
+        gf::Vector2f position(x, y);
 
         gf::RectangleShape sailShip({20.0f, 35.0f});
         sailShip.setPosition(position);

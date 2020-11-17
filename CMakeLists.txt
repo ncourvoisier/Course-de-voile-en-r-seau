@@ -20,7 +20,7 @@ add_executable(server
         src/server/ServerBoat.cpp src/server/ServerBoat.h
         src/physics/Wind.cpp src/physics/Wind.h
         src/physics/Boat.cpp src/physics/Boat.h
-        src/physics/Physics.cpp src/physics/Physics.h src/physics/Conversions.h src/physics/BoatControl.cpp src/physics/BoatControl.h)
+        src/physics/Physics.cpp src/physics/Physics.h src/physics/BoatControl.cpp src/physics/BoatControl.h)
 
 add_executable(client
         src/client/client.cpp src/Protocol.h
@@ -28,7 +28,7 @@ add_executable(client
         src/client/ClientBoat.cpp src/client/ClientBoat.h
         src/client/ClientPlayer.cpp src/client/ClientPlayer.h
         src/physics/Boat.cpp src/physics/Boat.h
-        src/physics/Conversions.h src/physics/BoatControl.cpp src/physics/BoatControl.h)
+        src/physics/BoatControl.cpp src/physics/BoatControl.h)
 
 target_link_libraries(sailinsane
         gf::graphics)
