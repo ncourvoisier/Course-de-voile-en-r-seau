@@ -23,7 +23,7 @@ namespace sail
         void fromBoatData(BoatData data);
 
     private:
-        static constexpr int Scale = 30000;
+        static constexpr int Scale = 150000;
 
         float m_size;
 

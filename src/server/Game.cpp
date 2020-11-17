@@ -3,8 +3,10 @@
 //
 
 #include <iostream>
+#include <thread>
 
 #include <gf/Random.h>
+#include <gf/Clock.h>
 
 #include "Game.h"
 #include "../physics/Physics.h"
@@ -100,7 +102,7 @@ namespace sail
     {
         std::vector<BoatData> boatsData;
 
-        m_simulationMutex.lock();
+        m_simulationMutex.lock(); // TODO : is lock necessary for read only access?
 
         for (auto& p : m_players)
         {
@@ -123,34 +125,41 @@ namespace sail
     void Game::runSimulation()
     {
         m_simulationRunning = true;
-        m_simulationThread = std::thread(&Game::simulation, this);
+        m_simulationThread = std::thread(&Game::simulation, this); //TODO : might be good to close this someday
     }
 
     void Game::simulation()
     {
-        struct timespec t, t1;
-        t.tv_sec  = 0;
-        t.tv_nsec = 5000000L;
+        gf::Clock clock;
+        double updateSec = 0.05;
+        double physicGranularity = 0.00002;
+        double loopsAmount = updateSec / physicGranularity; // TODO : some experimental things here
 
-        for (;;) {
-            while(m_simulationRunning) {
-                m_simulationMutex.lock();
+        while(m_simulationRunning) {
+            clock.restart();
+            m_simulationMutex.lock();
 
-                for (int i=0; i<10000; i++) {
-                    for (auto& player : m_players)
+            for (int i=0; i<loopsAmount; i++) {
+                for (auto& player : m_players)
+                {
+                    if (player.isConnected())
                     {
-                        if (player.isConnected())
-                        {
-                            sailing_physics_update(player.getBoat(), m_fixedWind, 0.00002);
-                        }
+                        sailing_physics_update(player.getBoat(), m_fixedWind, physicGranularity);
                     }
                 }
-
-                m_simulationMutex.unlock();
-                nanosleep(&t, &t1);
             }
-            nanosleep(&t, &t1);
+
+            m_simulationMutex.unlock();
+            double sleepTime = updateSec - clock.restart().asSeconds();
+
+            //std::cout << sleepTime << "\n";
+            assert(sleepTime >= 0); // Assert if the simulation is late compared to real world time (shouldn't be)
+            // With granularity = 0.00002s, 50ms requires 2.500 loops, taking around 2-3ms per player in the game
+
+            std::chrono::milliseconds span((int)(sleepTime * 1000));
+            std::this_thread::sleep_for(span);
         }
+
     }
 
 }
