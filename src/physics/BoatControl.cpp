@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cmath>
+
 #include "BoatControl.h"
 
 namespace sail
@@ -14,7 +16,9 @@ namespace sail
     void BoatControl::moveRudderRight(Boat &boat)
     {
         double newAngle = boat.getRudderAngle() + RudderStep;
-        if (newAngle > RudderMaxAngle)
+        if (fabs(newAngle) < RudderStep)
+            newAngle = 0;
+        else if (newAngle > RudderMaxAngle)
             newAngle = RudderMaxAngle;
         boat.setRudderAngle(newAngle);
     }
@@ -22,7 +26,9 @@ namespace sail
     void BoatControl::moveRudderLeft(Boat &boat)
     {
         double newAngle = boat.getRudderAngle() - RudderStep;
-        if (newAngle < -RudderMaxAngle)
+        if (fabs(newAngle) < RudderStep)
+            newAngle = 0;
+        else if (newAngle < -RudderMaxAngle)
             newAngle = -RudderMaxAngle;
         boat.setRudderAngle(newAngle);
     }
