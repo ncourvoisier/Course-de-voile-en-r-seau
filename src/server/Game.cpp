@@ -70,12 +70,12 @@ namespace sail
         {
             case PlayerAction::Type::Right:
             {
-                m_boatControl.pullSheet(boat);
+                m_boatControl.sheetOut(boat);
                 break;
             }
             case PlayerAction::Type::Left:
             {
-                m_boatControl.releaseSheet(boat);
+                m_boatControl.sheetIn(boat);
                 break;
             }
 

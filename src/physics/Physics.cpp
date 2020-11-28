@@ -24,7 +24,7 @@ namespace sail {
         boat.setLatitude(boat.getLatitude() +
                          ((delta_y(boat, wind) / R_EARTH) * ((180 / M_PI) / cos(boat.getLatitude() * M_PI / 180)) * dt));
 
-        //set relational velocity
+        //set rotational velocity
         boat.setRotationalVelocity(boat.getRotationalVelocity() + delta_rotational_velocity(boat, wind) * dt);
         boat.setVelocity(boat.getVelocity() + delta_velocity(boat, wind) * dt);
         boat.setAngle(boat.getAngle() + boat.getRotationalVelocity() * dt);
