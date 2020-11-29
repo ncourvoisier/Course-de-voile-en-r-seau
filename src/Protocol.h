@@ -26,19 +26,6 @@ namespace sail {
         return ar | data.playerId | data.xPos | data.yPos | data.angle | data.sailAngle | data.rudderAngle;
     }
 
-    struct ClientBoatData
-    {
-        static constexpr gf::Id type = "ClientBoatData"_id;
-        gf::Vector2f position;
-        gf::Vector2f velocity;
-    };
-
-    template<typename Archive>
-    Archive operator|(Archive& ar, ClientBoatData& data)
-    {
-        return ar | data.position | data.velocity;
-    }
-
     struct PlayerData
     {
         static constexpr gf::Id type = "PlayerData"_id;
@@ -52,16 +39,30 @@ namespace sail {
         return ar | data.id | data.name;
     }
 
+    struct WindData
+    {
+        static constexpr gf::Id type = "WindData"_id;
+        double speed;
+        double direction;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, WindData& data)
+    {
+        return ar | data.speed | data.direction;
+    }
+
     struct GameState
     {
         static constexpr gf::Id type = "GameState"_id;
         std::vector<BoatData> boats;
+        WindData wind;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, GameState& data)
     {
-        return ar | data.boats;
+        return ar | data.boats | data.wind;
     }
 
     struct ClientGreeting

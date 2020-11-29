@@ -122,7 +122,7 @@ namespace sail
 
         m_simulationMutex.unlock();
 
-        return { boatsData };
+        return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } }; // TODO : for now, only one single wind everywhere, just for testing
     }
 
     void Game::runSimulation()

@@ -1,0 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define SAILINSANE_DATA_DIR "@SAILINSANE_DATA_DIR@"
+
+#endif // CONFIG_H

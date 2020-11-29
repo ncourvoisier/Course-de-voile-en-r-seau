@@ -13,9 +13,12 @@
 #include "../Protocol.h"
 #include "ClientBoat.h"
 #include "ClientPlayer.h"
+#include "Singletons.h"
+#include "Weathercock.h"
 #include <gf/Queue.h>
 #include <gf/ResourceManager.h>
 #include <gf/Sprite.h>
+#include "config.h"
 
 int main()
 {
@@ -33,6 +36,10 @@ int main()
     window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(60);
     gf::RenderWindow renderer(window);
+
+    gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(sail::gResourceManager);
+    sail::gResourceManager().addSearchDir(SAILINSANE_DATA_DIR); // TODO : make it generic or something
+
     // views
     gf::ViewContainer views;
     gf::ExtendView mainView(ViewCenter, ViewSize);
@@ -137,7 +144,8 @@ int main()
     {
         mainEntities.addEntity((it->second).getBoat());
     }
-
+    sail::Weathercock cock;
+    mainEntities.addEntity(cock);
 
     // Launching the thread
     clientHandler.run();
@@ -223,8 +231,6 @@ int main()
             gf::Packet packet;
             if (clientHandler.getQueue().poll(packet))
             {
-                //clientHandler.getQueue(); // Fix a bit but ... there's too much packets
-                //std::cout << "Data received...\n";
                 switch (packet.getType())
                 {
                     case sail::GameState::type:
@@ -238,6 +244,7 @@ int main()
                                 << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";
                             entity.fromBoatData(boat);
                         }
+                        cock.fromWindData(state.wind);
                         break;
                     }
                 }
