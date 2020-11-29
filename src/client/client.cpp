@@ -69,6 +69,12 @@ int main()
     rubberRightAction.addScancodeKeyControl(gf::Scancode::Right);
     rubberRightAction.setContinuous();
     actions.addAction(rubberRightAction);
+    ////
+    gf::Action rudderCenterAction("Rudder center");
+    rudderCenterAction.addScancodeKeyControl(gf::Scancode::Space);
+    rudderCenterAction.setContinuous();
+    actions.addAction(rudderCenterAction);
+    ////
     // entities
     gf::EntityContainer mainEntities;
     // add entities to mainEntities
@@ -189,9 +195,11 @@ int main()
             //std::cout << "down\n";
             lastActionRubber = sail::PlayerAction::Type::Right;
             rubberRightAction.reset();
-        } else
+        }
+        else if (rudderCenterAction.isActive())
         {
-
+            lastActionRubber = sail::PlayerAction::Type::Center;
+            rudderCenterAction.reset();
         }
 
         if (keyDelay > SendKeyDelayMs

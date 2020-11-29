@@ -13,6 +13,7 @@ namespace sail
     public:
         void moveRudderRight(Boat& boat);
         void moveRudderLeft(Boat& boat);
+        void centerRudder(Boat& boat);
         void sheetOut(Boat& boat);
         void sheetIn(Boat& boat);
 

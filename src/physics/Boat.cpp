@@ -16,7 +16,7 @@ namespace sail {
     , drift_coefficient(0.05)
     , rudder_distance(4.0)
     , angular_friction(8000)
-    , mass(300.0)
+    , mass(30.0)
     , tangential_friction(0.1)
     , mast_distance(1)
     , rudder_lift(8000.0)

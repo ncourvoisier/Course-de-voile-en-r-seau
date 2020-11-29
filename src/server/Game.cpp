@@ -68,7 +68,7 @@ namespace sail
 
         switch (action.sailAction)
         {
-            case PlayerAction::Type::Right:
+            case PlayerAction::Type::Right: // TODO : "Right" and "Left" doesn't mean much at this point ...
             {
                 m_boatControl.sheetOut(boat);
                 break;
@@ -78,7 +78,6 @@ namespace sail
                 m_boatControl.sheetIn(boat);
                 break;
             }
-
         }
 
         switch (action.rudderAction)
@@ -92,6 +91,10 @@ namespace sail
             {
                 m_boatControl.moveRudderLeft(boat);
                 break;
+            }
+            case PlayerAction::Type::Center:
+            {
+                m_boatControl.centerRudder(boat);
             }
         }
 

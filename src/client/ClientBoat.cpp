@@ -49,7 +49,7 @@ namespace sail
         target.draw(sail, shipStates);
 
         gf::RectangleShape rudder({5.0f,10.0f});
-        rudder.setPosition({10.0f,0.0f});
+        rudder.setPosition({10.0f,35.0f});
         rudder.setColor(gf::Color::Blue);
         rudder.setAnchor(gf::Anchor::Center);
         rudder.setRotation(rudder_angle); //TODO boat.getRudderAngle

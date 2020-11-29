@@ -18,6 +18,9 @@ namespace sail
      * Solution :
      * In order to control the boat, we need to slightly move the rudder, let the boat rotate, the set the rudder position to 0,
      * this will set the boat back on a trajectory
+     *
+     * ==> The boat is stable on a trajectory only when the sheet isn't tight, the sail angle then becomes [ sign of the apparent wind * length of the sheet ]
+     *
      * */
 
     void BoatControl::moveRudderRight(Boat &boat)
@@ -46,6 +49,11 @@ namespace sail
         if (newAngle < -RudderMaxAngle)
             newAngle = -RudderMaxAngle;
         boat.setRudderAngle(newAngle);
+    }
+
+    void BoatControl::centerRudder(Boat &boat)
+    {
+        boat.setRudderAngle(0);
     }
 
     void BoatControl::sheetOut(Boat &boat)

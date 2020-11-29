@@ -120,6 +120,7 @@ namespace sail {
         { // TODO : replace with actual sailing boat controls
             Right,
             Left,
+            Center,
             None
         };
 
