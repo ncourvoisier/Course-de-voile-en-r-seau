@@ -38,19 +38,22 @@ namespace sail
         sailShip.setRotation(angle); //TODO boat.getAngle
         target.draw(sailShip, states);
 
+        gf::RenderStates shipStates;
+        shipStates.transform = sailShip.getTransform();
+
         gf::RectangleShape sail({5.0f, 25.0f});
-        sail.setPosition({position[0],position[1]-10.0f});
+        sail.setPosition({10.0f, 17.5f});
         sail.setColor(gf::Color::Red);
         sail.setAnchor(gf::Anchor::Center);
         sail.setRotation(sail_angle); //TODO boat.getSailAngle
-        target.draw(sail, states);
+        target.draw(sail, shipStates);
 
         gf::RectangleShape rudder({5.0f,10.0f});
-        rudder.setPosition({position[0],position[1]+15.0f});
+        rudder.setPosition({10.0f,0.0f});
         rudder.setColor(gf::Color::Blue);
         rudder.setAnchor(gf::Anchor::Center);
         rudder.setRotation(rudder_angle); //TODO boat.getRudderAngle
-        target.draw(rudder, states);
+        target.draw(rudder, shipStates);
     }
 
     void ClientBoat::fromBoatData(BoatData data)

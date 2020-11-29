@@ -10,25 +10,40 @@ namespace sail
      * Notes :
      * The boat stabilizes when the rudder angle is 0, in other cases it's just rotating without going anywhere
      * When the boat stabilizes, the sail angle becomes either 1 or -1 (if we look in Physics.cpp, it's when the sheet isn't tight, 1 being the sheet length)
+     * -> the latest behavior was caused by a wrong interpretation of the sheet purpose, the sheet length defines how much liberty we give to the sail,
+     * it goes from 0 (no liberty, the sail is centered) to 1 (total liberty, the sail angle will follow the wind direction)
      *
+     * Interesting information about how to control a sailing boat here : https://sites.google.com/a/washingtonyachtclub.org/new-member-guide/intro-to-sailing
+     *
+     * Solution :
+     * In order to control the boat, we need to slightly move the rudder, let the boat rotate, the set the rudder position to 0,
+     * this will set the boat back on a trajectory
      * */
 
     void BoatControl::moveRudderRight(Boat &boat)
-    {
-        double newAngle = boat.getRudderAngle() + RudderStep;
-        if (fabs(newAngle) < RudderStep)
-            newAngle = 0;
-        else if (newAngle > RudderMaxAngle)
+    { // TODO : a problem remains, the boat control sensibility makes it hard to send 1 single key control, hard to center the rudder on 0
+        double angle = boat.getRudderAngle();
+        if (angle < 0 && angle > - 2 * RudderStep)
+        {
+            boat.setRudderAngle(0);
+            return;
+        }
+        double newAngle = angle + RudderStep;
+        if (newAngle > RudderMaxAngle)
             newAngle = RudderMaxAngle;
         boat.setRudderAngle(newAngle);
     }
 
     void BoatControl::moveRudderLeft(Boat &boat)
     {
-        double newAngle = boat.getRudderAngle() - RudderStep;
-        if (fabs(newAngle) < RudderStep)
-            newAngle = 0;
-        else if (newAngle < -RudderMaxAngle)
+        double angle = boat.getRudderAngle();
+        if (angle > 0 && angle < 2 * RudderStep)
+        {
+            boat.setRudderAngle(0);
+            return;
+        }
+        double newAngle = angle - RudderStep;
+        if (newAngle < -RudderMaxAngle)
             newAngle = -RudderMaxAngle;
         boat.setRudderAngle(newAngle);
     }
