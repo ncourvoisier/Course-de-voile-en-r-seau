@@ -3,6 +3,7 @@
 
 #include <gf/Singleton.h>
 #include <gf/ResourceManager.h>
+#include <gf/Random.h>
 
 namespace sail
 {

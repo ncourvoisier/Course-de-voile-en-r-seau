@@ -32,7 +32,7 @@ add_executable(server
         src/physics/Physics.cpp
         src/physics/Physics.h
         src/physics/BoatControl.cpp
-        src/physics/BoatControl.h)
+        src/physics/BoatControl.h src/server/World.cpp src/server/World.h)
 
 add_executable(client
         src/client/client.cpp src/Protocol.h
