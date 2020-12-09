@@ -21,10 +21,7 @@ namespace sail
 
     void ClientBoat::update(gf::Time time)
     {
-        //std::cout << "dt : " << time.asSeconds() << "\n";
-        // m_position += time.asSeconds() * m_velocity;
-        //std::cout << "Velocity : x = " << m_velocity.x << ", y = " << m_velocity.y << "\n";
-        //std::cout << "Pos : x = " << m_position.x << ", y = " << m_position.y << "\n";
+        // TODO : prediction
     }
 
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
@@ -35,7 +32,7 @@ namespace sail
         sailShip.setPosition(position);
         sailShip.setColor(m_color);
         sailShip.setAnchor(gf::Anchor::Center);
-        sailShip.setRotation(angle); //TODO boat.getAngle
+        sailShip.setRotation(angle);
         target.draw(sailShip, states);
 
         gf::RenderStates shipStates;
@@ -45,14 +42,14 @@ namespace sail
         sail.setPosition({10.0f, 17.5f});
         sail.setColor(gf::Color::Red);
         sail.setAnchor(gf::Anchor::Center);
-        sail.setRotation(sail_angle); //TODO boat.getSailAngle
+        sail.setRotation(sail_angle);
         target.draw(sail, shipStates);
 
         gf::RectangleShape rudder({5.0f,10.0f});
         rudder.setPosition({10.0f,35.0f});
         rudder.setColor(gf::Color::Blue);
         rudder.setAnchor(gf::Anchor::Center);
-        rudder.setRotation(rudder_angle); //TODO boat.getRudderAngle
+        rudder.setRotation(rudder_angle);
         target.draw(rudder, shipStates);
     }
 

@@ -4,6 +4,7 @@
 #include <gf/Id.h>
 #include <vector>
 #include <gf/Vector.h>
+#include <gf/Array2D.h>
 
 using namespace gf::literals;
 
@@ -105,12 +106,13 @@ namespace sail {
     struct GameReady
     {
         static constexpr gf::Id type = "GameReady"_id;
+        gf::Array2D<float> terrain;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, GameReady& data)
     {
-        return ar;
+        return ar | data.terrain;
     }
 
     struct PlayerAction

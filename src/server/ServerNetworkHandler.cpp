@@ -80,7 +80,7 @@ namespace sail
                         if (m_game.connectPlayer(p, newId, clientG.username))
                         {
                             gf::Packet readyPacket;
-                            readyPacket.is(GameReady());
+                            readyPacket.is(m_game.getGameReady());
                             broadcast(readyPacket);
                         }
                         std::cout << "New player : " << p.getId() << " with name : " << p.getName() << "\n";
@@ -149,7 +149,7 @@ namespace sail
                             gf::SocketStatus status = socket.recvPacket(packet);
                             if (status == gf::SocketStatus::Data)
                             {
-                                std::cout << "Received packet\n"; // TODO : way too many packets are received here, why ?
+                                std::cout << "Received packet\n";
                             }
                             else
                             {

@@ -8,6 +8,7 @@
 
 #include "Player.h"
 #include "../physics/BoatControl.h"
+#include "World.h"
 
 namespace sail
 {
@@ -27,6 +28,8 @@ namespace sail
 
         void playerAction(Player& player, PlayerAction action);
 
+        GameReady getGameReady();
+
         GameState updateGame(gf::Time dt);
 
     private:
@@ -39,6 +42,8 @@ namespace sail
 
         static constexpr float Speed = 25.0f;
         static constexpr float MaxSpeed = Speed * 4;
+
+        World m_world;
 
         BoatControl m_boatControl;
 

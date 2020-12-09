@@ -19,6 +19,7 @@
 #include <gf/ResourceManager.h>
 #include <gf/Sprite.h>
 #include "config.h"
+#include "Terrain.h"
 
 int main()
 {
@@ -110,6 +111,9 @@ int main()
     sail::ClientPlayer& localPlayer = players.at(serverGreeting.playerId);
     sail::ClientBoat& localBoat =  localPlayer.getBoat();
 
+    // Defining the terrain entity
+    sail::Terrain terrain(localBoat);
+
     for (auto& p : serverGreeting.players)
     {
         std::cout << "Player already here : " << p.name << "\n";
@@ -124,13 +128,15 @@ int main()
         {
             if (waitingP.getType() == sail::PlayerJoins::type)
             {
-                sail::PlayerJoins waiting {waitingP.as<sail::PlayerJoins>()};
+                auto waiting (waitingP.as<sail::PlayerJoins>());
                 std::cout << "Opponent connected : " << waiting.player.name << "\n";
                 players.insert(std::pair<gf::Id, sail::ClientPlayer>(waiting.player.id,
                         sail::ClientPlayer(waiting.player.id, waiting.player.name)));
             }
             else if (waitingP.getType() == sail::GameReady::type)
             {
+                auto ready (waitingP.as<sail::GameReady>());
+                terrain.load(ready.terrain);
                 break;
             }
         }
@@ -146,6 +152,8 @@ int main()
     }
     sail::Weathercock cock;
     mainEntities.addEntity(cock);
+
+    mainEntities.addEntity(terrain);
 
     // Launching the thread
     clientHandler.run();
@@ -259,7 +267,7 @@ int main()
 
         // 2. update
         //localBoat.update(time);
-        //mainEntities.update(time);
+        mainEntities.update(time);
         //hudEntities.update(time);
         // 3. draw
         renderer.clear();

@@ -20,6 +20,7 @@ namespace sail
     , m_playersNb(0)
     , m_boatControl()
     , m_fixedWind()
+    , m_world()
     {
 
     }
@@ -99,6 +100,11 @@ namespace sail
         }
 
         m_simulationMutex.unlock();
+    }
+
+    GameReady Game::getGameReady()
+    {
+        return { m_world.getTerrain() };
     }
 
     GameState Game::updateGame(gf::Time dt)

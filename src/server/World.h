@@ -3,6 +3,7 @@
 
 #include <gf/Array2D.h>
 #include <gf/Random.h>
+#include "../Protocol.h"
 
 namespace sail
 {
@@ -16,9 +17,13 @@ namespace sail
         static constexpr float WorldMin = Edge * TileSize;
         static constexpr float WorldMax = (Size - Edge) * TileSize;
         static constexpr double Scale = 10.0;
+        static constexpr double SeaLevel = 0.65;
 
         World();
 
+        gf::Array2D<float> getTerrain();
+
+    private:
         void generate();
 
     private:

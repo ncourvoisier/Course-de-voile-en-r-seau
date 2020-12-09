@@ -33,7 +33,3 @@ namespace sail
 }
 
 #endif //SAILINSANE_CLIENTBOAT_H
-
-// serveur authoritaire
-// intégration physique
-//
