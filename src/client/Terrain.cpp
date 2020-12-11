@@ -3,12 +3,15 @@
 #include <gf/ColorRamp.h>
 #include <gf/Unused.h>
 #include <gf/RenderTarget.h>
+#include <iostream>
 
 namespace sail
 {
 
     Terrain::Terrain(ClientBoat& playerBoat)
     : m_playerBoat(playerBoat)
+    , m_terrain({Size, Size})
+    , m_oldPosition({0, 0})
     {
 
     }
@@ -33,14 +36,27 @@ namespace sail
     {
         gf::unused(time);
 
+        auto newCol = static_cast<unsigned>(m_playerBoat.getLatitude() / TileSize);
+        auto newRow = static_cast<unsigned>(m_playerBoat.getLongitude() / TileSize);
+
+        if (m_oldPosition.x == newCol && m_oldPosition.y == newRow) {
+            std::cout << "didn't move \n";
+            return;
+        }
+        std::cout << "moved \n";
+
+        m_oldPosition = { newCol, newRow };
+
         unsigned rowMin = (m_playerBoat.getLongitude() > DisplayHalfRange) ?
-                (m_playerBoat.getLongitude() - DisplayHalfRange) : 0;
+                (static_cast<unsigned>(m_playerBoat.getLongitude()) - DisplayHalfRange) : 0;
         unsigned rowMax = (m_playerBoat.getLongitude() + DisplayHalfRange < Size) ?
-                (m_playerBoat.getLongitude() + DisplayHalfRange) : Size - 1;
+                (static_cast<unsigned>(m_playerBoat.getLongitude()) + DisplayHalfRange) : Size - 1;
         unsigned colMin = (m_playerBoat.getLatitude() > DisplayHalfRange) ?
-                (m_playerBoat.getLatitude() - DisplayHalfRange) : 0;
+                (static_cast<unsigned>(m_playerBoat.getLatitude()) - DisplayHalfRange) : 0;
         unsigned colMax = (m_playerBoat.getLatitude() + DisplayHalfRange < Size) ?
-                (m_playerBoat.getLatitude() + DisplayHalfRange) : Size - 1;
+                (static_cast<unsigned>(m_playerBoat.getLatitude()) + DisplayHalfRange) : Size - 1;
+
+        std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
 
         m_vertices.clear();
 

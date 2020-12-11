@@ -29,6 +29,8 @@ class Terrain: public gf::Entity
 
         gf::VertexArray m_vertices;
 
+        gf::Vector2u m_oldPosition;
+
         ClientBoat& m_playerBoat;
     };
 
