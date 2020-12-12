@@ -11,7 +11,7 @@ namespace sail
     Terrain::Terrain(ClientBoat& playerBoat)
     : m_playerBoat(playerBoat)
     , m_terrain({Size, Size})
-    , m_oldPosition({500, 500}) // TODO : to initialize with first server aknoledgment
+    , m_oldPosition({0, 0})
     {
 
     }
@@ -36,8 +36,8 @@ namespace sail
     {
         gf::unused(time);
 
-        auto newCol = static_cast<unsigned>(m_playerBoat.getLatitude() / TileSize);
-        auto newRow = static_cast<unsigned>(m_playerBoat.getLongitude() / TileSize);
+        auto newCol = static_cast<unsigned>(m_playerBoat.getLongitude() / TileSize);
+        auto newRow = static_cast<unsigned>(m_playerBoat.getLatitude() / TileSize);
 
         if (m_oldPosition.x == newCol && m_oldPosition.y == newRow)
             return;
