@@ -12,6 +12,7 @@ namespace sail
     : m_playerBoat(playerBoat)
     , m_terrain({Size, Size})
     , m_oldPosition({0, 0})
+    , m_vertices(gf::PrimitiveType::Triangles)
     {
 
     }
