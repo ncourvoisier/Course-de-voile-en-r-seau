@@ -11,11 +11,7 @@ namespace sail
     class World
     {
     public:
-        static constexpr unsigned Size = 1500;
-        static constexpr float TileSize = 8.0f;
-        static constexpr unsigned Edge = 80;
-        static constexpr float WorldMin = Edge * TileSize;
-        static constexpr float WorldMax = (Size - Edge) * TileSize;
+        static constexpr unsigned Size = 1000;
         static constexpr double Scale = 10.0;
         static constexpr double SeaLevel = 0.65;
 

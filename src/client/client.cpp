@@ -29,9 +29,9 @@ int main()
     clientHandler.connect("127.0.0.1", "24680");
     ////
 
-    static constexpr gf::Vector2u ScreenSize(512, 512);
-    static constexpr gf::Vector2f ViewSize(512.0f, 512.0f); // dummy values
-    static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f); // dummy values
+    static constexpr gf::Vector2u ScreenSize(525, 525);
+    static constexpr gf::Vector2f ViewSize(500.0f, 500.0f); // dummy values
+    static constexpr gf::Vector2f ViewCenter(250.0f, 250.0f); // dummy values
     // initialization
     gf::Window window("Game", ScreenSize);
     window.setVerticalSyncEnabled(true);
@@ -265,7 +265,8 @@ int main()
             lag -= UpdateDelayMs;
         }
 
-        //std::cout << "x : " << localBoat.getVelocity().x << ", y : " << localBoat.getVelocity().y << "\n"; >>>>>> NO PROBLEM HERE
+        // Centering the view
+        mainView.setCenter({ static_cast<float>(localBoat.getLongitude()), static_cast<float>(localBoat.getLatitude()) });
 
         // 2. update
         //localBoat.update(time);

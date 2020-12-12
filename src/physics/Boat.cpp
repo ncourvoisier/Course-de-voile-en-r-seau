@@ -3,8 +3,8 @@
 namespace sail {
 
     Boat::Boat()
-    : x(0)
-    , y(0) // TODO : don't initialize here
+    : x(0.05)
+    , y(0.05) // TODO : don't initialize here
     , angle(M_PI_4)
     , sail_angle(0)
     , rudder_angle(0)

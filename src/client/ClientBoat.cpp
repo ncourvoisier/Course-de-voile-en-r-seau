@@ -8,7 +8,8 @@ namespace sail
 {
 
     ClientBoat::ClientBoat(gf::Color4f color)
-    : m_size(20.0f)
+    : gf::Entity(1)
+    , m_size(20.0f)
     , m_color(color)
     {
 
@@ -27,6 +28,7 @@ namespace sail
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
     {
         gf::Vector2f position(x, y);
+        //std::cout << "POSITION : " << position.x << ", " << position.y << "\n"; NO PROBLEM HERE
 
         gf::RectangleShape sailShip({20.0f, 35.0f});
         sailShip.setPosition(position);

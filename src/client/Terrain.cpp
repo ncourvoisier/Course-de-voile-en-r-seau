@@ -11,7 +11,7 @@ namespace sail
     Terrain::Terrain(ClientBoat& playerBoat)
     : m_playerBoat(playerBoat)
     , m_terrain({Size, Size})
-    , m_oldPosition({0, 0})
+    , m_oldPosition({500, 500}) // TODO : to initialize with first server aknoledgment
     {
 
     }
@@ -39,22 +39,17 @@ namespace sail
         auto newCol = static_cast<unsigned>(m_playerBoat.getLatitude() / TileSize);
         auto newRow = static_cast<unsigned>(m_playerBoat.getLongitude() / TileSize);
 
-        if (m_oldPosition.x == newCol && m_oldPosition.y == newRow) {
-            std::cout << "didn't move \n";
+        if (m_oldPosition.x == newCol && m_oldPosition.y == newRow)
             return;
-        }
+
         std::cout << "moved \n";
 
         m_oldPosition = { newCol, newRow };
 
-        unsigned rowMin = (m_playerBoat.getLongitude() > DisplayHalfRange) ?
-                (static_cast<unsigned>(m_playerBoat.getLongitude()) - DisplayHalfRange) : 0;
-        unsigned rowMax = (m_playerBoat.getLongitude() + DisplayHalfRange < Size) ?
-                (static_cast<unsigned>(m_playerBoat.getLongitude()) + DisplayHalfRange) : Size - 1;
-        unsigned colMin = (m_playerBoat.getLatitude() > DisplayHalfRange) ?
-                (static_cast<unsigned>(m_playerBoat.getLatitude()) - DisplayHalfRange) : 0;
-        unsigned colMax = (m_playerBoat.getLatitude() + DisplayHalfRange < Size) ?
-                (static_cast<unsigned>(m_playerBoat.getLatitude()) + DisplayHalfRange) : Size - 1;
+        unsigned rowMin = (newRow > DisplayHalfRange) ? (newRow - DisplayHalfRange) : 0;
+        unsigned rowMax = (newRow + DisplayHalfRange < Size) ? (newRow + DisplayHalfRange) : Size - 1;
+        unsigned colMin = (newCol > DisplayHalfRange) ? (newCol - DisplayHalfRange) : 0;
+        unsigned colMax = (newCol + DisplayHalfRange < Size) ? (newCol + DisplayHalfRange) : Size - 1;
 
         std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
 

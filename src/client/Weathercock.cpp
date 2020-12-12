@@ -8,7 +8,8 @@ namespace sail
 {
 
     Weathercock::Weathercock()
-    : m_texture(sail::gResourceManager().getTexture("wind-direction.png"))
+    : gf::Entity(2)
+    , m_texture(sail::gResourceManager().getTexture("wind-direction.png"))
     , m_position({ 0.0f, 0.0f })
     {
 
