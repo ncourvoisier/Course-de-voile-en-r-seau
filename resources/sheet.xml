@@ -1,0 +1,5 @@
+<TextureAtlas imagePath="sheet.png">
+  <SubTexture name="boat" x="0" y="0" width="114" height="299"/>
+  <SubTexture name="sail" x="0" y="299" width="51" height="206"/>
+  <SubTexture name="rudder" x="51" y="299" width="30" height="46"/>
+</TextureAtlas>

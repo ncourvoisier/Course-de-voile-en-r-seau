@@ -20,7 +20,10 @@ namespace sail
     void Terrain::load(gf::Array2D<float> elevations)
     {
         gf::ColorRamp rampTerrain;
+        rampTerrain.addColorStop(0.250f, gf::Color::fromRgba32(  9,  62,  92)); // Deep Water
         rampTerrain.addColorStop(0.499f, gf::Color::fromRgba32(17, 82, 118)); // Water
+        rampTerrain.addColorStop(0.500f, gf::Color::fromRgba32(255, 251, 121)); // Sand
+        rampTerrain.addColorStop(0.550f, gf::Color::fromRgba32(255, 251, 121)); // Sand
         rampTerrain.addColorStop(1.000f, gf::Color::fromRgba32(38, 143, 14)); // Ground
 
         for (auto row : elevations.getRowRange())

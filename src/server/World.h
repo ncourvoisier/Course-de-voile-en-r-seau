@@ -12,7 +12,7 @@ namespace sail
     {
     public:
         static constexpr unsigned Size = 1000;
-        static constexpr double Scale = 10.0;
+        static constexpr double Scale = 30.0;
         static constexpr double SeaLevel = 0.65;
 
         World();

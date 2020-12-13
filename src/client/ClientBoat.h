@@ -3,6 +3,7 @@
 
 #include <gf/Entity.h>
 #include <gf/Vector.h>
+#include <gf/Texture.h>
 #include "../Protocol.h"
 #include "../physics/Boat.h"
 
@@ -25,9 +26,11 @@ namespace sail
     private:
         static constexpr int Scale = 100000;
 
-        float m_size;
+        const gf::Texture &m_texture;
 
-        gf::Color4f m_color;
+        gf::RectF m_boat;
+        gf::RectF m_sail;
+        gf::RectF m_rudder;
     };
 
 }

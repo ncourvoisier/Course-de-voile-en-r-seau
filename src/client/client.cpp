@@ -39,7 +39,9 @@ int main()
     gf::RenderWindow renderer(window);
 
     gf::SingletonStorage<gf::ResourceManager> storageForResourceManager(sail::gResourceManager);
-    sail::gResourceManager().addSearchDir(SAILINSANE_DATA_DIR); // TODO : make it generic or something
+    sail::gResourceManager().addSearchDir(SAILINSANE_DATA_DIR);
+
+    gf::SingletonStorage<gf::TextureAtlas> storageForTextureAtlas(sail::gTextureAtlas, "sheet.xml", sail::gResourceManager());
 
     // views
     gf::ViewContainer views;

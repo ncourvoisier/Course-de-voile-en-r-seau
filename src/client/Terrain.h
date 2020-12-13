@@ -13,7 +13,7 @@ class Terrain: public gf::Entity
 {
     public:
         static constexpr unsigned Size = 1000; // TODO : shared constant with server
-        static constexpr unsigned DisplayHalfRange = 100;
+        static constexpr unsigned DisplayHalfRange = 50;
         static constexpr float TileSize = 10.0f;
 
         Terrain(ClientBoat& playerBoat);

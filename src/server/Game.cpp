@@ -141,7 +141,7 @@ namespace sail
     {
         gf::Clock clock;
         double updateSec = 0.05;
-        double physicGranularity = 0.00002;
+        double physicGranularity = 0.0002;
         double loopsAmount = updateSec / physicGranularity; // TODO : some experimental things here
 
         while(m_simulationRunning) {
@@ -163,7 +163,7 @@ namespace sail
 
             //std::cout << sleepTime << "\n";
             assert(sleepTime >= 0); // Assert if the simulation is late compared to real world time (shouldn't be)
-            // With granularity = 0.00002s, 50ms requires 2.500 loops, taking around 2-3ms per player in the game
+            // With granularity = 0.0002s, 50ms requires 250 loops, taking around 0.2-0.3ms per player in the game
 
             std::chrono::milliseconds span((int)(sleepTime * 1000));
             std::this_thread::sleep_for(span);
