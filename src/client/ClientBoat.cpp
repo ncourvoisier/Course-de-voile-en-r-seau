@@ -3,6 +3,8 @@
 #include <iostream>
 #include <gf/Sprite.h>
 
+#include "../Constants.h"
+
 #include "ClientBoat.h"
 #include "Singletons.h"
 
@@ -31,7 +33,7 @@ namespace sail
 
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
     {
-        gf::Vector2f position(x, y);
+        gf::Vector2f position(m_x, m_y);
 
         gf::Sprite spriteBoat;
         //std::cout << "POSITION : " << position.x << ", " << position.y << "\n"; NO PROBLEM HERE
@@ -82,8 +84,8 @@ namespace sail
 
     void ClientBoat::fromBoatData(BoatData data)
     {
-        x = data.xPos * Scale;
-        y = data.yPos * Scale;
+        m_x = data.xPos * WorldScale;
+        m_y = data.yPos * WorldScale;
         angle = data.angle;
         sail_angle = data.sailAngle;
         rudder_angle = data.rudderAngle;

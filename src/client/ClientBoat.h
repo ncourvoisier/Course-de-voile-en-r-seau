@@ -24,9 +24,7 @@ namespace sail
         void fromBoatData(BoatData data);
 
     private:
-        static constexpr int Scale = 100000;
-
-        const gf::Texture &m_texture;
+        const gf::Texture& m_texture;
 
         gf::RectF m_boat;
         gf::RectF m_sail;

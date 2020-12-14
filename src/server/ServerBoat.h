@@ -14,8 +14,9 @@ namespace sail
     class ServerBoat : public Boat
     {
     public:
-        ServerBoat() = default;
-        ServerBoat(gf::Id playerId, gf::Vector2f position);
+        ServerBoat() = default; // Invalid boat
+        ServerBoat(gf::Id playerId, double x, double y);
+
         BoatData getBoatData();
 
     private:

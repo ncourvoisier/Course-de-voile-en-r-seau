@@ -3,7 +3,7 @@
 namespace sail {
 
     Wind::Wind()
-    : m_speed(4)
+    : m_speed(12)
     , m_direction(-M_PI_2)
     {
 

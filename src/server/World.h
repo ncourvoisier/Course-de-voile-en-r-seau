@@ -11,21 +11,26 @@ namespace sail
     class World
     {
     public:
-        static constexpr unsigned Size = 1000;
-        static constexpr double Scale = 30.0;
+        static constexpr double Scale = 15.0;
         static constexpr double SeaLevel = 0.65;
 
         World();
 
-        gf::Array2D<float> getTerrain();
+        gf::Array2D<float>& getTerrain();
+        gf::Vector2f getStartingPosition();
+
+        bool isOnLand(double x, double y);
 
     private:
         void generate();
 
     private:
-        gf::Array2D<float> m_terrain;
-        gf::Array2D<float> m_wind;
         gf::Random m_random;
+
+        gf::Array2D<float> m_wind;
+        gf::Array2D<float> m_terrain;
+
+        gf::Vector2d m_startingPosition;
     };
 
 }

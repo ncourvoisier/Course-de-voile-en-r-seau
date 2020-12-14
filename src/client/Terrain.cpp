@@ -10,7 +10,7 @@ namespace sail
 
     Terrain::Terrain(ClientBoat& playerBoat)
     : m_playerBoat(playerBoat)
-    , m_terrain({Size, Size})
+    , m_terrain({MapSize, MapSize})
     , m_oldPosition({0, 0})
     , m_vertices(gf::PrimitiveType::Triangles)
     {
@@ -51,9 +51,9 @@ namespace sail
         m_oldPosition = { newCol, newRow };
 
         unsigned rowMin = (newRow > DisplayHalfRange) ? (newRow - DisplayHalfRange) : 0;
-        unsigned rowMax = (newRow + DisplayHalfRange < Size) ? (newRow + DisplayHalfRange) : Size - 1;
+        unsigned rowMax = (newRow + DisplayHalfRange < MapSize) ? (newRow + DisplayHalfRange) : MapSize - 1;
         unsigned colMin = (newCol > DisplayHalfRange) ? (newCol - DisplayHalfRange) : 0;
-        unsigned colMax = (newCol + DisplayHalfRange < Size) ? (newCol + DisplayHalfRange) : Size - 1;
+        unsigned colMax = (newCol + DisplayHalfRange < MapSize) ? (newCol + DisplayHalfRange) : MapSize - 1;
 
         std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
 

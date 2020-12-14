@@ -44,7 +44,7 @@ namespace sail
     {
         if (m_started)
             return false; // TODO : detail return type
-        player.connect(id, userName);
+        player.connect(id, userName, m_world);
         if (++m_playersNb == NeededPlayers)
         {
             start();
@@ -104,7 +104,7 @@ namespace sail
 
     GameReady Game::getGameReady()
     {
-        return { m_world.getTerrain() };
+        return { m_world.getTerrain(), m_world.getStartingPosition() };
     }
 
     GameState Game::updateGame(gf::Time dt)
@@ -131,6 +131,16 @@ namespace sail
         return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } }; // TODO : for now, only one single wind everywhere, just for testing
     }
 
+    void Game::checkCoordinates(Player &player)
+    {
+        Boat& boat = player.getBoat();
+        if (m_world.isOnLand(boat.getLongitude(), boat.getLatitude()))
+        {
+            boat.reset(m_world.getStartingPosition().x,
+                    m_world.getStartingPosition().y); // TODO : currently, no specific packet for death, just TP, to improve
+        }
+    }
+
     void Game::runSimulation()
     {
         m_simulationRunning = true;
@@ -148,13 +158,14 @@ namespace sail
             clock.restart();
             m_simulationMutex.lock();
 
-            for (int i=0; i<loopsAmount; i++) {
-                for (auto& player : m_players)
+            for (auto& player : m_players) {
+                if (player.isConnected())
                 {
-                    if (player.isConnected())
+                    for (int i = 0; i < loopsAmount; i++)
                     {
                         sailing_physics_update(player.getBoat(), m_fixedWind, physicGranularity);
                     }
+                    checkCoordinates(player);
                 }
             }
 

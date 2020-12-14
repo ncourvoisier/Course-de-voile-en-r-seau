@@ -37,6 +37,8 @@ namespace sail
 
         void simulation();
 
+        void checkCoordinates(Player& player);
+
     private:
         static constexpr int NeededPlayers = 2;
 

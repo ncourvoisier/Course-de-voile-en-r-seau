@@ -5,15 +5,16 @@
 namespace sail
 {
 
-    ServerBoat::ServerBoat(gf::Id playerId, gf::Vector2f position)
-    : m_playerId(playerId)
+    ServerBoat::ServerBoat(gf::Id playerId, double x, double y)
+    : Boat(x, y)
+    , m_playerId(playerId)
     {
-        //std::cout << "Mass of sail : " << boat.getMass() << std::endl;
+
     }
 
     BoatData ServerBoat::getBoatData()
     {
-        return { m_playerId, x, y, angle, sail_angle, rudder_angle };
+        return {m_playerId, m_x, m_y, angle, sail_angle, rudder_angle };
     }
 
 }

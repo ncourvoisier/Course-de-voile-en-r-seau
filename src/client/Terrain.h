@@ -4,6 +4,9 @@
 #include <gf/Array2D.h>
 #include <gf/Entity.h>
 #include <gf/VertexArray.h>
+
+#include "../Constants.h"
+
 #include "ClientBoat.h"
 
 namespace sail
@@ -12,9 +15,8 @@ namespace sail
 class Terrain: public gf::Entity
 {
     public:
-        static constexpr unsigned Size = 1000; // TODO : shared constant with server
-        static constexpr unsigned DisplayHalfRange = 50;
-        static constexpr float TileSize = 10.0f;
+        static constexpr unsigned DisplayHalfRange = 100;
+        static constexpr float TileSize = TileDegree * WorldScale; // 5.0f
 
         Terrain(ClientBoat& playerBoat);
 

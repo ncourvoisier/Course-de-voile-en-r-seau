@@ -9,7 +9,10 @@ namespace sail {
 
     class Boat {
     public:
-        Boat();
+        Boat() = default; // Invalid boat
+
+        Boat(double x, double y);
+        void reset(double x, double y);
         double getLatitude() const;
         void setLatitude(double latitude);
         double getLongitude() const;
@@ -41,8 +44,8 @@ namespace sail {
 
     protected:
         /* coordinates of boat */
-        double x;
-        double y;
+        double m_x;
+        double m_y;
 
         /* orientation of boat */
         double angle;

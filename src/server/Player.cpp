@@ -4,6 +4,7 @@ namespace sail {
 
     Player::Player(gf::TcpSocket socket)
     : m_socket(std::move(socket))
+    , m_boat()
     , m_connected(false)
     {
 
@@ -25,12 +26,12 @@ namespace sail {
         return m_connected;
     }
 
-    void Player::connect(gf::Id id, std::string name)
+    void Player::connect(gf::Id id, std::string name, World& world)
     {
         m_connected = true;
         m_id = id;
         m_name = name;
-        m_boat = ServerBoat(m_id, {0, 0}); // TODO : change this
+        m_boat = ServerBoat(id, world.getStartingPosition().x, world.getStartingPosition().y);
     }
 
     gf::Id Player::getId() const

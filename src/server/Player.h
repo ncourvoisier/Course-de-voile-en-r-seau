@@ -8,6 +8,7 @@
 
 #include "ServerBoat.h"
 #include "../Protocol.h"
+#include "World.h"
 
 namespace sail
 {
@@ -25,7 +26,7 @@ namespace sail
 
         bool isConnected() const;
 
-        void connect(gf::Id id, std::string name);
+        void connect(gf::Id id, std::string name, World& world);
 
         gf::Id getId() const;
 

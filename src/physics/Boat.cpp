@@ -2,28 +2,32 @@
 
 namespace sail {
 
-    Boat::Boat()
-    : x(0.05)
-    , y(0.05) // TODO : don't initialize here
-    , angle(M_PI_4)
-    , sail_angle(0)
-    , rudder_angle(0)
-    , sail_is_free(0)
-    , v(5)
-    , sheet_length(1)
-    , rotational_velocity(0.0)
-    , inertia(10000.0)
-    , drift_coefficient(0.05)
-    , rudder_distance(4.0)
-    , angular_friction(8000)
-    , mass(30.0)
-    , tangential_friction(0.1)
-    , mast_distance(1)
-    , rudder_lift(8000.0)
-    , sail_center_of_effort(1.0)
-    , sail_lift(1000.0)
+    Boat::Boat(double x, double y)
     {
+        reset(x, y);
+    }
 
+    void Boat::reset(double x, double y)
+    {
+        m_x = x;
+        m_y = y;
+        angle = M_PI_4;
+        sail_angle = 0;
+        rudder_angle = 0;
+        sail_is_free = 0;
+        v = 5;
+        sheet_length = 1;
+        rotational_velocity = 0.0;
+        inertia = 10000.0;
+        drift_coefficient = 0.05;
+        rudder_distance = 4.0;
+        angular_friction = 8000;
+        mass = 30.0;
+        tangential_friction = 0.1;
+        mast_distance = 1;
+        rudder_lift = 8000.0;
+        sail_center_of_effort = 1.0;
+        sail_lift = 1000.0;
     }
 
     double Boat::getAngle() const {
@@ -31,11 +35,11 @@ namespace sail {
     }
 
     double Boat::getLatitude() const {
-        return y;
+        return m_y;
     }
 
     double Boat::getLongitude() const {
-        return x;
+        return m_x;
     }
 
     double Boat::getRudderAngle() const {
@@ -111,11 +115,11 @@ namespace sail {
     }
 
     void Boat::setLatitude(double latitude) {
-        Boat::y = latitude;
+        Boat::m_y = latitude;
     }
 
     void Boat::setLongitude(double longitude) {
-        Boat::x = longitude;
+        Boat::m_x = longitude;
     }
 
     void Boat::setRudderAngle(double rudder_angle) {
