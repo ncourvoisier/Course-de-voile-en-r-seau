@@ -12,8 +12,8 @@
 namespace sail
 {
 
-class Terrain: public gf::Entity
-{
+    class Terrain: public gf::Entity
+    {
     public:
         static constexpr unsigned DisplayHalfRange = 100;
         static constexpr float TileSize = TileDegree * WorldScale; // 5.0f
@@ -21,6 +21,8 @@ class Terrain: public gf::Entity
         Terrain(ClientBoat& playerBoat);
 
         void load(gf::Array2D<float> elevations);
+
+        void setFullRender(bool fullRender);
 
         void update(gf::Time time) override;
 
@@ -34,6 +36,8 @@ class Terrain: public gf::Entity
         gf::Vector2u m_oldPosition;
 
         ClientBoat& m_playerBoat;
+
+        bool m_fullRender;
     };
 
 }

@@ -12,6 +12,7 @@ namespace sail
     : m_playerBoat(playerBoat)
     , m_terrain({MapSize, MapSize})
     , m_oldPosition({0, 0})
+    , m_fullRender(false)
     , m_vertices(gf::PrimitiveType::Triangles)
     {
 
@@ -36,6 +37,11 @@ namespace sail
         }
     }
 
+    void Terrain::setFullRender(bool fullRender)
+    {
+        m_fullRender = fullRender;
+    }
+
     void Terrain::update(gf::Time time)
     {
         gf::unused(time);
@@ -46,9 +52,42 @@ namespace sail
         if (m_oldPosition.x == newCol && m_oldPosition.y == newRow)
             return;
 
-        std::cout << "moved \n";
-
         m_oldPosition = { newCol, newRow };
+
+        m_vertices.clear();
+
+        if (m_fullRender)
+        {
+            for (unsigned row = 0; row < MapSize; ++row)
+            {
+                for (unsigned col = 0; col < MapSize; ++col)
+                {
+                    gf::Vertex vertices[4];
+
+                    vertices[0].position = { col * 1.0f,row * 1.0f };
+                    vertices[1].position = {(col + 1) * 1.0f,row * 1.0f };
+                    vertices[2].position = {col * 1.0f,(row + 1) * 1.0f };
+                    vertices[3].position = {(col + 1) * 1.0f,(row + 1) * 1.0f };
+
+                    vertices[0].color = m_terrain({ row, col });
+                    vertices[1].color = m_terrain({ row,col + 1 });
+                    vertices[2].color = m_terrain({row + 1, col });
+                    vertices[3].color = m_terrain({row + 1,col + 1 });
+
+                    // first triangle
+                    m_vertices.append(vertices[0]);
+                    m_vertices.append(vertices[1]);
+                    m_vertices.append(vertices[2]);
+
+                    // second triangle
+                    m_vertices.append(vertices[2]);
+                    m_vertices.append(vertices[1]);
+                    m_vertices.append(vertices[3]);
+                }
+            }
+
+            return;
+        }
 
         unsigned rowMin = (newRow > DisplayHalfRange) ? (newRow - DisplayHalfRange) : 0;
         unsigned rowMax = (newRow + DisplayHalfRange < MapSize) ? (newRow + DisplayHalfRange) : MapSize - 1;
@@ -56,8 +95,6 @@ namespace sail
         unsigned colMax = (newCol + DisplayHalfRange < MapSize) ? (newCol + DisplayHalfRange) : MapSize - 1;
 
         std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
-
-        m_vertices.clear();
 
         for (unsigned row = rowMin; row < rowMax; ++row)
         {

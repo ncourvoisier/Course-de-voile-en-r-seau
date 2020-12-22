@@ -121,8 +121,8 @@ namespace sail {
     double delta_velocity(const Boat& boat, const Wind& wind) {
         return (sin(boat.getSailAngle())
             * force_on_sail(boat, wind)
-            - sin(boat.getRudderAngle())
-            * force_on_rudder(boat, wind)
+            /*- sin(boat.getRudderAngle())
+            * force_on_rudder(boat, wind)*/
             - boat.getTangentialFriction()
             * boat.getVelocity()
             * boat.getVelocity())

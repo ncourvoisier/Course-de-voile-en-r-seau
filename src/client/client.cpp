@@ -79,12 +79,14 @@ int main()
     rubberRightAction.addScancodeKeyControl(gf::Scancode::Right);
     rubberRightAction.setContinuous();
     actions.addAction(rubberRightAction);
-    ////
     gf::Action rudderCenterAction("Rudder center");
     rudderCenterAction.addScancodeKeyControl(gf::Scancode::Space);
-    rudderCenterAction.setContinuous();
     actions.addAction(rudderCenterAction);
-    ////
+    gf::Action fullRenderAction("Full render");
+    fullRenderAction.addScancodeKeyControl(gf::Scancode::Tab);
+    fullRenderAction.setContinuous();
+    actions.addAction(fullRenderAction);
+
     // entities
     gf::EntityContainer mainEntities;
     // add entities to mainEntities
@@ -171,6 +173,8 @@ int main()
     auto lastActionRubber = sail::PlayerAction::Type::None;
     int actionNb = 0;
 
+    bool rudderActive = false;
+
     while (window.isOpen())
     {
         gf::Time time = clock.restart();
@@ -196,30 +200,39 @@ int main()
         if (sailRightAction.isActive()) {
             //std::cout << "right\n";
             lastActionSail = sail::PlayerAction::Type::Right;
-            sailRightAction.reset();
         }
         else if (sailLeftAction.isActive())
         {
            // std::cout << "left\n";
             lastActionSail = sail::PlayerAction::Type::Left;
-            sailLeftAction.reset();
         }
-        else if (rubberLeftAction.isActive())
+
+        if (rubberLeftAction.isActive())
         {
             //std::cout << "up\n";
+            rudderActive = true;
             lastActionRubber = sail::PlayerAction::Type::Left;
-            rubberLeftAction.reset();
         }
         else if (rubberRightAction.isActive())
         {
             //std::cout << "down\n";
+            rudderActive = true;
             lastActionRubber = sail::PlayerAction::Type::Right;
-            rubberRightAction.reset();
+        }
+        else if (rudderActive)
+        {
+            rudderActive = false;
+            lastActionRubber = sail::PlayerAction::Type::Center;
         }
         else if (rudderCenterAction.isActive())
         {
             lastActionRubber = sail::PlayerAction::Type::Center;
-            rudderCenterAction.reset();
+        }
+
+
+        if (fullRenderAction.isActive())
+        {
+            terrain.setFullRender(true);
         }
 
         if (keyDelay > SendKeyDelayMs
