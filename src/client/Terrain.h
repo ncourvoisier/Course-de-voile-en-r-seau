@@ -8,6 +8,7 @@
 #include "../Constants.h"
 
 #include "ClientBoat.h"
+#include "WindArrow.h"
 
 namespace sail
 {
@@ -32,6 +33,8 @@ namespace sail
         gf::Array2D<gf::Color4f> m_terrain;
 
         gf::VertexArray m_vertices;
+
+        std::vector<WindArrow> m_arrows;
 
         gf::Vector2u m_oldPosition;
 

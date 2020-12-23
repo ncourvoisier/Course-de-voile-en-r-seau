@@ -49,7 +49,7 @@ add_executable(client
         src/client/Singletons.cpp
         src/client/Singletons.h
         src/client/Weathercock.cpp
-        src/client/Weathercock.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h)
+        src/client/Weathercock.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h)
 
 target_include_directories(client
         PRIVATE

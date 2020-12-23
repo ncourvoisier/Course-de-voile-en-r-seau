@@ -4,6 +4,9 @@
 #include <gf/Unused.h>
 #include <gf/RenderTarget.h>
 #include <iostream>
+#include <gf/Shape.h>
+#include <gf/Polygon.h>
+#include <gf/Shapes.h>
 
 namespace sail
 {
@@ -14,6 +17,7 @@ namespace sail
     , m_oldPosition({0, 0})
     , m_fullRender(false)
     , m_vertices(gf::PrimitiveType::Triangles)
+    , m_arrows()
     {
 
     }
@@ -96,6 +100,8 @@ namespace sail
 
         std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
 
+        m_arrows.clear();
+
         for (unsigned row = rowMin; row < rowMax; ++row)
         {
             for (unsigned col = colMin; col < colMax; ++col)
@@ -121,6 +127,14 @@ namespace sail
                 m_vertices.append(vertices[2]);
                 m_vertices.append(vertices[1]);
                 m_vertices.append(vertices[3]);
+
+                if (row % 10 == 0 && col % 10 == 0) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
+                {
+                    WindArrow arrow(14, 2, sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
+                    arrow.setScale(2);
+                    arrow.setPosition({ col * TileSize, row * TileSize });
+                    m_arrows.push_back(arrow);
+                }
             }
         }
     }
@@ -128,6 +142,10 @@ namespace sail
     void Terrain::render(gf::RenderTarget &target, const gf::RenderStates& states)
     {
         target.draw(m_vertices, states);
+        for (auto& arrow : m_arrows)
+        {
+            target.draw(arrow);
+        }
     }
 
 }
