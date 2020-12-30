@@ -9,7 +9,7 @@ namespace sail
 
     World::World()
     : m_terrain({MapSize, MapSize})
-    , m_wind({MapSize, MapSize})
+    , m_winds({MapSize, MapSize})
     , m_random()
     {
         generate();
@@ -20,6 +20,74 @@ namespace sail
             return value / waterLevel * 0.5;
 
         return (value - waterLevel) / (1.0 - waterLevel) * 0.5 + 0.5;
+    }
+
+    float World::averageWind(const gf::Array2D<float> data, unsigned int col, unsigned int row)
+    {
+        float weightedSum = 0.0f;
+        float totalWeight = 0.0f;
+        int minCol = (col > 0) ? -1 : 0;
+        int maxCol = (col < data.getCols() - 1) ? 1 : 0;
+        int minRow = (row > 0) ? -1 : 0;
+        int maxRow = (row < data.getRows() - 1) ? 1 : 0;
+        for (int i = minCol; i <= maxCol; i++)
+        {
+            for (int j = minRow; j <= maxRow; j++)
+            {
+                if (i == 0 && j == 0)
+                    continue;
+                float val = data({ col + i, row + j});
+                totalWeight += val;
+                weightedSum += Angles[i + 1][j + 1] * val;
+            }
+        }
+        return weightedSum / totalWeight;
+    }
+
+    int clusterizeRec(const gf::Array2D<float> data, int size, int depth, unsigned int col, unsigned int row,
+            gf::Array2D<float> c0, gf::Array2D<float> c1, gf::Array2D<float> c2)
+    {
+        int cSize = size / (2 ^ depth);
+        if (size == 256)
+        {
+            float sum = 0.0f;
+            for (int i = col; i < col + size; i++)
+            {
+                for (int j = row; j < row + size; j++)
+                {
+                    sum += data({ col, row });
+                }
+            }
+            return sum / (size * size);
+        }
+
+        float tl = clusterizeRec(data, size, depth + 1, col, row, c0, c1, c2);
+        float tr = clusterizeRec(data, size, depth + 1, col + cSize, row, c0, c1, c2);
+        float bl = clusterizeRec(data, size, depth + 1, col, row + cSize, c0, c1, c2);
+        float br = clusterizeRec(data, size, depth + 1, col + cSize, row + cSize, c0, c1, c2);
+
+        // TODO : unfinished, do not use this -> need to make the clustering fully dynamic
+    }
+
+    void generateWinds(const gf::Array2D<float>& terrain)
+    {
+        gf::Array2D<float> RPMap ({ MapSize, MapSize });
+
+        for (auto row : terrain.getRowRange())
+        {
+            for (auto col : terrain.getColRange())
+            {
+                float height = terrain({ col, row });
+                if (height < 0.5f)
+                    RPMap({ col, row }) = 0.0f;
+                else
+                    RPMap({ col, row }) = height * 20.0f + 30.0f; // 40 -> 50
+            }
+        }
+
+        gf::Array2D<float> clustersMap_0 ({ 2, 2 });
+        gf::Array2D<float> clustersMap_1 ({ 4, 4 });
+        gf::Array2D<float> clustersMap_2 ({ 8, 8 });
     }
 
     void World::generate()

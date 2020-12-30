@@ -107,13 +107,14 @@ namespace sail {
     {
         static constexpr gf::Id type = "GameReady"_id;
         gf::Array2D<float> terrain;
+        gf::Array2D<WindData> winds;
         gf::Vector2d startingPosition;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, GameReady& data)
     {
-        return ar | data.terrain | data.startingPosition;
+        return ar | data.terrain | data.winds | data.startingPosition;
     }
 
     struct PlayerAction
