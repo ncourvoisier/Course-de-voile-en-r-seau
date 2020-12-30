@@ -73,10 +73,10 @@ namespace sail
 
         for (auto row : m_windSpeed.getRowRange())
         {
-            double y = static_cast<double>(row) / m_windSpeed.getRows() * Scale;
+            double y = static_cast<double>(row) / m_windSpeed.getRows() * WindScale;
             for (auto col : m_windSpeed.getColRange())
             {
-                double x = static_cast<double>(col) / m_windSpeed.getCols() * Scale;
+                double x = static_cast<double>(col) / m_windSpeed.getCols() * WindScale;
                 m_windSpeed({ col, row }) = ((windSNoise.getValue(x, y) * 0.5f) + 0.5f) * 29.0f + 1.0f;
             }
         }
@@ -103,6 +103,14 @@ namespace sail
         return m_terrain({ row, col }) > 0.5f;
     }
 
+    Wind World::getWindAtPosition(double x, double y)
+    {
+        auto col = static_cast<unsigned>(x / TileDegree);
+        auto row = static_cast<unsigned>(y / TileDegree);
+
+        return Wind(m_windSpeed({row, col}), m_windDirection({row, col}));
+    }
+
     gf::Array2D<float>& World::getTerrain()
     {
         return m_terrain;
@@ -113,12 +121,12 @@ namespace sail
         return m_startingPosition;
     }
 
-    gf::Array2D<float>& World::getWindDirection()
+    gf::Array2D<float>& World::getWindDirectionArray()
     {
         return m_windDirection;
     }
 
-    gf::Array2D<float>& World::getWindSpeed()
+    gf::Array2D<float>& World::getWindSpeedArray()
     {
         return m_windSpeed;
     }

@@ -4,6 +4,7 @@
 #include <gf/Array2D.h>
 #include <gf/Random.h>
 #include "../Protocol.h"
+#include "../physics/Wind.h"
 
 namespace sail
 {
@@ -21,9 +22,10 @@ namespace sail
         gf::Vector2f getStartingPosition();
 
         bool isOnLand(double x, double y);
+        Wind getWindAtPosition(double x, double y);
 
-        gf::Array2D<float>& getWindDirection();
-        gf::Array2D<float>& getWindSpeed();
+        gf::Array2D<float>& getWindDirectionArray();
+        gf::Array2D<float>& getWindSpeedArray();
 
     private:
         void generate();

@@ -54,7 +54,7 @@ namespace sail
                 transparency = 0;
             else
                 transparency = (1.0 - distanceToBoat / MaxDistance) * 230.0;
-            arrowVertices[i].color = gf::Color::fromRgba32(red, green, blue, transparency); // TODO : colors will change depending on speed
+            arrowVertices[i].color = gf::Color::fromRgba32(red, green, blue, transparency);
         }
         // Left Half
         m_arrow[0] = arrowVertices[0];

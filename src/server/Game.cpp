@@ -105,8 +105,8 @@ namespace sail
     GameReady Game::getGameReady()
     {
         return { m_world.getTerrain(),
-                 m_world.getWindDirection(),
-                 m_world.getWindSpeed(),
+                 m_world.getWindDirectionArray(),
+                 m_world.getWindSpeedArray(),
                  m_world.getStartingPosition() };
     }
 
@@ -161,12 +161,20 @@ namespace sail
             clock.restart();
             m_simulationMutex.lock();
 
+            int a = 0;
+
             for (auto& player : m_players) {
+                Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
+                if (a == 0)
+                {
+                    std::cout << "Wind : " << wind.getDirection() << ", " << wind.getSpeed() << "\n";
+                    a += 1;
+                }
                 if (player.isConnected())
                 {
                     for (int i = 0; i < loopsAmount; i++)
                     {
-                        sailing_physics_update(player.getBoat(), m_fixedWind, physicGranularity);
+                        sailing_physics_update(player.getBoat(), wind, physicGranularity);
                     }
                     checkCoordinates(player);
                 }
@@ -175,7 +183,6 @@ namespace sail
             m_simulationMutex.unlock();
             double sleepTime = updateSec - clock.restart().asSeconds();
 
-            //std::cout << sleepTime << "\n";
             assert(sleepTime >= 0); // Assert if the simulation is late compared to real world time (shouldn't be)
             // With granularity = 0.0002s, 50ms requires 250 loops, taking around 0.2-0.3ms per player in the game
 

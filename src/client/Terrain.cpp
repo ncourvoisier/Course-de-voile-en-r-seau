@@ -133,8 +133,8 @@ namespace sail
 
                 if (row % 10 == 0 && col % 10 == 0) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
                 {
-                    WindArrow arrow(m_windSpeed({ col, row }),
-                            m_windDirection({ col, row }),
+                    WindArrow arrow(m_windSpeed({ row, col }),
+                            m_windDirection({ row, col }),
                             sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
                     arrow.setScale(2);
                     arrow.setPosition({ col * TileSize, row * TileSize });
