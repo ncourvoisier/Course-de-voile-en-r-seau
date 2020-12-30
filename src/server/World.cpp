@@ -3,13 +3,15 @@
 #include "../Constants.h"
 
 #include <gf/Noises.h>
+#include <iostream>
 
 namespace sail
 {
 
     World::World()
     : m_terrain({MapSize, MapSize})
-    , m_wind({MapSize, MapSize})
+    , m_windDirection({MapSize, MapSize})
+    , m_windSpeed({MapSize, MapSize})
     , m_random()
     {
         generate();
@@ -26,6 +28,8 @@ namespace sail
     {
         gf::SimplexNoise2D simplex(m_random);
         gf::FractalNoise2D fractal(simplex, 1);
+
+        /// Terrain ///
 
         for (auto row : m_terrain.getRowRange())
         {
@@ -45,6 +49,36 @@ namespace sail
             elevation = (elevation - min) / (max - min);
             elevation = valueWithWaterLevel(elevation, SeaLevel);
             assert(0.0 <= elevation && elevation <= 1.0);
+        }
+
+        /// Wind Direction ///
+
+        m_random.getEngine().discard(1);
+        gf::SimplexNoise2D windDNoise(m_random);
+
+        for (auto row : m_windDirection.getRowRange())
+        {
+            double y = static_cast<double>(row) / m_windDirection.getRows() * WindScale;
+            for (auto col : m_windDirection.getColRange())
+            {
+                double x = static_cast<double>(col) / m_windDirection.getCols() * WindScale;
+                m_windDirection({ col, row }) = ((windDNoise.getValue(x, y) * 0.5f) + 0.5f) * M_PI * 2.0f;
+            }
+        }
+
+        /// Wind Speed ///
+
+        m_random.getEngine().discard(1);
+        gf::SimplexNoise2D windSNoise(m_random);
+
+        for (auto row : m_windSpeed.getRowRange())
+        {
+            double y = static_cast<double>(row) / m_windSpeed.getRows() * Scale;
+            for (auto col : m_windSpeed.getColRange())
+            {
+                double x = static_cast<double>(col) / m_windSpeed.getCols() * Scale;
+                m_windSpeed({ col, row }) = ((windSNoise.getValue(x, y) * 0.5f) + 0.5f) * 29.0f + 1.0f;
+            }
         }
 
         gf::Vector2d startingP;
@@ -77,6 +111,16 @@ namespace sail
     gf::Vector2f World::getStartingPosition()
     {
         return m_startingPosition;
+    }
+
+    gf::Array2D<float>& World::getWindDirection()
+    {
+        return m_windDirection;
+    }
+
+    gf::Array2D<float>& World::getWindSpeed()
+    {
+        return m_windSpeed;
     }
 
     /*

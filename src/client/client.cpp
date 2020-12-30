@@ -142,7 +142,7 @@ int main()
                 auto ready (waitingP.as<sail::GameReady>());
                 std::cout << "Terrain : " << ready.terrain.getSize().x << ", " << ready.terrain.getSize().y << "\n";
                 std::cout << " -> " << ready.terrain({0, 0}) << "\n";
-                terrain.load(ready.terrain);
+                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed);
                 break;
             }
         }

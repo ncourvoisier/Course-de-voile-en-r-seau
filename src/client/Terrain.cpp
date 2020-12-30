@@ -22,7 +22,7 @@ namespace sail
 
     }
 
-    void Terrain::load(gf::Array2D<float> elevations)
+    void Terrain::load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS)
     {
         gf::ColorRamp rampTerrain;
         rampTerrain.addColorStop(0.250f, gf::Color::fromRgba32(  9,  62,  92)); // Deep Water
@@ -39,6 +39,9 @@ namespace sail
                 m_terrain({ row, col }) = rampTerrain.computeColor(elevation);
             }
         }
+
+        m_windDirection = windD;
+        m_windSpeed = windS;
     }
 
     void Terrain::setFullRender(bool fullRender)
@@ -130,7 +133,9 @@ namespace sail
 
                 if (row % 10 == 0 && col % 10 == 0) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
                 {
-                    WindArrow arrow(14, 2, sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
+                    WindArrow arrow(m_windSpeed({ col, row }),
+                            m_windDirection({ col, row }),
+                            sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
                     arrow.setScale(2);
                     arrow.setPosition({ col * TileSize, row * TileSize });
                     m_arrows.push_back(arrow);

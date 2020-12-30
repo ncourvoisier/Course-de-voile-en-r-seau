@@ -21,7 +21,7 @@ namespace sail
 
         Terrain(ClientBoat& playerBoat);
 
-        void load(gf::Array2D<float> elevations);
+        void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS);
 
         void setFullRender(bool fullRender);
 
@@ -31,6 +31,8 @@ namespace sail
 
     private:
         gf::Array2D<gf::Color4f> m_terrain;
+        gf::Array2D<float> m_windDirection;
+        gf::Array2D<float> m_windSpeed;
 
         gf::VertexArray m_vertices;
 

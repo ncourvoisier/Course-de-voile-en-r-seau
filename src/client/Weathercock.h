@@ -23,7 +23,6 @@ namespace sail
             const gf::Vector2f  m_position;
 
             double m_speed;
-
             double m_direction;
 
     };

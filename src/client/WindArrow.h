@@ -18,6 +18,9 @@ namespace sail
         static constexpr double MaxDistance = 75;
 
         gf::VertexArray m_arrow;
+
+        float m_speed;
+        float m_direction;
     };
 
 }

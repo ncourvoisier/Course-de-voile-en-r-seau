@@ -104,7 +104,10 @@ namespace sail
 
     GameReady Game::getGameReady()
     {
-        return { m_world.getTerrain(), m_world.getStartingPosition() };
+        return { m_world.getTerrain(),
+                 m_world.getWindDirection(),
+                 m_world.getWindSpeed(),
+                 m_world.getStartingPosition() };
     }
 
     GameState Game::updateGame(gf::Time dt)
