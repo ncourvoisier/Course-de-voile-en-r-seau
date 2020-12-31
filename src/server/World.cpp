@@ -77,7 +77,7 @@ namespace sail
             for (auto col : m_windSpeed.getColRange())
             {
                 double x = static_cast<double>(col) / m_windSpeed.getCols() * WindScale;
-                m_windSpeed({ col, row }) = ((windSNoise.getValue(x, y) * 0.5f) + 0.5f) * 29.0f + 1.0f;
+                m_windSpeed({ col, row }) = ((windSNoise.getValue(x, y) * 0.5f) + 0.5f) * 40.0f + 10.0f; // Wind Speed : 10 m/s -> 50 m/s
             }
         }
 

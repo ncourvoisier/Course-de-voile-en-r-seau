@@ -30,7 +30,9 @@ namespace sail
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
     private:
+        gf::Array2D<float> m_elevations;
         gf::Array2D<gf::Color4f> m_terrain;
+
         gf::Array2D<float> m_windDirection;
         gf::Array2D<float> m_windSpeed;
 

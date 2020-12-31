@@ -19,28 +19,28 @@ namespace sail
         arrowVertices[3].position = { 0, 7 };
 
         float red, green, blue;
-        int gradientPosition = m_speed / 7.5f;
-        float normalize = fmod(m_speed, 7.5f); // put m_speed between 0 and 7.5
+        int gradientPosition = (m_speed - 10.0f) / 10.0f;
+        float normalize = fmod(m_speed, 10.0f); // put m_speed between 0 and 10
         switch (gradientPosition)
         {
             case 0:
                 red = 0.0f;
-                green = (normalize * 255.0f) / 7.5f;
+                green = (normalize * 255.0f) / 10.0f;
                 blue = 255.0f;
                 break;
             case 1:
                 red = 0.0f;
                 green = 255.0f;
-                blue = 255.0f - (normalize * 255.0f) / 7.5f;
+                blue = 255.0f - (normalize * 255.0f) / 10.0f;
                 break;
             case 2:
-                red = (normalize * 255.0f) / 7.5f;
+                red = (normalize * 255.0f) / 10.0f;
                 green = 255.0f;
                 blue = 0.0f;
                 break;
             case 3:
                 red = 255.0f;
-                green = 255.0f - (normalize * 255.0f) / 7.5f;
+                green = 255.0f - (normalize * 255.0f) / 10.0f;
                 blue = 0.0f;
                 break;
             default:
@@ -68,7 +68,7 @@ namespace sail
 
     void WindArrow::draw(gf::RenderTarget &target, const gf::RenderStates &states)
     {
-        setRotation(m_direction);
+        setRotation(m_direction + M_PI);
 
         gf::RenderStates newState;
         newState.transform = states.transform * getTransform();

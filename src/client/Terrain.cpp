@@ -40,6 +40,7 @@ namespace sail
             }
         }
 
+        m_elevations = elevations;
         m_windDirection = windD;
         m_windSpeed = windS;
     }
@@ -131,7 +132,7 @@ namespace sail
                 m_vertices.append(vertices[1]);
                 m_vertices.append(vertices[3]);
 
-                if (row % 10 == 0 && col % 10 == 0) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
+                if (row % 10 == 0 && col % 10 == 0 && m_elevations({ row, col }) < 0.5f) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
                 {
                     WindArrow arrow(m_windSpeed({ row, col }),
                             m_windDirection({ row, col }),
