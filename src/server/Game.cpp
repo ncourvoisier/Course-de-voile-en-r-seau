@@ -8,8 +8,11 @@
 #include <gf/Random.h>
 #include <gf/Clock.h>
 
+#include "Managers.h"
+
 #include "Game.h"
 #include "../physics/Physics.h"
+#include "GameMessages.h"
 
 namespace sail
 {
@@ -110,7 +113,7 @@ namespace sail
                  m_world.getStartingPosition() };
     }
 
-    GameState Game::updateGame(gf::Time dt)
+    GameState Game::getGameState(gf::Time dt)
     {
         std::vector<BoatData> boatsData;
 
@@ -140,7 +143,9 @@ namespace sail
         if (m_world.isOnLand(boat.getLongitude(), boat.getLatitude()))
         {
             boat.reset(m_world.getStartingPosition().x,
-                    m_world.getStartingPosition().y); // TODO : currently, no specific packet for death, just TP, to improve
+                    m_world.getStartingPosition().y);
+            PlayerDied pDIed(player);
+            gMessageManager().sendMessage(&pDIed);
         }
     }
 
@@ -161,17 +166,10 @@ namespace sail
             clock.restart();
             m_simulationMutex.lock();
 
-            int a = 0;
-
             for (auto& player : m_players) {
-                Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
-                if (a == 0)
-                {
-                    std::cout << "Wind : " << wind.getDirection() << ", " << wind.getSpeed() << "\n";
-                    a += 1;
-                }
                 if (player.isConnected())
                 {
+                    Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
                     for (int i = 0; i < loopsAmount; i++)
                     {
                         sailing_physics_update(player.getBoat(), wind, physicGranularity);

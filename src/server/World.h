@@ -20,7 +20,9 @@ namespace sail
 
         gf::Array2D<float>& getTerrain();
         gf::Vector2f getStartingPosition();
+        gf::Vector2f getEndingPosition();
 
+        gf::Vector2d randomWaterLocation();
         bool isOnLand(double x, double y);
         Wind getWindAtPosition(double x, double y);
 
@@ -37,7 +39,8 @@ namespace sail
         gf::Array2D<float> m_windSpeed;
         gf::Array2D<float> m_terrain;
 
-        gf::Vector2d m_startingPosition;
+        gf::Vector2f m_startingPosition;
+        gf::Vector2f m_endingPosition;
     };
 
 }

@@ -1,25 +1,24 @@
 #include <gf/Packet.h>
 #include <iostream>
 #include <gf/Clock.h>
+#include <gf/Singleton.h>
+#include <gf/MessageManager.h>
 #include "../Protocol.h"
 #include "ServerNetworkHandler.h"
 
 #include "../physics/Boat.h"
 #include "../physics/Physics.h"
+#include "Managers.h"
 
 int main() {
 
-    sail::ServerNetworkHandler networkHandler("24680");
+    gf::SingletonStorage<gf::MessageManager> storageForMessageManager(sail::gMessageManager);
+
+    sail::Game game;
+
+    std::cout << "OK\n";
+
+    sail::ServerNetworkHandler networkHandler("24680", game);
     networkHandler.run();
 
-    /*int n = 0.05 / 0.00002;
-    std::cout << "loops required : " << n << "\n";
-    sail::Boat boat;
-    sail::Wind wind;
-    gf::Clock clock;
-    for (int i = 0; i < n; i++)
-    {
-        sail::sailing_physics_update(boat, wind, 0.00002);
-    }
-    std::cout << "Time taken to simulate : " << clock.restart().asMilliseconds() << "ms \n";*/
 }

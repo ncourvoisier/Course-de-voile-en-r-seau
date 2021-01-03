@@ -137,7 +137,6 @@ namespace sail
                     WindArrow arrow(m_windSpeed({ row, col }),
                             m_windDirection({ row, col }),
                             sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
-                    arrow.setScale(2);
                     arrow.setPosition({ col * TileSize, row * TileSize });
                     m_arrows.push_back(arrow);
                 }

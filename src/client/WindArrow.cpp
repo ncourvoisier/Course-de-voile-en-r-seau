@@ -69,6 +69,8 @@ namespace sail
     void WindArrow::draw(gf::RenderTarget &target, const gf::RenderStates &states)
     {
         setRotation(m_direction + M_PI);
+        setOrigin({ 3.0f, 3.5f });
+        setScale(2.0f);
 
         gf::RenderStates newState;
         newState.transform = states.transform * getTransform();

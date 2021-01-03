@@ -32,7 +32,7 @@ add_executable(server
         src/physics/Physics.cpp
         src/physics/Physics.h
         src/physics/BoatControl.cpp
-        src/physics/BoatControl.h src/server/World.cpp src/server/World.h src/Constants.h)
+        src/physics/BoatControl.h src/server/World.cpp src/server/World.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
 
 add_executable(client
         src/client/client.cpp src/Protocol.h
@@ -48,8 +48,8 @@ add_executable(client
         src/physics/BoatControl.h
         src/client/Singletons.cpp
         src/client/Singletons.h
-        src/client/Weathercock.cpp
-        src/client/Weathercock.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h)
+        src/client/NavigationArrow.cpp
+        src/client/NavigationArrow.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h)
 
 target_include_directories(client
         PRIVATE

@@ -14,7 +14,7 @@
 #include "ClientBoat.h"
 #include "ClientPlayer.h"
 #include "Singletons.h"
-#include "Weathercock.h"
+#include "NavigationArrow.h"
 #include <gf/Queue.h>
 #include <gf/ResourceManager.h>
 #include <gf/Sprite.h>
@@ -156,10 +156,11 @@ int main()
     {
         mainEntities.addEntity((it->second).getBoat());
     }
-    sail::Weathercock cock;
-    mainEntities.addEntity(cock);
 
     mainEntities.addEntity(terrain);
+
+    sail::NavigationArrow endArrow ({5000, 5000 }, localBoat, hudView);
+    hudEntities.addEntity(endArrow);
 
     // Launching the thread
     clientHandler.run();
@@ -269,9 +270,14 @@ int main()
                                 << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";
                             entity.fromBoatData(boat);
                         }
-                        cock.fromWindData(state.wind);
                         break;
                     }
+                    case sail::Death::type:
+                    {
+                        std::cout << "BYEEEE\n";
+                        window.close(); // TEST
+                    }
+                    break;
                 }
             }
             
@@ -286,7 +292,7 @@ int main()
         // 2. update
         //localBoat.update(time);
         mainEntities.update(time);
-        //hudEntities.update(time);
+        hudEntities.update(time);
         // 3. draw
         renderer.clear();
         renderer.setView(mainView);

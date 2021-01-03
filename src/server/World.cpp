@@ -81,18 +81,26 @@ namespace sail
             }
         }
 
-        gf::Vector2d startingP;
+        m_startingPosition = randomWaterLocation();
+        /*do {*/
+            m_endingPosition = randomWaterLocation();
+        /*}
+        while (gf::squareDistance(m_startingPosition, m_endingPosition) < 0.03f);*/
+    }
+
+    gf::Vector2d World::randomWaterLocation()
+    {
+        gf::Vector2d loc;
         unsigned col, row;
         do {
-           startingP.x = m_random.computeUniformFloat(MapMinBorder, MapMaxBorder);
-           startingP.y = m_random.computeUniformFloat(MapMinBorder, MapMaxBorder);
+            loc.x = m_random.computeUniformFloat(MapMinBorder, MapMaxBorder);
+            loc.y = m_random.computeUniformFloat(MapMinBorder, MapMaxBorder);
 
-            col = static_cast<unsigned>(startingP.x / TileDegree);
-            row = static_cast<unsigned>(startingP.y / TileDegree);
+            col = static_cast<unsigned>(loc.x / TileDegree);
+            row = static_cast<unsigned>(loc.y / TileDegree);
         }
         while(m_terrain({ row, col }) > 0.25f);
-
-        m_startingPosition = startingP;
+        return loc;
     }
 
     bool World::isOnLand(double x, double y)

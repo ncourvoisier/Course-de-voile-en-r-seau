@@ -30,7 +30,7 @@ namespace sail
 
         GameReady getGameReady();
 
-        GameState updateGame(gf::Time dt);
+        GameState getGameState(gf::Time dt);
 
     private:
         void runSimulation();

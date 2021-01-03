@@ -11,23 +11,39 @@
 
 #include "ServerNetworkHandler.h"
 #include "../Protocol.h"
+#include "Managers.h"
+#include "GameMessages.h"
 
 namespace sail
 {
 
     std::atomic_bool ServerNetworkHandler::g_running(true);
 
-    ServerNetworkHandler::ServerNetworkHandler(std::string service)
+    ServerNetworkHandler::ServerNetworkHandler(std::string service, Game& game)
     : m_listener(service)
-    , m_game()
+    , m_game(game)
     {
         std::signal(SIGINT, &ServerNetworkHandler::terminationHandler);
         std::signal(SIGTERM, &ServerNetworkHandler::terminationHandler);
+
+        gMessageManager().registerHandler<PlayerDied>(&ServerNetworkHandler::onPlayerDied, this);
     }
 
     void ServerNetworkHandler::terminationHandler(int signum)
     {
         g_running = false;
+    }
+
+    gf::MessageStatus ServerNetworkHandler::onPlayerDied(gf::Id id, gf::Message *msg)
+    {
+        assert(id == PlayerDied::type);
+        auto died = static_cast<PlayerDied*>(msg);
+        Death death;
+        gf::Packet deathP;
+        deathP.is<Death>(death);
+        std::cout << "sent death\n";
+        died->player.getSocket().sendPacket(deathP); // TODO : sockets are currently binded to player objects, but they should only be located in the ServerNetworkHandler, in a map
+        return gf::MessageStatus::Keep;
     }
 
     void ServerNetworkHandler::broadcast(const gf::Packet& packet)
@@ -125,7 +141,7 @@ namespace sail
             processPackets();
 
             //// SENDING DATAS ////
-            GameState gs = m_game.updateGame(clock.restart());
+            GameState gs = m_game.getGameState(clock.restart());
             gf::Packet gsPacket;
             gsPacket.is(gs);
             broadcast(gsPacket);
@@ -161,6 +177,7 @@ namespace sail
                     }
                     if (m_selector.isReady(m_listener))
                     {
+                        std::cout << "Attempt to connect\n";
                         // the listener is ready, accept a new connection
                         gf::TcpSocket socket = m_listener.accept();
                         Player player(std::move(socket));

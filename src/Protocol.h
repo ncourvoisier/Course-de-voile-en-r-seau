@@ -53,6 +53,17 @@ namespace sail {
         return ar | data.speed | data.direction;
     }
 
+    struct Death
+    {
+        static constexpr gf::Id type = "Death"_id;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, Death& data)
+    {
+        return ar;
+    }
+
     struct GameState
     {
         static constexpr gf::Id type = "GameState"_id;
