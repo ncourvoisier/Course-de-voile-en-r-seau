@@ -19,10 +19,13 @@ namespace sail
     , m_vertices(gf::PrimitiveType::Triangles)
     , m_arrows()
     {
-
+        m_endingSpot = gf::CircleShape(30);
+        m_endingSpot.setOutlineThickness(3);
+        m_endingSpot.setColor(gf::Color::fromRgba32(0, 180, 30, 180));
+        m_endingSpot.setOutlineColor(gf::Color::fromRgba32(0, 140, 30, 230));
     }
 
-    void Terrain::load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS)
+    void Terrain::load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d end)
     {
         gf::ColorRamp rampTerrain;
         rampTerrain.addColorStop(0.250f, gf::Color::fromRgba32(  9,  62,  92)); // Deep Water
@@ -43,6 +46,9 @@ namespace sail
         m_elevations = elevations;
         m_windDirection = windD;
         m_windSpeed = windS;
+
+        m_endingPos = end * WorldScale;
+        m_endingSpot.setPosition(m_endingPos);
     }
 
     void Terrain::setFullRender(bool fullRender)
@@ -102,7 +108,7 @@ namespace sail
         unsigned colMin = (newCol > DisplayHalfRange) ? (newCol - DisplayHalfRange) : 0;
         unsigned colMax = (newCol + DisplayHalfRange < MapSize) ? (newCol + DisplayHalfRange) : MapSize - 1;
 
-        std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
+        //std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
 
         m_arrows.clear();
 
@@ -142,6 +148,9 @@ namespace sail
                 }
             }
         }
+
+        m_showEnding = gf::naturalDistance({static_cast<float>(m_playerBoat.getLongitude()),
+                                            static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 1000;
     }
 
     void Terrain::render(gf::RenderTarget &target, const gf::RenderStates& states)
@@ -151,6 +160,8 @@ namespace sail
         {
             target.draw(arrow);
         }
+        if (m_showEnding)
+            target.draw(m_endingSpot);
     }
 
 }

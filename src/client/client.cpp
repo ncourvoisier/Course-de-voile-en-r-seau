@@ -11,6 +11,7 @@
 #include <iostream>
 #include "ClientNetworkHandler.h"
 #include "../Protocol.h"
+#include "../Constants.h"
 #include "ClientBoat.h"
 #include "ClientPlayer.h"
 #include "Singletons.h"
@@ -134,6 +135,8 @@ int main(int argc, char *argv[])
                 sail::ClientPlayer(p.id, p.name))); // TODO : create a player manager
     }
 
+    gf::Vector2d endingPos;
+
     for (;;)
     {
         gf::Packet waitingP;
@@ -149,9 +152,10 @@ int main(int argc, char *argv[])
             else if (waitingP.getType() == sail::GameReady::type)
             {
                 auto ready (waitingP.as<sail::GameReady>());
-                std::cout << "Terrain : " << ready.terrain.getSize().x << ", " << ready.terrain.getSize().y << "\n";
-                std::cout << " -> " << ready.terrain({0, 0}) << "\n";
-                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed);
+                std::cout << " start : " << ready.startingPosition.x << ", " << ready.startingPosition.y
+                    << ", end : " << ready.endingPosition.x << ", " << ready.endingPosition.y << "\n";
+                endingPos = ready.endingPosition * sail::WorldScale;
+                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
                 break;
             }
         }
@@ -168,9 +172,8 @@ int main(int argc, char *argv[])
 
     mainEntities.addEntity(terrain);
 
-    sail::NavigationArrow endArrow ({5000, 5000 }, localBoat, hudView);
+    sail::NavigationArrow endArrow (endingPos, localBoat, hudView);
     hudEntities.addEntity(endArrow);
-
 
     sail::Banner banner({5000, 5000 }, gf::Color::White);
     hudEntities.addEntity(banner);
@@ -193,6 +196,8 @@ int main(int argc, char *argv[])
 
     while (window.isOpen())
     {
+       // std::cout << "Pos : " << localBoat.getLongitude() << ", " << localBoat.getLatitude() << "\n";
+
         gf::Time time = clock.restart();
         lag += time;
         keyDelay += time;
@@ -270,7 +275,7 @@ int main(int argc, char *argv[])
             /////////////////////////
 
             gf::Packet packet;
-            if (clientHandler.getQueue().poll(packet))
+            while (clientHandler.getQueue().poll(packet))
             {
                 switch (packet.getType())
                 {
@@ -280,16 +285,30 @@ int main(int argc, char *argv[])
                         for (auto& boat : state.boats)
                         {
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
-                            if (boat.playerId == localPlayer.getId())
+                            /*if (boat.playerId == localPlayer.getId())
                                 std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " | angle : " << boat.angle
-                                << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";
+                                << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";*/
                             entity.fromBoatData(boat);
                         }
                         break;
                     }
                     case sail::PlayerEvent::type:
                     {
-                        std::cout << "HEY\n";
+                        auto eventPacket {packet.as<sail::PlayerEvent>()};
+                        switch (eventPacket.event)
+                        {
+                            case sail::PlayerEvent::EventType::Death:
+                                std::cout << "A player is dead\n";
+                                break;
+                            case sail::PlayerEvent::EventType::Finish:
+                                std::cout << "A player finished\n";
+                                break;
+                            case sail::PlayerEvent::EventType::Checkpoint:
+                                std::cout << "Player found a checkpoint\n";
+                                break;
+                            default:
+                                std::cout << "Received unknown PlayerEvent type\n";
+                        }
                     }
                     break;
                 }

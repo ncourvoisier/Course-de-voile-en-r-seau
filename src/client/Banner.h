@@ -27,7 +27,7 @@ namespace sail {
         gf::Text m_text;
         gf::Vector2f m_target;
         gf::Clock m_clock;
-        bool m_displate;
+        bool m_display;
     };
 
 }

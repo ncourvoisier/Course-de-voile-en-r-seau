@@ -4,6 +4,7 @@
 #include <gf/Array2D.h>
 #include <gf/Entity.h>
 #include <gf/VertexArray.h>
+#include <gf/Shapes.h>
 
 #include "../Constants.h"
 
@@ -21,7 +22,7 @@ namespace sail
 
         Terrain(ClientBoat& playerBoat);
 
-        void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS);
+        void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d end);
 
         void setFullRender(bool fullRender);
 
@@ -40,11 +41,16 @@ namespace sail
 
         std::vector<WindArrow> m_arrows;
 
+        gf::Vector2f m_endingPos; // TODO : do a CheckPointManager for those instead
+
+        gf::CircleShape m_endingSpot;
+
         gf::Vector2u m_oldPosition;
 
         ClientBoat& m_playerBoat;
 
         bool m_fullRender;
+        bool m_showEnding;
     };
 
 }

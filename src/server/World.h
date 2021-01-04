@@ -39,8 +39,8 @@ namespace sail
         gf::Array2D<float> m_windSpeed;
         gf::Array2D<float> m_terrain;
 
-        gf::Vector2f m_startingPosition;
-        gf::Vector2f m_endingPosition;
+        gf::Vector2d m_startingPosition;
+        gf::Vector2d m_endingPosition;
     };
 
 }

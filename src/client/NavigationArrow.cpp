@@ -27,7 +27,7 @@ namespace sail
     {
         gf::unused(time);
 
-        double theta = atan2(m_target.y - m_boat.getLongitude(), m_target.x - m_boat.getLatitude());
+        double theta = atan2(m_target.y - m_boat.getLatitude(), m_target.x - m_boat.getLongitude());
         gf::Vector2f pos = {static_cast<float>(m_view.getSize().x / 2 + (m_view.getSize().x / 2.2) * cos(theta)),
                             static_cast<float>(m_view.getSize().y / 2 +  (m_view.getSize().y / 2.2) * sin(theta))};
 

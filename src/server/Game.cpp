@@ -110,7 +110,8 @@ namespace sail
         return { m_world.getTerrain(),
                  m_world.getWindDirectionArray(),
                  m_world.getWindSpeedArray(),
-                 m_world.getStartingPosition() };
+                 m_world.getStartingPosition(),
+                 m_world.getEndingPosition() };
     }
 
     GameState Game::getGameState(gf::Time dt)
@@ -148,13 +149,13 @@ namespace sail
             pDIed.id = player.getId();
             gMessageManager().sendMessage(&pDIed);
         }
-        /*else if (gf::naturalDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
-                m_world.getEndingPosition()) < 0.5f)
+        else if (gf::naturalDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
+                m_world.getEndingPosition()) < 0.01f)
         {
             PlayerFinished pFinished;
             pFinished.id = player.getId();
             gMessageManager().sendMessage(&pFinished);
-        }*/
+        }
     }
 
     void Game::runSimulation()

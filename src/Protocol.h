@@ -72,7 +72,7 @@ namespace sail {
     template<typename Archive>
     Archive operator|(Archive& ar, PlayerEvent& data)
     {
-        return ar;
+        return ar | data.id | data.event;
     }
 
     struct GameState
@@ -132,12 +132,13 @@ namespace sail {
         gf::Array2D<float> windDirection;
         gf::Array2D<float> windSpeed;
         gf::Vector2d startingPosition;
+        gf::Vector2d endingPosition;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, GameReady& data)
     {
-        return ar | data.terrain | data.windDirection | data.windSpeed | data.startingPosition;
+        return ar | data.terrain | data.windDirection | data.windSpeed | data.startingPosition | data.endingPosition;
     }
 
     struct PlayerAction

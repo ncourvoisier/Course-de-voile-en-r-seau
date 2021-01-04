@@ -17,7 +17,7 @@ namespace sail {
     , m_color(color)
     , m_text()
     , m_clock()
-    , m_displate(false)
+    , m_display(false)
     {
         gf::Font& font = gResourceManager().getFont("arial.ttf");
         m_text.setCharacterSize(70);
@@ -34,24 +34,22 @@ namespace sail {
     }
 
     void Banner::update(gf::Time time) {
-        if (!m_displate) {
+        if (!m_display) {
             return;
         }
         if (m_clock.getElapsedTime().asSeconds() > 3) {
-            m_displate = false;
+            m_display = false;
         }
     }
 
     void Banner::displayText(std::string text) {
         m_text.setString(text);
-        m_displate = true;
+        m_display = true;
         m_clock.restart();
     }
 
     void Banner::render(gf::RenderTarget& target, const gf::RenderStates &states) {
-        std::cout << "ICI";
-        if (m_displate) {
-            std::cout << "AFFICHAGE";
+        if (m_display) {
             target.draw(m_text, states);
         }
     }
