@@ -21,8 +21,15 @@
 #include "config.h"
 #include "Terrain.h"
 
-int main()
+int main(int argc, char *argv[])
 {
+
+    if (argc != 2) {
+        std::cout << "Enter your username in arguments." << std::endl;
+        std::cout << "Usage : ./client username" << std::endl;
+        exit(0);
+    }
+    std::string usr = argv[1];
 
     //// CONNECTING
     sail::ClientNetworkHandler clientHandler;
@@ -99,7 +106,8 @@ int main()
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
     // Establishing connection
-    std::string userName = "username";
+    //std::string userName = "username";
+    std::string userName = usr;
     sail::ClientGreeting greeting = { userName }; // TODO : TEMPORARY
     clientHandler.send(greeting);
     gf::Packet serverGreetingP;
