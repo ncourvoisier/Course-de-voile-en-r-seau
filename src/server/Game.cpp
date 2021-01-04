@@ -144,9 +144,17 @@ namespace sail
         {
             boat.reset(m_world.getStartingPosition().x,
                     m_world.getStartingPosition().y);
-            PlayerDied pDIed(player);
+            PlayerDied pDIed;
+            pDIed.id = player.getId();
             gMessageManager().sendMessage(&pDIed);
         }
+        /*else if (gf::naturalDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
+                m_world.getEndingPosition()) < 0.5f)
+        {
+            PlayerFinished pFinished;
+            pFinished.id = player.getId();
+            gMessageManager().sendMessage(&pFinished);
+        }*/
     }
 
     void Game::runSimulation()

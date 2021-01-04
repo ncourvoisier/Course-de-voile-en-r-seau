@@ -129,6 +129,11 @@ namespace sail
         return m_startingPosition;
     }
 
+    gf::Vector2f World::getEndingPosition()
+    {
+        return m_endingPosition;
+    }
+
     gf::Array2D<float>& World::getWindDirectionArray()
     {
         return m_windDirection;

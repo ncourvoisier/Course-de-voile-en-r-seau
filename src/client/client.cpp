@@ -280,10 +280,9 @@ int main(int argc, char *argv[])
                         }
                         break;
                     }
-                    case sail::Death::type:
+                    case sail::PlayerEvent::type:
                     {
-                        std::cout << "BYEEEE\n";
-                        window.close(); // TEST
+                        std::cout << "HEY\n";
                     }
                     break;
                 }

@@ -27,6 +27,7 @@ namespace sail
         std::signal(SIGTERM, &ServerNetworkHandler::terminationHandler);
 
         gMessageManager().registerHandler<PlayerDied>(&ServerNetworkHandler::onPlayerDied, this);
+        gMessageManager().registerHandler<PlayerFinished>(&ServerNetworkHandler::onPlayerFinished, this);
     }
 
     void ServerNetworkHandler::terminationHandler(int signum)
@@ -38,11 +39,21 @@ namespace sail
     {
         assert(id == PlayerDied::type);
         auto died = static_cast<PlayerDied*>(msg);
-        Death death;
+        PlayerEvent death { died->id, PlayerEvent::EventType::Death };
         gf::Packet deathP;
-        deathP.is<Death>(death);
-        std::cout << "sent death\n";
-        died->player.getSocket().sendPacket(deathP); // TODO : sockets are currently binded to player objects, but they should only be located in the ServerNetworkHandler, in a map
+        deathP.is<PlayerEvent>(death);
+        broadcast(deathP); // TODO : sockets are currently binded to player objects, but they should only be located in the ServerNetworkHandler, in a map
+        return gf::MessageStatus::Keep;
+    }
+
+    gf::MessageStatus ServerNetworkHandler::onPlayerFinished(gf::Id id, gf::Message *msg)
+    {
+        assert(id == PlayerFinished::type);
+        auto finished = static_cast<PlayerFinished*>(msg);
+        PlayerEvent finish { finished->id, PlayerEvent::EventType::Finish };
+        gf::Packet finishP;
+        finishP.is<PlayerEvent>(finish);
+        broadcast(finishP);
         return gf::MessageStatus::Keep;
     }
 

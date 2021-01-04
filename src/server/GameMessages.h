@@ -11,18 +11,16 @@ namespace sail
 
     struct PlayerDied: public gf::Message
     {
-        explicit PlayerDied(Player& p) : player(p) {};
-
         static constexpr gf::Id type = "PlayerDied"_id;
 
-        Player& player;
+        gf::Id id;
     };
 
     struct PlayerFinished: public gf::Message
     {
         static constexpr gf::Id type = "PlayerFinished"_id;
 
-        Player& player;
+        gf::Id id;
     };
 
 }

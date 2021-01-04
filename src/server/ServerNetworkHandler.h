@@ -27,6 +27,7 @@ namespace sail
         void processPackets();
 
         gf::MessageStatus onPlayerDied(gf::Id id, gf::Message *msg);
+        gf::MessageStatus onPlayerFinished(gf::Id id, gf::Message *msg);
 
         void run();
 

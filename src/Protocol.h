@@ -53,13 +53,24 @@ namespace sail {
         return ar | data.speed | data.direction;
     }
 
-    struct Death
+    struct PlayerEvent
     {
-        static constexpr gf::Id type = "Death"_id;
+        static constexpr gf::Id type = "PlayerEvent"_id;
+
+        enum EventType : uint16_t
+        {
+            Death,
+            Finish,
+            Checkpoint,
+            Unknown
+        };
+
+        gf::Id id;
+        EventType event = Unknown;
     };
 
     template<typename Archive>
-    Archive operator|(Archive& ar, Death& data)
+    Archive operator|(Archive& ar, PlayerEvent& data)
     {
         return ar;
     }
@@ -134,7 +145,7 @@ namespace sail {
         static constexpr gf::Id type = "PlayerAction"_id;
 
         enum Type : uint16_t
-        { // TODO : replace with actual sailing boat controls
+        {
             Right,
             Left,
             Center,
