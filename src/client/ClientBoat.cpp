@@ -14,8 +14,9 @@
 namespace sail
 {
 
-    ClientBoat::ClientBoat(gf::Color4f color)
+    ClientBoat::ClientBoat(std::string name)
     : gf::Entity(1)
+    , m_name(name)
     , m_texture(gTextureAtlas().getTexture())
     , m_boat(gTextureAtlas().getTextureRect("boat"))
     , m_sail(gTextureAtlas().getTextureRect("sail"))
@@ -67,7 +68,8 @@ namespace sail
         resources.addSearchDir("../resources");
         gf::Font& font = resources.getFont("arial.ttf");
 
-        std::string name = "Nicolas";
+//        std::string name = "Nicolas";
+        std::string name = m_name;
         gf::Text textName;
         textName.setString(name);
         textName.setCharacterSize(65);
@@ -77,26 +79,24 @@ namespace sail
         textName.setFont(font);
         textName.setAnchor(gf::Anchor::Center);
         textName.setRotation(80.0);
-        textName.setPosition({-120.0f, 150.0f});
+        textName.setPosition({-110.0f, 150.0f});
 
         /*std::string info = "Speed : Sail angle : ";
         std::ostringstream sa;
         sa << sail_angle;
         std::string str = sa.str();
-
         auto res = info + str;
-
         gf::Text textInfo;
         textInfo.setString(res);
         textInfo.setCharacterSize(75);
-        textName.setColor(gf::Color::White);
-        textName.setParagraphWidth(800);
-        textName.setAlignment(gf::Alignment::None);
-        textName.setFont(font);
-        textName.setAnchor(gf::Anchor::BottomRight);
-        textName.setPosition({100.0f, 150.0f});
+        textInfo.setColor(gf::Color::White);
+        textInfo.setParagraphWidth(800);
+        textInfo.setAlignment(gf::Alignment::Center);
+        textInfo.setFont(font);
+        textInfo.setAnchor(gf::Anchor::Center);
+        textInfo.setPosition({300.0f, 300.0f});
+        target.draw(textInfo, shipStates);*/
 
-        target.draw(textInfo, states);*/
         target.draw(textName, shipStates);
         target.draw(spriteRudder, shipStates);
         target.draw(spriteBoat, states);

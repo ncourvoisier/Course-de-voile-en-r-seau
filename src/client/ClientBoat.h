@@ -13,7 +13,7 @@ namespace sail
     class ClientBoat : public Boat, public gf::Entity
     {
     public:
-        ClientBoat(gf::Color4f color);
+        ClientBoat(std::string name);
 
         ~ClientBoat() override;
 
@@ -25,7 +25,7 @@ namespace sail
 
     private:
         const gf::Texture& m_texture;
-
+        std::string m_name;
         gf::RectF m_boat;
         gf::RectF m_sail;
         gf::RectF m_rudder;

@@ -19,15 +19,10 @@ namespace sail
 
         gf::Id getId() const;
 
-        const std::string &getUserName() const;
-
         ClientBoat &getBoat();
 
     private:
         gf::Id m_id;
-
-        std::string m_userName;
-
         ClientBoat m_boat;
     };
 
