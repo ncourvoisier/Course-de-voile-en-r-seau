@@ -20,6 +20,7 @@
 #include <gf/Sprite.h>
 #include "config.h"
 #include "Terrain.h"
+#include "Banner.h"
 
 int main(int argc, char *argv[])
 {
@@ -169,6 +170,12 @@ int main(int argc, char *argv[])
 
     sail::NavigationArrow endArrow ({5000, 5000 }, localBoat, hudView);
     hudEntities.addEntity(endArrow);
+
+
+    sail::Banner banner({5000, 5000 }, gf::Color::White);
+    hudEntities.addEntity(banner);
+
+    banner.displayText("START");
 
     // Launching the thread
     clientHandler.run();
