@@ -16,7 +16,7 @@ namespace sail
     class Game
     {
     public:
-        Game();
+        Game(int neededPlayers);
 
         void start();
 
@@ -40,10 +40,10 @@ namespace sail
         void checkCoordinates(Player& player);
 
     private:
-        static constexpr int NeededPlayers = 2;
-
         static constexpr float Speed = 25.0f;
         static constexpr float MaxSpeed = Speed * 4;
+
+        int m_neededPlayers;
 
         World m_world;
 

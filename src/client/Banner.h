@@ -16,7 +16,7 @@ namespace sail {
     class Banner: public gf::Entity {
 
     public:
-        Banner(gf::Vector2f target, gf::Color4f color);
+        Banner(gf::Vector2f target, gf::Color4f color, gf::View& view);
         ~Banner();
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
         void update(gf::Time time) override;
@@ -27,6 +27,7 @@ namespace sail {
         gf::Text m_text;
         gf::Vector2f m_target;
         gf::Clock m_clock;
+        gf::View& m_view;
         bool m_display;
     };
 

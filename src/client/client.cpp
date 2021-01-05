@@ -23,19 +23,23 @@
 #include "Terrain.h"
 #include "Banner.h"
 
+void printUsage(char* execName)
+{
+    std::cout << "Usage: " << execName << " [address] [port] [username]\n";
+}
+
 int main(int argc, char *argv[])
 {
-
-    if (argc != 2) {
-        std::cout << "Enter your username in arguments." << std::endl;
-        std::cout << "Usage : ./client username" << std::endl;
-        exit(0);
+    if (argc != 4) {
+        printUsage(argv[0]);
+        exit(1);
     }
-    std::string usr = argv[1];
+
+    std::string usr = argv[3];
 
     //// CONNECTING
     sail::ClientNetworkHandler clientHandler;
-    clientHandler.connect("127.0.0.1", "24680");
+    clientHandler.connect(argv[1], argv[2]);
     ////
 
     static constexpr gf::Vector2u ScreenSize(525, 525);
@@ -175,7 +179,7 @@ int main(int argc, char *argv[])
     sail::NavigationArrow endArrow (endingPos, localBoat, hudView);
     hudEntities.addEntity(endArrow);
 
-    sail::Banner banner({5000, 5000 }, gf::Color::White);
+    sail::Banner banner({5000, 5000}, gf::Color::White, hudView);
     hudEntities.addEntity(banner);
 
     banner.displayText("START");
@@ -285,9 +289,6 @@ int main(int argc, char *argv[])
                         for (auto& boat : state.boats)
                         {
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
-                            /*if (boat.playerId == localPlayer.getId())
-                                std::cout << "Boat: " << boat.xPos << ", " << boat.yPos << " | angle : " << boat.angle
-                                << ", sail : " << boat.sailAngle << ", rudder : " << boat.rudderAngle << "\n";*/
                             entity.fromBoatData(boat);
                         }
                         break;

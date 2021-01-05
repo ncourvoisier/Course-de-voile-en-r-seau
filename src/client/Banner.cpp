@@ -11,8 +11,9 @@
 
 namespace sail {
 
-    Banner::Banner(gf::Vector2f target, gf::Color4f color)
+    Banner::Banner(gf::Vector2f target, gf::Color4f color, gf::View& view)
     : gf::Entity(1)
+    , m_view(view)
     , m_target(target)
     , m_color(color)
     , m_text()
@@ -20,13 +21,13 @@ namespace sail {
     , m_display(false)
     {
         gf::Font& font = gResourceManager().getFont("arial.ttf");
-        m_text.setCharacterSize(70);
+        m_text.setCharacterSize(15);
         m_text.setColor(m_color);
         m_text.setParagraphWidth(800);
         m_text.setAlignment(gf::Alignment::Center);
         m_text.setFont(font);
         m_text.setAnchor(gf::Anchor::Center);
-        m_text.setPosition({0.0f, 50.0f});
+        m_text.setPosition({250.0f, 250.0f});
     }
 
     Banner::~Banner() {
@@ -34,12 +35,10 @@ namespace sail {
     }
 
     void Banner::update(gf::Time time) {
-        if (!m_display) {
+        if (!m_display)
             return;
-        }
-        if (m_clock.getElapsedTime().asSeconds() > 3) {
+        if (m_clock.getElapsedTime().asSeconds() > 3)
             m_display = false;
-        }
     }
 
     void Banner::displayText(std::string text) {
@@ -49,11 +48,10 @@ namespace sail {
     }
 
     void Banner::render(gf::RenderTarget& target, const gf::RenderStates &states) {
+        m_text.setPosition(m_view.getCenter());
         if (m_display) {
             target.draw(m_text, states);
         }
     }
-
-
 
 }

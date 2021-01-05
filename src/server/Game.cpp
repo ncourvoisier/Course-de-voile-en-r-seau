@@ -17,13 +17,14 @@
 namespace sail
 {
 
-    Game::Game()
+    Game::Game(int neededPlayers)
     : m_players()
     , m_started(false)
     , m_playersNb(0)
     , m_boatControl()
     , m_fixedWind()
     , m_world()
+    , m_neededPlayers(neededPlayers)
     {
 
     }
@@ -48,7 +49,7 @@ namespace sail
         if (m_started)
             return false; // TODO : detail return type
         player.connect(id, userName, m_world);
-        if (++m_playersNb == NeededPlayers)
+        if (++m_playersNb == m_neededPlayers)
         {
             start();
             return true;
@@ -149,8 +150,8 @@ namespace sail
             pDIed.id = player.getId();
             gMessageManager().sendMessage(&pDIed);
         }
-        else if (gf::naturalDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
-                m_world.getEndingPosition()) < 0.01f)
+        if (gf::euclideanDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
+                m_world.getEndingPosition()) < 0.0005f) // == 50m
         {
             PlayerFinished pFinished;
             pFinished.id = player.getId();

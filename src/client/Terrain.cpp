@@ -19,9 +19,10 @@ namespace sail
     , m_vertices(gf::PrimitiveType::Triangles)
     , m_arrows()
     {
-        m_endingSpot = gf::CircleShape(30);
+        m_endingSpot = gf::CircleShape(50);
+        m_endingSpot.setAnchor(gf::Anchor::Center);
         m_endingSpot.setOutlineThickness(3);
-        m_endingSpot.setColor(gf::Color::fromRgba32(0, 180, 30, 180));
+        m_endingSpot.setColor(gf::Color::fromRgba32(0, 180, 30, 160));
         m_endingSpot.setOutlineColor(gf::Color::fromRgba32(0, 140, 30, 230));
     }
 
@@ -149,8 +150,8 @@ namespace sail
             }
         }
 
-        m_showEnding = gf::naturalDistance({static_cast<float>(m_playerBoat.getLongitude()),
-                                            static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 1000;
+        m_showEnding = gf::euclideanDistance({static_cast<float>(m_playerBoat.getLongitude()),
+                                            static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 2000;
     }
 
     void Terrain::render(gf::RenderTarget &target, const gf::RenderStates& states)
