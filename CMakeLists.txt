@@ -49,7 +49,7 @@ add_executable(client
         src/client/Singletons.cpp
         src/client/Singletons.h
         src/client/NavigationArrow.cpp
-        src/client/NavigationArrow.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h src/client/Banner.h src/client/Banner.cpp)
+        src/client/NavigationArrow.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h src/client/Banner.h src/client/Banner.cpp src/LoggingUtils.h)
 
 target_include_directories(client
         PRIVATE

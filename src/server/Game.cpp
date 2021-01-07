@@ -35,26 +35,26 @@ namespace sail
         runSimulation();
     }
 
-  /*  gf::Id Game::addPlayer(gf::TcpSocket socket)
+    bool Game::isStarted()
     {
-        gf::Random rand;
-        gf::Id newId {rand.computeId()};
-        Player player(std::move(socket), newId);
-        m_players.push_back(std::move(player));
-        return newId;
+        return m_started;
     }
-*/
+
+    /*  gf::Id Game::addPlayer(gf::TcpSocket socket)
+      {
+          gf::Random rand;
+          gf::Id newId {rand.computeId()};
+          Player player(std::move(socket), newId);
+          m_players.push_back(std::move(player));
+          return newId;
+      }
+  */
     bool Game::connectPlayer(Player &player, gf::Id id, std::string userName)
     {
         if (m_started)
-            return false; // TODO : detail return type
+            return false;
         player.connect(id, userName, m_world);
-        if (++m_playersNb == m_neededPlayers)
-        {
-            start();
-            return true;
-        }
-        return false;
+        return ++m_playersNb == m_neededPlayers;
     }
 
     std::vector<Player>& Game::getPlayers()
@@ -106,7 +106,7 @@ namespace sail
         m_simulationMutex.unlock();
     }
 
-    GameReady Game::getGameReady()
+    WorldData Game::getWorldData()
     {
         return { m_world.getTerrain(),
                  m_world.getWindDirectionArray(),
@@ -115,7 +115,7 @@ namespace sail
                  m_world.getEndingPosition() };
     }
 
-    GameState Game::getGameState(gf::Time dt)
+    GameState Game::getGameState()
     {
         std::vector<BoatData> boatsData;
 

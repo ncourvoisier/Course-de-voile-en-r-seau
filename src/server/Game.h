@@ -20,6 +20,8 @@ namespace sail
 
         void start();
 
+        bool isStarted();
+
        // gf::Id addPlayer(gf::TcpSocket socket);
 
         bool connectPlayer(Player& player, gf::Id id, std::string userName);
@@ -28,9 +30,9 @@ namespace sail
 
         void playerAction(Player& player, PlayerAction action);
 
-        GameReady getGameReady();
+        WorldData getWorldData();
 
-        GameState getGameState(gf::Time dt);
+        GameState getGameState();
 
     private:
         void runSimulation();

@@ -16,22 +16,17 @@ namespace sail
     class ServerNetworkHandler
     {
     public:
-        static constexpr int TicksPerSecond = 20;
-
-        static constexpr int TickLength = 1000 / TicksPerSecond;
-
         ServerNetworkHandler(const std::string service, Game& game);
 
         void broadcast(const gf::Packet& packet);
 
+        void receivePackets(gf::Time timeout);
         void processPackets();
+
+        void sendPositions();
 
         gf::MessageStatus onPlayerDied(gf::Id id, gf::Message *msg);
         gf::MessageStatus onPlayerFinished(gf::Id id, gf::Message *msg);
-
-        void run();
-
-        static void terminationHandler(int signum);
 
     private:
         Game& m_game;
@@ -39,8 +34,6 @@ namespace sail
         gf::TcpListener m_listener;
 
         gf::SocketSelector m_selector;
-
-        static std::atomic_bool g_running;
     };
 
 }

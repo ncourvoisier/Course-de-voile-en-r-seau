@@ -15,7 +15,8 @@ namespace sail
     {
         m_socket = gf::TcpSocket(hostname, service);
         m_connected = false || socket;
-        m_socket.setNonBlocking(); // TODO : just an idea
+        //m_socket.setNonBlocking(); // TODO : just an idea
+        m_socket.setBlocking();
     }
 
     gf::SocketStatus ClientNetworkHandler::receive(gf::Packet& packet)

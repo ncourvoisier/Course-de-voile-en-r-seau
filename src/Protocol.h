@@ -125,9 +125,9 @@ namespace sail {
         return ar | data.player;
     }
 
-    struct GameReady
+    struct WorldData
     {
-        static constexpr gf::Id type = "GameReady"_id;
+        static constexpr gf::Id type = "WorldData"_id;
         gf::Array2D<float> terrain;
         gf::Array2D<float> windDirection;
         gf::Array2D<float> windSpeed;
@@ -136,7 +136,7 @@ namespace sail {
     };
 
     template<typename Archive>
-    Archive operator|(Archive& ar, GameReady& data)
+    Archive operator|(Archive& ar, WorldData& data)
     {
         return ar | data.terrain | data.windDirection | data.windSpeed | data.startingPosition | data.endingPosition;
     }

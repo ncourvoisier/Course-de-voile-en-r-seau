@@ -112,7 +112,6 @@ int main(int argc, char *argv[])
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
     // Establishing connection
-    //std::string userName = "username";
     std::string userName = usr;
     sail::ClientGreeting greeting = { userName }; // TODO : TEMPORARY
     clientHandler.send(greeting);
@@ -153,9 +152,9 @@ int main(int argc, char *argv[])
                 players.insert(std::pair<gf::Id, sail::ClientPlayer>(waiting.player.id,
                         sail::ClientPlayer(waiting.player.id, waiting.player.name)));
             }
-            else if (waitingP.getType() == sail::GameReady::type)
+            else if (waitingP.getType() == sail::WorldData::type)
             {
-                auto ready (waitingP.as<sail::GameReady>());
+                auto ready (waitingP.as<sail::WorldData>());
                 std::cout << " start : " << ready.startingPosition.x << ", " << ready.startingPosition.y
                     << ", end : " << ready.endingPosition.x << ", " << ready.endingPosition.y << "\n";
                 endingPos = ready.endingPosition * sail::WorldScale;

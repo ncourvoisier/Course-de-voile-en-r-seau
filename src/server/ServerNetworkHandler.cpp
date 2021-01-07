@@ -8,31 +8,26 @@
 #include <csignal>
 #include <chrono>
 #include <gf/Clock.h>
+#include <gf/Log.h>
 
 #include "ServerNetworkHandler.h"
 #include "../Protocol.h"
+#include "../LoggingUtils.h"
 #include "Managers.h"
 #include "GameMessages.h"
 
 namespace sail
 {
 
-    std::atomic_bool ServerNetworkHandler::g_running(true);
-
     ServerNetworkHandler::ServerNetworkHandler(std::string service, Game& game)
     : m_listener(service)
+    , m_selector()
     , m_game(game)
     {
-        std::signal(SIGINT, &ServerNetworkHandler::terminationHandler);
-        std::signal(SIGTERM, &ServerNetworkHandler::terminationHandler);
+        m_selector.addSocket(m_listener);
 
         gMessageManager().registerHandler<PlayerDied>(&ServerNetworkHandler::onPlayerDied, this);
         gMessageManager().registerHandler<PlayerFinished>(&ServerNetworkHandler::onPlayerFinished, this);
-    }
-
-    void ServerNetworkHandler::terminationHandler(int signum)
-    {
-        g_running = false;
     }
 
     gf::MessageStatus ServerNetworkHandler::onPlayerDied(gf::Id id, gf::Message *msg)
@@ -59,9 +54,17 @@ namespace sail
 
     void ServerNetworkHandler::broadcast(const gf::Packet& packet)
     {
-        for (auto& player : m_game.getPlayers()) {
+        for (auto& player : m_game.getPlayers())
+        {
             if (player.isConnected())
-                player.getSocket().sendPacket(packet);
+            {
+                std::cout << "Before sending packet of size : " << packet.bytes.size() << " (type: " << humanizePacketType(packet.type) << ")\n";
+                if (auto status = player.getSocket().sendPacket(packet); status != gf::SocketStatus::Data)
+                {
+                    gf::Log::error("couldn't send packet to '%s'\n", player.getName().c_str());
+                }
+                std::cout << "After sending\n";
+            }
         }
     }
 
@@ -81,7 +84,7 @@ namespace sail
                 switch (packet.getType())
                 {
                     case ClientGreeting::type:
-                    { // TODO : UGLY PART, to rewrite
+                    {
                         ClientGreeting clientG{packet.as<ClientGreeting>()};
                         std::cout << "New user : " << clientG.username << "\n";
                         gf::Random rand;
@@ -99,16 +102,22 @@ namespace sail
                         gf::Packet serverGPacket;
                         serverGPacket.is(serverG);
                         socket.sendPacket(serverGPacket);
+                        std::cout << "Sent server greeting\n";
 
                         gf::Packet broadcastPacket;
                         broadcastPacket.is<PlayerJoins>(PlayerJoins{{newId, clientG.username}});
                         broadcast(broadcastPacket);
+                        std::cout << "Sent player joined broadcats\n";
 
                         if (m_game.connectPlayer(p, newId, clientG.username))
                         {
-                            gf::Packet readyPacket;
-                            readyPacket.is(m_game.getGameReady());
-                            broadcast(readyPacket);
+                            std::cout << "Sending the world datas to players\n"; // REACHES HERE
+                            gf::Packet worldPacket;
+                            worldPacket.is(m_game.getWorldData());
+                            std::cout << "Ready packet built\n";
+                            broadcast(worldPacket);
+                            m_game.start();
+                            std::cout << "Starting the game\n"; // BUT NOT HERE
                         }
                         std::cout << "New player : " << p.getId() << " with name : " << p.getName() << "\n";
                         break;
@@ -128,78 +137,50 @@ namespace sail
         }
     }
 
-    uint64_t sinceEpochMs()
+    void ServerNetworkHandler::receivePackets(gf::Time timeout)
     {
-        using namespace std::chrono;
-        return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    }
-
-    void ServerNetworkHandler::run()
-    {
-        int playerNb = 0; // TODO : temporary stuff, create a gf::GameConfig or something
-        int neededPlayers = 2;
-
-        m_selector.addSocket(m_listener);
-
-        static constexpr gf::Time Timeout = gf::milliseconds(TickLength);
-
-        gf::Clock clock;
-
-        int packS = 0;
-
-        while (g_running)
+        if (m_selector.wait(timeout) == gf::SocketSelectorStatus::Event)
         {
-            processPackets();
-
-            //// SENDING DATAS ////
-            GameState gs = m_game.getGameState(clock.restart());
-            gf::Packet gsPacket;
-            gsPacket.is(gs);
-            broadcast(gsPacket);
-            //std::cout << "sending packets " << ++packS << "\n";
-            ///////////////////////
-
-            //std::this_thread::sleep_for(std::chrono::milliseconds(TickLength)); // Sleep to save some processing time
-
-            uint64_t timeNow = sinceEpochMs();
-            while (sinceEpochMs() < timeNow + TickLength)
+            for (auto &player : m_game.getPlayers())
             {
-                //std::cout << "waiting packets\n";
-                if (m_selector.wait(Timeout) == gf::SocketSelectorStatus::Event)
+                auto &socket = player.getSocket();
+                if (m_selector.isReady(socket))
                 {
-                    for (auto &player : m_game.getPlayers())
+                    gf::Packet packet;
+                    gf::SocketStatus status = socket.recvPacket(packet);
+                    if (status == gf::SocketStatus::Data)
                     {
-                        auto &socket = player.getSocket();
-                        if (m_selector.isReady(socket))
-                        {
-                            gf::Packet packet;
-                            gf::SocketStatus status = socket.recvPacket(packet);
-                            if (status == gf::SocketStatus::Data)
-                            {
-                                std::cout << "Received packet\n";
-                            }
-                            else
-                            {
-                                // TODO : Remove closed sockets
-                                continue;
-                            }
-                            player.getPendingPackets().push_back(packet);
-                        }
+                        std::cout << "Received packet\n";
                     }
-                    if (m_selector.isReady(m_listener))
+                    else
                     {
-                        std::cout << "Attempt to connect\n";
-                        // the listener is ready, accept a new connection
-                        gf::TcpSocket socket = m_listener.accept();
-                        Player player(std::move(socket));
-                        m_game.getPlayers().push_back(std::move(player)); // TODO : change for an addPlayer function
-                        //gf::Id newId = m_game.addPlayer(std::move(socket));
-                        m_selector.addSocket(m_game.getPlayers().back().getSocket());
-                        std::cout << "Socket added to selector : " << m_game.getPlayers().back().getSocket() << "\n";
+                        std::cout << "Socket closed\n";
+                        // TODO : Remove closed sockets
+                        continue;
                     }
+                    player.getPendingPackets().push_back(packet);
                 }
             }
+            if (m_selector.isReady(m_listener))
+            {
+                std::cout << "Attempt to connect\n";
+                // the listener is ready, accept a new connection
+                gf::TcpSocket socket = m_listener.accept();
+                Player player(std::move(socket));
+                m_game.getPlayers().push_back(std::move(player)); // TODO : change for an addPlayer function
+                //gf::Id newId = m_game.addPlayer(std::move(socket));
+                m_selector.addSocket(m_game.getPlayers().back().getSocket());
+                std::cout << "Socket added to selector : " << m_game.getPlayers().back().getSocket() << "\n";
+            }
         }
-        std::cout << "Closing the server.\n";
     }
+
+    void ServerNetworkHandler::sendPositions()
+    {
+        GameState gs = m_game.getGameState();
+        gf::Packet gsPacket;
+        gsPacket.is(gs);
+        broadcast(gsPacket);
+    }
+
 }
