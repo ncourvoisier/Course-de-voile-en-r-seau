@@ -69,7 +69,7 @@ namespace sail
         std::cout << "Action of : " << player.getName() << "\n";
         ServerBoat& boat = player.getBoat();
 
-        m_simulationMutex.lock();
+        //m_simulationMutex.lock(); Works fine without mutex
 
         switch (action.sailAction)
         {
@@ -103,7 +103,7 @@ namespace sail
             }
         }
 
-        m_simulationMutex.unlock();
+        //m_simulationMutex.unlock();
     }
 
     WorldData Game::getWorldData()
@@ -119,7 +119,7 @@ namespace sail
     {
         std::vector<BoatData> boatsData;
 
-        m_simulationMutex.lock(); // TODO : is lock necessary for read only access?
+        //m_simulationMutex.lock(); // TODO : is lock necessary for read only access?
 
         for (auto& p : m_players)
         {
@@ -134,7 +134,7 @@ namespace sail
             }
         }
 
-        m_simulationMutex.unlock();
+        //m_simulationMutex.unlock();
 
         return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } }; // TODO : for now, only one single wind everywhere, just for testing
     }
@@ -169,7 +169,7 @@ namespace sail
     {
         gf::Clock clock;
         double updateSec = 0.05;
-        double physicGranularity = 0.0002;
+        double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
         double loopsAmount = updateSec / physicGranularity; // TODO : some experimental things here
 
         while(m_simulationRunning) {
@@ -189,10 +189,12 @@ namespace sail
             }
 
             m_simulationMutex.unlock();
-            double sleepTime = updateSec - clock.restart().asSeconds();
+            double elapsed = clock.restart().asSeconds();
+            std::cout << "Simulation " << (elapsed * 100.0) / updateSec << "% loaded\n";
+            double sleepTime = updateSec - elapsed;
 
             assert(sleepTime >= 0); // Assert if the simulation is late compared to real world time (shouldn't be)
-            // With granularity = 0.0002s, 50ms requires 250 loops, taking around 0.2-0.3ms per player in the game
+            // With granularity = 0.01s, 50ms requires 5 loops, taking around 0.004-0.006ms per player in the game
 
             std::chrono::milliseconds span((int)(sleepTime * 1000));
             std::this_thread::sleep_for(span);
