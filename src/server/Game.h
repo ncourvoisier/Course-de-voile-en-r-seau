@@ -32,7 +32,7 @@ namespace sail
 
         WorldData getWorldData();
 
-        GameState getGameState();
+        GameState update(gf::Time dt);
 
     private:
         void runSimulation();

@@ -23,7 +23,7 @@ namespace sail
         void receivePackets(gf::Time timeout);
         void processPackets();
 
-        void sendPositions();
+        void sendPositions(gf::Time dt);
 
         gf::MessageStatus onPlayerDied(gf::Id id, gf::Message *msg);
         gf::MessageStatus onPlayerFinished(gf::Id id, gf::Message *msg);

@@ -175,9 +175,9 @@ namespace sail
         }
     }
 
-    void ServerNetworkHandler::sendPositions()
+    void ServerNetworkHandler::sendPositions(gf::Time dt)
     {
-        GameState gs = m_game.getGameState();
+        GameState gs = m_game.update(dt);
         gf::Packet gsPacket;
         gsPacket.is(gs);
         broadcast(gsPacket);

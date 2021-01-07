@@ -32,7 +32,7 @@ namespace sail
     void Game::start()
     {
         m_started = true;
-        runSimulation();
+        //runSimulation();
     }
 
     bool Game::isStarted()
@@ -115,28 +115,28 @@ namespace sail
                  m_world.getEndingPosition() };
     }
 
-    GameState Game::getGameState()
+    GameState Game::update(gf::Time dt)
     {
         std::vector<BoatData> boatsData;
 
-        //m_simulationMutex.lock(); // TODO : is lock necessary for read only access?
+        constexpr double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
+        double loopsAmount = dt.asSeconds() / physicGranularity;
 
-        for (auto& p : m_players)
+        for (auto& player : m_players)
         {
-            if (p.isConnected())
+            if (player.isConnected())
             {
-                /*int updates = dt.asSeconds() / 0.0002;
-                for (int i = 0; i < updates; i++) // TODO : 0.0002 -> 250 loops for dt=50ms, taking 0.16ms, per player
-                { // TODO : JUST A TEST VERSION, shorter time spans are more likely to work with the sailing library
-                    sailing_physics_update(p.getBoat(), m_fixedWind, 0.0002);
-                }*/
-                boatsData.push_back(p.getBoat().getBoatData());
+                Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
+                for (int i = 0; i < loopsAmount; i++)
+                {
+                    sailing_physics_update(player.getBoat(), wind, physicGranularity);
+                }
+                checkCoordinates(player);
+                boatsData.push_back(player.getBoat().getBoatData());
             }
         }
 
-        //m_simulationMutex.unlock();
-
-        return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } }; // TODO : for now, only one single wind everywhere, just for testing
+        return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } };
     }
 
     void Game::checkCoordinates(Player &player)

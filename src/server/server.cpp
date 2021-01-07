@@ -72,15 +72,18 @@ int main(int argc, char* argv[])
     static constexpr int TickLength = 1000 / TicksPerSecond;
     static constexpr gf::Time Timeout = gf::milliseconds(TickLength);
 
+    gf::Clock clock;
+
     while (running)
     {
-        networkHandler.processPackets();
-        networkHandler.sendPositions();
-
         uint64_t timeNow = sinceEpochMs();
+
+        networkHandler.processPackets();
+        networkHandler.sendPositions(clock.restart()); // TODO : fixed or variable DT here?
+
         while (sinceEpochMs() < timeNow + TickLength)
         {
-            networkHandler.receivePackets(Timeout);
+            networkHandler.receivePackets(gf::Time::Zero);
         }
     }
 
