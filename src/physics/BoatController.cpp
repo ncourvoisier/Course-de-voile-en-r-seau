@@ -1,7 +1,10 @@
 #include <iostream>
 #include <cmath>
 
-#include "BoatControl.h"
+#include "BoatController.h"
+#include "Wind.h"
+#include "../Constants.h"
+#include "Physics.h"
 
 namespace sail
 {
@@ -23,7 +26,7 @@ namespace sail
      *
      * */
 
-    void BoatControl::moveRudderRight(Boat &boat)
+    void BoatController::moveRudderRight(Boat &boat)
     { // TODO : a problem remains, the boat control sensibility makes it hard to send 1 single key control, hard to center the rudder on 0
         double angle = boat.getRudderAngle();
         if (angle < 0 && angle > - 2 * RudderStep)
@@ -37,7 +40,7 @@ namespace sail
         boat.setRudderAngle(newAngle);
     }
 
-    void BoatControl::moveRudderLeft(Boat &boat)
+    void BoatController::moveRudderLeft(Boat &boat)
     {
         double angle = boat.getRudderAngle();
         if (angle > 0 && angle < 2 * RudderStep)
@@ -51,12 +54,12 @@ namespace sail
         boat.setRudderAngle(newAngle);
     }
 
-    void BoatControl::centerRudder(Boat &boat)
+    void BoatController::centerRudder(Boat &boat)
     {
         boat.setRudderAngle(0);
     }
 
-    void BoatControl::sheetOut(Boat &boat)
+    void BoatController::sheetOut(Boat &boat)
     {
         double newLength = boat.getSheetLength() + SheetStep;
         if (newLength > SheetMaxLength)
@@ -65,13 +68,64 @@ namespace sail
         boat.setSheetLength(newLength);
     }
 
-    void BoatControl::sheetIn(Boat &boat)
+    void BoatController::sheetIn(Boat &boat)
     {
         double newLength = boat.getSheetLength() - SheetStep;
         if (newLength < SheetMinLength)
             newLength = SheetMinLength;
         std::cout << "moving with sheet : " << newLength << "\n";
         boat.setSheetLength(newLength);
+    }
+
+    void BoatController::processPlayerAction(Boat &boat, const PlayerAction& action)
+    {
+        switch (action.sailAction)
+        {
+            case PlayerAction::Type::Right:
+            {
+                sheetOut(boat);
+                break;
+            }
+            case PlayerAction::Type::Left:
+            {
+                sheetIn(boat);
+                break;
+            }
+        }
+
+        switch (action.rudderAction)
+        {
+            case PlayerAction::Type::Right:
+            {
+                moveRudderRight(boat);
+                break;
+            }
+            case PlayerAction::Type::Left:
+            {
+                moveRudderLeft(boat);
+                break;
+            }
+            case PlayerAction::Type::Center:
+            {
+                centerRudder(boat);
+            }
+        }
+    }
+
+    void BoatController::updateBoatPosition(Boat& boat, gf::Array2D<float>& windSpeed, gf::Array2D<float>& windDirection, gf::Time dt)
+    {
+        constexpr double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
+        double loopsAmount = dt.asSeconds() / physicGranularity;
+
+        auto col = static_cast<unsigned>(boat.getLongitude() / TileDegree);
+        auto row = static_cast<unsigned>(boat.getLatitude() / TileDegree);
+
+        Wind wind(windSpeed({row, col}), windDirection({row, col}));
+
+        for (int i = 0; i < loopsAmount; i++)
+        {
+            sailing_physics_update(boat, wind, physicGranularity);
+        }
     }
 
 }

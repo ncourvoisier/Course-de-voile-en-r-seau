@@ -1,4 +1,3 @@
-#include <gf/Packet.h>
 #include <iostream>
 #include <gf/Clock.h>
 #include <gf/Singleton.h>
@@ -55,8 +54,9 @@ int main(int argc, char* argv[])
 
     sail::ServerNetworkHandler networkHandler(argv[1], game);
 
-    std::signal(SIGINT, terminationHandler);
-    std::signal(SIGTERM, terminationHandler);
+    std::signal(SIGINT, terminationHandler); // 'Ctrl-C'
+    std::signal(SIGQUIT, terminationHandler); // 'Ctrl-\'
+    std::signal(SIGTSTP, terminationHandler);  // 'Ctrl-Z'
 
     /// Waiting for players ///
 

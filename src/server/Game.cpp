@@ -21,7 +21,7 @@ namespace sail
     : m_players()
     , m_started(false)
     , m_playersNb(0)
-    , m_boatControl()
+    , m_boatController()
     , m_fixedWind()
     , m_world()
     , m_neededPlayers(neededPlayers)
@@ -62,7 +62,7 @@ namespace sail
         return m_players;
     }
 
-    void Game::playerAction(Player& player, PlayerAction action)
+    void Game::playerAction(Player& player, PlayerAction& action)
     {
         if (! m_started )
             return;
@@ -71,37 +71,7 @@ namespace sail
 
         //m_simulationMutex.lock(); Works fine without mutex
 
-        switch (action.sailAction)
-        {
-            case PlayerAction::Type::Right: // TODO : "Right" and "Left" doesn't mean much at this point ...
-            {
-                m_boatControl.sheetOut(boat);
-                break;
-            }
-            case PlayerAction::Type::Left:
-            {
-                m_boatControl.sheetIn(boat);
-                break;
-            }
-        }
-
-        switch (action.rudderAction)
-        {
-            case PlayerAction::Type::Right:
-            {
-                m_boatControl.moveRudderRight(boat);
-                break;
-            }
-            case PlayerAction::Type::Left:
-            {
-                m_boatControl.moveRudderLeft(boat);
-                break;
-            }
-            case PlayerAction::Type::Center:
-            {
-                m_boatControl.centerRudder(boat);
-            }
-        }
+        m_boatController.processPlayerAction(boat, action);
 
         //m_simulationMutex.unlock();
     }
@@ -119,18 +89,15 @@ namespace sail
     {
         std::vector<BoatData> boatsData;
 
-        constexpr double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
-        double loopsAmount = dt.asSeconds() / physicGranularity;
-
         for (auto& player : m_players)
         {
             if (player.isConnected())
             {
-                Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
-                for (int i = 0; i < loopsAmount; i++)
-                {
-                    sailing_physics_update(player.getBoat(), wind, physicGranularity);
-                }
+                m_boatController.updateBoatPosition(
+                        player.getBoat(),
+                        m_world.getWindSpeedArray(),
+                        m_world.getWindDirectionArray(),
+                        dt);
                 checkCoordinates(player);
                 boatsData.push_back(player.getBoat().getBoatData());
             }

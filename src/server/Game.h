@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "Player.h"
-#include "../physics/BoatControl.h"
+#include "../physics/BoatController.h"
 #include "World.h"
 
 namespace sail
@@ -28,7 +28,7 @@ namespace sail
 
         std::vector<Player>& getPlayers();
 
-        void playerAction(Player& player, PlayerAction action);
+        void playerAction(Player& player, PlayerAction& action);
 
         WorldData getWorldData();
 
@@ -49,7 +49,7 @@ namespace sail
 
         World m_world;
 
-        BoatControl m_boatControl;
+        BoatController m_boatController;
 
         std::vector<Player> m_players;
 

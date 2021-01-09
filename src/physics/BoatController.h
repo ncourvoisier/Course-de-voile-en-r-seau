@@ -1,14 +1,16 @@
-#ifndef SAILINSANE_BOATCONTROL_H
-#define SAILINSANE_BOATCONTROL_H
+#ifndef SAILINSANE_BOATCONTROLLER_H
+#define SAILINSANE_BOATCONTROLLER_H
 
 #include <cmath>
+#include <gf/Time.h>
 
 #include "Boat.h"
+#include "../Protocol.h"
 
 namespace sail
 {
 
-    class BoatControl
+    class BoatController
     {
     public:
         void moveRudderRight(Boat& boat);
@@ -16,6 +18,9 @@ namespace sail
         void centerRudder(Boat& boat);
         void sheetOut(Boat& boat);
         void sheetIn(Boat& boat);
+
+        void processPlayerAction(Boat& boat, const PlayerAction& action);
+        void updateBoatPosition(Boat& boat, gf::Array2D<float>& windSpeed, gf::Array2D<float>& windDirection, gf::Time dt);
 
     private:
         static constexpr int RudderStepsNumber = 10;
@@ -31,4 +36,4 @@ namespace sail
 
 }
 
-#endif //SAILINSANE_BOATCONTROL_H
+#endif //SAILINSANE_BOATCONTROLLER_H

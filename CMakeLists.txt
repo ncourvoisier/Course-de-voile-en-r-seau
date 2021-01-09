@@ -31,11 +31,12 @@ add_executable(server
         src/physics/Boat.h
         src/physics/Physics.cpp
         src/physics/Physics.h
-        src/physics/BoatControl.cpp
-        src/physics/BoatControl.h src/server/World.cpp src/server/World.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
+        src/physics/BoatController.cpp
+        src/physics/BoatController.h src/server/World.cpp src/server/World.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
 
 add_executable(client
-        src/client/client.cpp src/Protocol.h
+        src/client/client.cpp
+        src/Protocol.h
         src/client/ClientNetworkHandler.h
         src/client/ClientNetworkHandler.cpp
         src/client/ClientBoat.cpp
@@ -44,8 +45,12 @@ add_executable(client
         src/client/ClientPlayer.h
         src/physics/Boat.cpp
         src/physics/Boat.h
-        src/physics/BoatControl.cpp
-        src/physics/BoatControl.h
+        src/physics/BoatController.cpp
+        src/physics/BoatController.h
+        src/physics/Wind.cpp
+        src/physics/Wind.h
+        src/physics/Physics.cpp
+        src/physics/Physics.h
         src/client/Singletons.cpp
         src/client/Singletons.h
         src/client/NavigationArrow.cpp
