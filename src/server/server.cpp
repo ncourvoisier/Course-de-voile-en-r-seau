@@ -13,7 +13,7 @@ void printUsage(char* execName)
     std::cout << "Usage: " << execName << " [port] [players number (2-10)]\n";
 }
 
-std::atomic_bool running(true);
+std::sig_atomic_t running(true);
 
 void terminationHandler(int signum)
 {
@@ -55,12 +55,12 @@ int main(int argc, char* argv[])
 
     sail::ServerNetworkHandler networkHandler(argv[1], game);
 
-    std::signal(SIGINT, &terminationHandler);
-    std::signal(SIGTERM, &terminationHandler);
+    std::signal(SIGINT, terminationHandler);
+    std::signal(SIGTERM, terminationHandler);
 
     /// Waiting for players ///
 
-    while (! game.isStarted())
+    while (! game.isStarted() && running)
     {
         networkHandler.receivePackets(gf::Time::Zero);
         networkHandler.processPackets();
