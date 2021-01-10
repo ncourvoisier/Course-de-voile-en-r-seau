@@ -36,6 +36,10 @@ namespace sail
 
         std::deque<gf::Packet>& getPendingPackets();
 
+        unsigned int getLastAckActionId();
+
+        void setLastAckActionId(unsigned int mLastAckActionId);
+
     private:
         gf::Id m_id;
 
@@ -48,6 +52,8 @@ namespace sail
         ServerBoat m_boat;
 
         bool m_connected;
+
+        unsigned int m_lastAckActionId;
     };
 
 }

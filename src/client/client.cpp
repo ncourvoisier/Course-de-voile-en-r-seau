@@ -22,6 +22,7 @@
 #include "config.h"
 #include "Terrain.h"
 #include "Banner.h"
+#include "PredictionEngine.h"
 
 void printUsage(char* execName)
 {
@@ -187,7 +188,7 @@ int main(int argc, char *argv[])
     clientHandler.run();
 
     static constexpr gf::Time UpdateDelayMs = gf::milliseconds(50);
-    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(100);
+    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(50);
     gf::Time lag = gf::milliseconds(0);
     gf::Time keyDelay = gf::milliseconds(0);
 
@@ -196,6 +197,8 @@ int main(int argc, char *argv[])
     int actionNb = 0;
 
     bool rudderActive = false;
+
+    sail::PredictionEngine engine(localBoat, terrain);
 
     while (window.isOpen())
     {
@@ -259,16 +262,18 @@ int main(int argc, char *argv[])
             terrain.setFullRender(true);
         }
 
-        if (keyDelay > SendKeyDelayMs
-            && (lastActionSail != sail::PlayerAction::Type::None
-                || lastActionRubber != sail::PlayerAction::Type::None))
+        if (keyDelay > SendKeyDelayMs)
         {
-            //std::cout << "action : " << ++actionNb << "\n";
             sail::PlayerAction action { lastActionSail, lastActionRubber };
-            clientHandler.send(action);
-            keyDelay = gf::milliseconds(0);
-            lastActionSail = sail::PlayerAction::Type::None;
-            lastActionRubber = sail::PlayerAction::Type::None;
+            engine.pushAction(action);
+            if (lastActionSail != sail::PlayerAction::Type::None
+                 || lastActionRubber != sail::PlayerAction::Type::None)
+            {
+                clientHandler.send(action);
+                keyDelay = gf::milliseconds(0);
+                lastActionSail = sail::PlayerAction::Type::None;
+                lastActionRubber = sail::PlayerAction::Type::None;
+            }
         }
 
         while (lag > UpdateDelayMs)
@@ -290,6 +295,7 @@ int main(int argc, char *argv[])
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
                             entity.fromBoatData(boat);
                         }
+                        engine.reconciliate(state.lastAckActionId);
                         break;
                     }
                     case sail::PlayerEvent::type:
@@ -318,6 +324,8 @@ int main(int argc, char *argv[])
 
             lag -= UpdateDelayMs;
         }
+
+        engine.update(gf::milliseconds(50)); // TODO : i know it's the wrong place
 
         // Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getLongitude()), static_cast<float>(localBoat.getLatitude()) });

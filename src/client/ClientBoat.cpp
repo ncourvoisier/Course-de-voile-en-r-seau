@@ -92,6 +92,9 @@ namespace sail
         angle = data.angle;
         sail_angle = data.sailAngle;
         rudder_angle = data.rudderAngle;
+        sheet_length = data.sheetLength;
+        rotational_velocity = data.rotationalVelocity;
+        v = data.velocity;
     }
 
 }

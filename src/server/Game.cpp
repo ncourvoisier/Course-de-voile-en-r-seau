@@ -73,6 +73,7 @@ namespace sail
 
         m_boatController.processPlayerAction(boat, action);
 
+        player.setLastAckActionId(action.id);
         //m_simulationMutex.unlock();
     }
 
@@ -103,7 +104,7 @@ namespace sail
             }
         }
 
-        return { boatsData, { m_fixedWind.getSpeed(), m_fixedWind.getDirection() } };
+        return { boatsData };
     }
 
     void Game::checkCoordinates(Player &player)

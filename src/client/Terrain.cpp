@@ -165,4 +165,14 @@ namespace sail
             target.draw(m_endingSpot);
     }
 
+    gf::Array2D<float>& Terrain::getWindDirectionArray()
+    {
+        return m_windDirection;
+    }
+
+    gf::Array2D<float>& Terrain::getWindSpeedArray()
+    {
+        return m_windSpeed;
+    }
+
 }

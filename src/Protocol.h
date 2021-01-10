@@ -19,12 +19,17 @@ namespace sail {
         double angle;
         double sailAngle;
         double rudderAngle;
+
+        double sheetLength; // TODO : those data are only important for the localPlayer (currently he receives all the other players ones)
+        double rotationalVelocity;
+        double velocity;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, BoatData& data)
     {
-        return ar | data.playerId | data.xPos | data.yPos | data.angle | data.sailAngle | data.rudderAngle;
+        return ar | data.playerId | data.xPos | data.yPos | data.angle | data.sailAngle | data.rudderAngle
+                | data.sheetLength | data.rotationalVelocity | data.velocity;
     }
 
     struct PlayerData
@@ -79,13 +84,13 @@ namespace sail {
     {
         static constexpr gf::Id type = "GameState"_id;
         std::vector<BoatData> boats;
-        WindData wind;
+        unsigned int lastAckActionId;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, GameState& data)
     {
-        return ar | data.boats | data.wind;
+        return ar | data.boats | data.lastAckActionId;
     }
 
     struct ClientGreeting
@@ -155,11 +160,13 @@ namespace sail {
 
         Type sailAction = None;
         Type rudderAction = None;
+
+        unsigned int id;
     };
 
     template<typename Archive>
     Archive operator|(Archive& ar, PlayerAction& data) {
-        return ar | data.sailAction | data.rudderAction;
+        return ar | data.sailAction | data.rudderAction | data.id;
     }
 
 }

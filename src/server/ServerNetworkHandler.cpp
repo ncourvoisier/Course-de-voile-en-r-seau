@@ -178,9 +178,13 @@ namespace sail
     void ServerNetworkHandler::sendPositions(gf::Time dt)
     {
         GameState gs = m_game.update(dt);
-        gf::Packet gsPacket;
-        gsPacket.is(gs);
-        broadcast(gsPacket);
+        for (auto& player : m_game.getPlayers())
+        {
+            gs.lastAckActionId = player.getLastAckActionId();
+            gf::Packet gsPacket;
+            gsPacket.is(gs);
+            player.getSocket().sendPacket(gsPacket);
+        }
     }
 
 }

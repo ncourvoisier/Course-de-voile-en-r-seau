@@ -6,6 +6,7 @@ namespace sail {
     : m_socket(std::move(socket))
     , m_boat()
     , m_connected(false)
+    , m_lastAckActionId(0)
     {
 
     }
@@ -55,6 +56,16 @@ namespace sail {
     std::deque<gf::Packet>& Player::getPendingPackets()
     {
         return m_pendingPackets;
+    }
+
+    unsigned int Player::getLastAckActionId()
+    {
+        return m_lastAckActionId;
+    }
+
+    void Player::setLastAckActionId(unsigned int lastAck)
+    {
+        m_lastAckActionId = lastAck;
     }
 
 }
