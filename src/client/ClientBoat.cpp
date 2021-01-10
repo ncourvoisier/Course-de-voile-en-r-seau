@@ -16,6 +16,7 @@ namespace sail
 
     ClientBoat::ClientBoat(std::string name)
     : gf::Entity(1)
+    , Boat(0, 0)
     , m_name(name)
     , m_texture(gTextureAtlas().getTexture())
     , m_boat(gTextureAtlas().getTextureRect("boat"))

@@ -9,6 +9,7 @@ namespace sail
     , m_lastActionId(0)
     , m_actionsHistory()
     , m_boatController()
+    , m_enabled(true)
     {
 
     }
@@ -25,19 +26,38 @@ namespace sail
     void PredictionEngine::pushAction(PlayerAction &action)
     {
         action.id = m_lastActionId++;
-        m_actionsHistory.push_back(action);
-        m_boatController.processPlayerAction(m_boat, action);
+        if (m_enabled)
+        {
+            m_actionsHistory.push_back(action);
+            m_boatController.processPlayerAction(m_boat, action);
+            update(gf::milliseconds(50));
+        }
     }
 
     void PredictionEngine::reconciliate(unsigned int lastAckActionId)
     {
+        if (! m_enabled)
+            return;
+        while (! m_actionsHistory.empty() && m_actionsHistory.front().id <= lastAckActionId)
+        {
+            m_actionsHistory.pop_front();
+        }
+
         for (auto it = m_actionsHistory.begin(); it != m_actionsHistory.end(); *it++)
         {
-            if (it->id <= lastAckActionId)
-                continue;
             m_boatController.processPlayerAction(m_boat, *it);
-            update(gf::milliseconds(50)); // TODO : to change, testing
+            update(gf::milliseconds(50)); // TODO : change to const
         }
+    }
+
+    void PredictionEngine::enable()
+    {
+        m_enabled = true;
+    }
+
+    void PredictionEngine::disable()
+    {
+        m_enabled = false;
         m_actionsHistory.clear();
     }
 

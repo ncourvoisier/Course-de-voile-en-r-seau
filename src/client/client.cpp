@@ -26,17 +26,28 @@
 
 void printUsage(char* execName)
 {
-    std::cout << "Usage: " << execName << " [address] [port] [username]\n";
+    std::cout << "Usage: " << execName << " <address> <port> <username> [-predictionOff|-pOff]\n";
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc != 4) {
+    bool enablePrediction = true;
+
+    if (argc != 4 && argc != 5) {
         printUsage(argv[0]);
         exit(1);
     }
 
-    std::string usr = argv[3];
+    if (argc == 5)
+    {
+        if ((strcmp(argv[4], "-predictionOff") == 0 || strcmp(argv[4], "-pOff") == 0))
+            enablePrediction = false;
+        else
+        {
+            printUsage(argv[0]);
+            exit(1);
+        }
+    }
 
     //// CONNECTING
     sail::ClientNetworkHandler clientHandler;
@@ -113,8 +124,7 @@ int main(int argc, char *argv[])
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
     // Establishing connection
-    std::string userName = usr;
-    sail::ClientGreeting greeting = { userName }; // TODO : TEMPORARY
+    sail::ClientGreeting greeting = { argv[3] }; // TODO : TEMPORARY
     clientHandler.send(greeting);
     gf::Packet serverGreetingP;
     clientHandler.receive(serverGreetingP);
@@ -125,7 +135,7 @@ int main(int argc, char *argv[])
     std::cout << "Server sent ID : " << serverGreeting.playerId << "\n";
     std::map<gf::Id, sail::ClientPlayer> players;
 
-    players.insert(std::pair<gf::Id, sail::ClientPlayer>(serverGreeting.playerId, sail::ClientPlayer(serverGreeting.playerId, userName)));
+    players.insert(std::pair<gf::Id, sail::ClientPlayer>(serverGreeting.playerId, sail::ClientPlayer(serverGreeting.playerId, argv[3])));
     sail::ClientPlayer& localPlayer = players.at(serverGreeting.playerId);
     sail::ClientBoat& localBoat =  localPlayer.getBoat();
 
@@ -156,9 +166,9 @@ int main(int argc, char *argv[])
             else if (waitingP.getType() == sail::WorldData::type)
             {
                 auto ready (waitingP.as<sail::WorldData>());
-                std::cout << " start : " << ready.startingPosition.x << ", " << ready.startingPosition.y
-                    << ", end : " << ready.endingPosition.x << ", " << ready.endingPosition.y << "\n";
                 endingPos = ready.endingPosition;
+                localBoat.setLongitude(ready.startingPosition.x);
+                localBoat.setLatitude(ready.startingPosition.y);
                 terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
                 break;
             }
@@ -188,26 +198,21 @@ int main(int argc, char *argv[])
     clientHandler.run();
 
     static constexpr gf::Time UpdateDelayMs = gf::milliseconds(50);
-    static constexpr gf::Time SendKeyDelayMs = gf::milliseconds(50);
-    gf::Time lag = gf::milliseconds(0);
-    gf::Time keyDelay = gf::milliseconds(0);
 
     auto lastActionSail = sail::PlayerAction::Type::None;
     auto lastActionRubber = sail::PlayerAction::Type::None;
-    int actionNb = 0;
 
     bool rudderActive = false;
 
     sail::PredictionEngine engine(localBoat, terrain);
 
+    if (! enablePrediction)
+        engine.disable();
+
     while (window.isOpen())
     {
-       // std::cout << "Pos : " << localBoat.getLongitude() << ", " << localBoat.getLatitude() << "\n";
+        clock.restart();
 
-        gf::Time time = clock.restart();
-        lag += time;
-        keyDelay += time;
-        
         // 1. input
         struct gf::Event event;
         while (window.pollEvent(event))
@@ -225,24 +230,20 @@ int main(int argc, char *argv[])
         }
 
         if (sailRightAction.isActive()) {
-            //std::cout << "right\n";
             lastActionSail = sail::PlayerAction::Type::Right;
         }
         else if (sailLeftAction.isActive())
         {
-           // std::cout << "left\n";
             lastActionSail = sail::PlayerAction::Type::Left;
         }
 
         if (rubberLeftAction.isActive())
         {
-            //std::cout << "up\n";
             rudderActive = true;
             lastActionRubber = sail::PlayerAction::Type::Left;
         }
         else if (rubberRightAction.isActive())
         {
-            //std::cout << "down\n";
             rudderActive = true;
             lastActionRubber = sail::PlayerAction::Type::Right;
         }
@@ -262,21 +263,20 @@ int main(int argc, char *argv[])
             terrain.setFullRender(true);
         }
 
-        if (keyDelay > SendKeyDelayMs)
-        {
-            sail::PlayerAction action { lastActionSail, lastActionRubber };
-            engine.pushAction(action);
-            if (lastActionSail != sail::PlayerAction::Type::None
-                 || lastActionRubber != sail::PlayerAction::Type::None)
-            {
-                clientHandler.send(action);
-                keyDelay = gf::milliseconds(0);
-                lastActionSail = sail::PlayerAction::Type::None;
-                lastActionRubber = sail::PlayerAction::Type::None;
-            }
-        }
 
-        while (lag > UpdateDelayMs)
+        sail::PlayerAction action { lastActionSail, lastActionRubber };
+
+        engine.pushAction(action);
+
+        /**********  20 packets per second are sent, otherwise the prediction doesn't work efficiently *******/
+        /*if (lastActionSail != sail::PlayerAction::Type::None
+             || lastActionRubber != sail::PlayerAction::Type::None)
+        {*/
+            clientHandler.send(action);
+            lastActionSail = sail::PlayerAction::Type::None;
+            lastActionRubber = sail::PlayerAction::Type::None;
+
+        while (clock.getElapsedTime() < UpdateDelayMs)
         {
             /////////////////////////
             /// Receiving packets ///
@@ -295,7 +295,9 @@ int main(int argc, char *argv[])
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
                             entity.fromBoatData(boat);
                         }
-                        //engine.reconciliate(state.lastAckActionId);
+
+                        engine.reconciliate(state.lastAckActionId);
+
                         break;
                     }
                     case sail::PlayerEvent::type:
@@ -322,18 +324,14 @@ int main(int argc, char *argv[])
             
             /////////////////////////
 
-            lag -= UpdateDelayMs;
         }
-
-        //engine.update(gf::milliseconds(50)); // TODO : i know it's the wrong place
 
         // Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });
 
         // 2. update
-        //localBoat.update(time);
-        mainEntities.update(time);
-        hudEntities.update(time);
+        mainEntities.update(UpdateDelayMs);
+        hudEntities.update(UpdateDelayMs);
         // 3. draw
         renderer.clear();
         renderer.setView(mainView);

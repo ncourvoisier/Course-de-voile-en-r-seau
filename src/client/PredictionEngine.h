@@ -16,10 +16,17 @@ namespace sail
         PredictionEngine(ClientBoat& boat, Terrain& terrain);
 
         void pushAction(PlayerAction& action);
-        void update(gf::Time dt);
         void reconciliate(unsigned int lastAckActionId);
 
+        void enable();
+        void disable();
+
     private:
+        void update(gf::Time dt);
+
+    private:
+        bool m_enabled;
+
         unsigned int m_lastActionId;
         std::deque<PlayerAction> m_actionsHistory;
 

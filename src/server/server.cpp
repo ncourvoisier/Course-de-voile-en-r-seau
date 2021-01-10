@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         uint64_t timeNow = sinceEpochMs();
 
         networkHandler.processPackets();
-        networkHandler.sendPositions(clock.restart()); // TODO : fixed or variable DT here?
+        networkHandler.sendPositions(Timeout); // TODO : fixed or variable DT here?
 
         while (sinceEpochMs() < timeNow + TickLength)
         {
