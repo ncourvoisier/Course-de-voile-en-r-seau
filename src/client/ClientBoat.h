@@ -23,6 +23,9 @@ namespace sail
 
         void fromBoatData(BoatData data);
 
+        double getScaledX();
+        double getScaledY();
+
     private:
         const gf::Texture& m_texture;
         std::string m_name;

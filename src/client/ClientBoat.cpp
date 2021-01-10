@@ -37,7 +37,7 @@ namespace sail
 
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
     {
-        gf::Vector2f position(m_x, m_y);
+        gf::Vector2f position(getScaledX(), getScaledY());
 
         gf::Sprite spriteBoat;
         spriteBoat.setTexture(m_texture);
@@ -87,14 +87,24 @@ namespace sail
 
     void ClientBoat::fromBoatData(BoatData data)
     {
-        m_x = data.xPos * WorldScale;
-        m_y = data.yPos * WorldScale;
+        m_x = data.xPos;
+        m_y = data.yPos;
         angle = data.angle;
         sail_angle = data.sailAngle;
         rudder_angle = data.rudderAngle;
         sheet_length = data.sheetLength;
         rotational_velocity = data.rotationalVelocity;
         v = data.velocity;
+    }
+
+    double ClientBoat::getScaledX()
+    {
+        return m_x * WorldScale;
+    }
+
+    double ClientBoat::getScaledY()
+    {
+        return m_y * WorldScale;
     }
 
 }

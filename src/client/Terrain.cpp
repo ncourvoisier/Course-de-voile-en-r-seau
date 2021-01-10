@@ -48,8 +48,8 @@ namespace sail
         m_windDirection = windD;
         m_windSpeed = windS;
 
-        m_endingPos = end * WorldScale;
-        m_endingSpot.setPosition(m_endingPos);
+        m_endingPos = end;
+        m_endingSpot.setPosition(m_endingPos * WorldScale);
     }
 
     void Terrain::setFullRender(bool fullRender)
@@ -61,8 +61,8 @@ namespace sail
     {
         gf::unused(time);
 
-        auto newCol = static_cast<unsigned>(m_playerBoat.getLongitude() / TileSize);
-        auto newRow = static_cast<unsigned>(m_playerBoat.getLatitude() / TileSize);
+        auto newCol = static_cast<unsigned>(m_playerBoat.getLongitude() / TileDegree);
+        auto newRow = static_cast<unsigned>(m_playerBoat.getLatitude() / TileDegree);
 
         if (m_oldPosition.x == newCol && m_oldPosition.y == newRow)
             return;
@@ -151,7 +151,7 @@ namespace sail
         }
 
         m_showEnding = gf::euclideanDistance({static_cast<float>(m_playerBoat.getLongitude()),
-                                            static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 2000;
+                                            static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 0.02;
     }
 
     void Terrain::render(gf::RenderTarget &target, const gf::RenderStates& states)

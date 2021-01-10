@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
                 auto ready (waitingP.as<sail::WorldData>());
                 std::cout << " start : " << ready.startingPosition.x << ", " << ready.startingPosition.y
                     << ", end : " << ready.endingPosition.x << ", " << ready.endingPosition.y << "\n";
-                endingPos = ready.endingPosition * sail::WorldScale;
+                endingPos = ready.endingPosition;
                 terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
                 break;
             }
@@ -295,7 +295,7 @@ int main(int argc, char *argv[])
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
                             entity.fromBoatData(boat);
                         }
-                        engine.reconciliate(state.lastAckActionId);
+                        //engine.reconciliate(state.lastAckActionId);
                         break;
                     }
                     case sail::PlayerEvent::type:
@@ -325,10 +325,10 @@ int main(int argc, char *argv[])
             lag -= UpdateDelayMs;
         }
 
-        engine.update(gf::milliseconds(50)); // TODO : i know it's the wrong place
+        //engine.update(gf::milliseconds(50)); // TODO : i know it's the wrong place
 
         // Centering the view
-        mainView.setCenter({ static_cast<float>(localBoat.getLongitude()), static_cast<float>(localBoat.getLatitude()) });
+        mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });
 
         // 2. update
         //localBoat.update(time);
