@@ -297,7 +297,6 @@ int main(int argc, char *argv[])
                         }
 
                         engine.reconciliate(state.lastAckActionId);
-
                         break;
                     }
                     case sail::PlayerEvent::type:

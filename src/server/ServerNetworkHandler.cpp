@@ -76,7 +76,7 @@ namespace sail
             gf::TcpSocket& socket = p.getSocket();
             auto& pendingQueue = p.getPendingPackets();
             gf::Packet packet;
-            while (!pendingQueue.empty())
+            if (! pendingQueue.empty())
             {
                 packetsNb++;
                 packet = pendingQueue.front();
