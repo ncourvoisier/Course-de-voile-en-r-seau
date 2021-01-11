@@ -1,6 +1,7 @@
 #include <iostream>
 #include <gf/Clock.h>
 #include <gf/Singleton.h>
+#include <gf/Log.h>
 #include <gf/MessageManager.h>
 #include <csignal>
 #include "ServerNetworkHandler.h"
@@ -18,12 +19,6 @@ std::sig_atomic_t running(true);
 void terminationHandler(int signum)
 {
     running = false;
-}
-
-uint64_t sinceEpochMs()
-{
-    using namespace std::chrono;
-    return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
 int main(int argc, char* argv[])
@@ -79,13 +74,18 @@ int main(int argc, char* argv[])
         networkHandler.processPackets();
         networkHandler.sendPositions(sail::FrameTime);
 
+        if (clock.getElapsedTime() >= nextFrameTime)
+        {
+            auto criticalTime = (clock.getElapsedTime() - nextFrameTime).asMilliseconds();
+            gf::Log::warning("Server running %d Ticks / %d Ms after real time\n",
+                    (criticalTime / sail::FrameTime.asMilliseconds()), criticalTime);
+            continue;
+        }
+
         while (clock.getElapsedTime() < nextFrameTime)
         {
             networkHandler.receivePackets(gf::Time::Zero);
         }
-
-        for (sail::Player& player : game.getOnlinePlayers())
-            std::cout << "Received from " << player.getName() << " : " << player.getPendingPackets().size() << "\n";
     }
 
     std::cout << "Closing the server.\n";
