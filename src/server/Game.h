@@ -26,7 +26,9 @@ namespace sail
 
         bool connectPlayer(Player& player, gf::Id id, std::string userName);
 
-        std::vector<Player>& getPlayers();
+        bool disconnectPlayer(Player& player);
+
+        std::vector<Player>& getOnlinePlayers();
 
         void playerAction(Player& player, PlayerAction& action);
 
@@ -51,7 +53,8 @@ namespace sail
 
         BoatController m_boatController;
 
-        std::vector<Player> m_players;
+        std::vector<Player> m_onlinePlayers;
+        std::vector<Player> m_offlinePlayers;
 
         int m_playersNb;
 

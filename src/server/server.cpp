@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
     gf::Clock clock;
 
-    while (running)
+    while (game.isStarted() && running)
     {
         uint64_t timeNow = sinceEpochMs();
 

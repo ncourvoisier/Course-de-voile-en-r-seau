@@ -35,9 +35,13 @@ namespace sail {
         m_boat = ServerBoat(id, world.getStartingPosition().x, world.getStartingPosition().y);
     }
 
+    void Player::disconnect()
+    {
+        m_connected = false;
+    }
+
     gf::Id Player::getId() const
     {
-        assert(m_connected);
         return m_id;
     }
 

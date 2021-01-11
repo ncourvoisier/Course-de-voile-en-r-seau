@@ -20,13 +20,16 @@ namespace sail
 
         Player();
 
+        inline bool operator==(const Player& other) { return m_id == other.getId(); }
+
         gf::TcpSocket& getSocket();
 
         ServerBoat& getBoat();
 
         bool isConnected() const;
-
         void connect(gf::Id id, std::string name, World& world);
+
+        void disconnect();
 
         gf::Id getId() const;
 

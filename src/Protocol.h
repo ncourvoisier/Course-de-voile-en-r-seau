@@ -130,6 +130,18 @@ namespace sail {
         return ar | data.player;
     }
 
+    struct PlayerLeaves
+    {
+        static constexpr gf::Id type = "PlayerLeaves"_id;
+        gf::Id id;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, PlayerLeaves& data)
+    {
+        return ar | data.id;
+    }
+
     struct WorldData
     {
         static constexpr gf::Id type = "WorldData"_id;

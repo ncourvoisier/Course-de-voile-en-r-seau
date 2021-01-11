@@ -18,7 +18,7 @@ namespace sail
 {
 
     Game::Game(int neededPlayers)
-    : m_players()
+    : m_onlinePlayers()
     , m_started(false)
     , m_playersNb(0)
     , m_boatController()
@@ -57,16 +57,32 @@ namespace sail
         return ++m_playersNb == m_neededPlayers;
     }
 
-    std::vector<Player>& Game::getPlayers()
+    bool Game::disconnectPlayer(Player& player)
     {
-        return m_players;
+        for (auto it = m_onlinePlayers.begin(); it != m_onlinePlayers.end(); *it++)
+        {
+            if (*it == player)
+            {
+                m_onlinePlayers.erase(it);
+                m_offlinePlayers.push_back(std::move(*it));
+                break;
+            }
+        }
+        if (m_onlinePlayers.empty())
+            m_started = false;
+        return m_started;
+    }
+
+    std::vector<Player>& Game::getOnlinePlayers()
+    {
+        return m_onlinePlayers;
     }
 
     void Game::playerAction(Player& player, PlayerAction& action)
     {
         if (! m_started )
             return;
-        std::cout << "Action of : " << player.getName() << "\n";
+        //std::cout << "Action of : " << player.getName() << "\n";
         ServerBoat& boat = player.getBoat();
 
         //m_simulationMutex.lock(); Works fine without mutex
@@ -90,7 +106,7 @@ namespace sail
     {
         std::vector<BoatData> boatsData;
 
-        for (auto& player : m_players)
+        for (auto& player : m_onlinePlayers)
         {
             if (player.isConnected())
             {
@@ -144,7 +160,7 @@ namespace sail
             clock.restart();
             m_simulationMutex.lock();
 
-            for (auto& player : m_players) {
+            for (auto& player : m_onlinePlayers) {
                 if (player.isConnected())
                 {
                     Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());

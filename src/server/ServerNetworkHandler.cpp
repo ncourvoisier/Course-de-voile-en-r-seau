@@ -54,7 +54,7 @@ namespace sail
 
     void ServerNetworkHandler::broadcast(const gf::Packet& packet)
     {
-        for (auto& player : m_game.getPlayers())
+        for (auto& player : m_game.getOnlinePlayers())
         {
             if (player.isConnected())
             {
@@ -70,7 +70,7 @@ namespace sail
 
     void ServerNetworkHandler::processPackets()
     {
-        for (Player& p : m_game.getPlayers())
+        for (Player& p : m_game.getOnlinePlayers())
         {
             int packetsNb = 0;
             gf::TcpSocket& socket = p.getSocket();
@@ -90,7 +90,7 @@ namespace sail
                         gf::Random rand;
                         gf::Id newId{rand.computeId()};
                         std::vector<PlayerData> playersData;
-                        for (auto &p : m_game.getPlayers())
+                        for (auto &p : m_game.getOnlinePlayers())
                         {
                             if (p.isConnected())
                             {
@@ -126,14 +126,14 @@ namespace sail
                     {
                         if (!p.isConnected())
                             continue;
-                        PlayerAction action = packet.as<PlayerAction>();
+                        auto action = packet.as<PlayerAction>();
                         m_game.playerAction(p, action);
                         break;
                     }
                 }
             }
-            if (packetsNb > 0)
-                std::cout << packetsNb << " packets processed\n";
+            /*if (packetsNb > 0)
+                std::cout << packetsNb << " packets processed\n";*/
         }
     }
 
@@ -141,21 +141,16 @@ namespace sail
     {
         if (m_selector.wait(timeout) == gf::SocketSelectorStatus::Event)
         {
-            for (auto &player : m_game.getPlayers())
+            for (auto &player : m_game.getOnlinePlayers())
             {
                 auto &socket = player.getSocket();
                 if (m_selector.isReady(socket))
                 {
                     gf::Packet packet;
                     gf::SocketStatus status = socket.recvPacket(packet);
-                    if (status == gf::SocketStatus::Data)
+                    if (status != gf::SocketStatus::Data)
                     {
-                        std::cout << "Received packet\n";
-                    }
-                    else
-                    {
-                        std::cout << "Socket closed\n";
-                        // TODO : Remove closed sockets
+                        disconnectPlayer(player);
                         continue;
                     }
                     player.getPendingPackets().push_back(packet);
@@ -167,10 +162,10 @@ namespace sail
                 // the listener is ready, accept a new connection
                 gf::TcpSocket socket = m_listener.accept();
                 Player player(std::move(socket));
-                m_game.getPlayers().push_back(std::move(player)); // TODO : change for an addPlayer function
+                m_game.getOnlinePlayers().push_back(std::move(player));
                 //gf::Id newId = m_game.addPlayer(std::move(socket));
-                m_selector.addSocket(m_game.getPlayers().back().getSocket());
-                std::cout << "Socket added to selector : " << m_game.getPlayers().back().getSocket() << "\n";
+                m_selector.addSocket(m_game.getOnlinePlayers().back().getSocket());
+                std::cout << "Socket added to selector : " << m_game.getOnlinePlayers().back().getSocket() << "\n";
             }
         }
     }
@@ -178,12 +173,26 @@ namespace sail
     void ServerNetworkHandler::sendPositions(gf::Time dt)
     {
         GameState gs = m_game.update(dt);
-        for (auto& player : m_game.getPlayers())
+        for (auto& player : m_game.getOnlinePlayers())
         {
             gs.lastAckActionId = player.getLastAckActionId();
             gf::Packet gsPacket;
             gsPacket.is(gs);
             player.getSocket().sendPacket(gsPacket);
+        }
+    }
+
+    void ServerNetworkHandler::disconnectPlayer(Player& player)
+    {
+        gf::Log::warning("Player '%s' disconnected\n", player.getName().c_str());
+        if (m_game.disconnectPlayer(player))
+        {
+            m_selector.removeSocket(player.getSocket());
+
+            PlayerLeaves leave{player.getId()};
+            gf::Packet leavePacket;
+            leavePacket.is(leave);
+            broadcast(leavePacket);
         }
     }
 

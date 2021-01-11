@@ -26,7 +26,12 @@ namespace sail
         void sendPositions(gf::Time dt);
 
         gf::MessageStatus onPlayerDied(gf::Id id, gf::Message *msg);
+
         gf::MessageStatus onPlayerFinished(gf::Id id, gf::Message *msg);
+
+    private:
+        void disconnectPlayer(Player& player);
+
 
     private:
         Game& m_game;
