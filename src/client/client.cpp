@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
     // add entities to hudEntities
     // game loop
     renderer.clear(gf::Color::White);
-    gf::Clock clock;
 
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
@@ -209,9 +208,12 @@ int main(int argc, char *argv[])
     if (! enablePrediction)
         engine.disable();
 
+    gf::Clock clock;
+    gf::Time nextFrameTime = gf::Time::Zero;
+
     while (window.isOpen())
     {
-        clock.restart();
+        nextFrameTime += sail::FrameTime;
 
         // 1. input
         struct gf::Event event;
@@ -276,7 +278,7 @@ int main(int argc, char *argv[])
             lastActionSail = sail::PlayerAction::Type::None;
             lastActionRubber = sail::PlayerAction::Type::None;
 
-        while (clock.getElapsedTime() < UpdateDelayMs)
+        while (clock.getElapsedTime() < nextFrameTime)
         {
             /////////////////////////
             /// Receiving packets ///
@@ -316,8 +318,8 @@ int main(int argc, char *argv[])
                             default:
                                 std::cout << "Received unknown PlayerEvent type\n";
                         }
+                        break;
                     }
-                    break;
                 }
             }
             

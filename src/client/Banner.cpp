@@ -30,10 +30,6 @@ namespace sail {
         m_text.setPosition({250.0f, 250.0f});
     }
 
-    Banner::~Banner() {
-
-    }
-
     void Banner::update(gf::Time time) {
         if (!m_display)
             return;

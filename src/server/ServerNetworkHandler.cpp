@@ -61,7 +61,7 @@ namespace sail
                 //std::cout << "Before sending packet of size : " << packet.bytes.size() << " (type: " << humanizePacketType(packet.type) << ")\n";
                 if (auto status = player.getSocket().sendPacket(packet); status != gf::SocketStatus::Data)
                 {
-                    gf::Log::error("couldn't send packet to '%s'\n", player.getName().c_str());
+                    gf::Log::error("Couldn't send packet to '%s'\n", player.getName().c_str());
                 }
                 //std::cout << "After sending\n";
             }

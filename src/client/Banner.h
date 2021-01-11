@@ -17,7 +17,6 @@ namespace sail {
 
     public:
         Banner(gf::Vector2f target, gf::Color4f color, gf::View& view);
-        ~Banner();
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
         void update(gf::Time time) override;
         void displayText(std::string text);

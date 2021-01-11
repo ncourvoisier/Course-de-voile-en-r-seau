@@ -30,7 +30,7 @@ namespace sail
         {
             m_actionsHistory.push_back(action);
             m_boatController.processPlayerAction(m_boat, action);
-            update(gf::milliseconds(50));
+            update(sail::FrameTime);
         }
     }
 
@@ -46,7 +46,7 @@ namespace sail
         for (auto it = m_actionsHistory.begin(); it != m_actionsHistory.end(); *it++)
         {
             m_boatController.processPlayerAction(m_boat, *it);
-            update(gf::milliseconds(50)); // TODO : change to const
+            update(sail::FrameTime);
         }
     }
 

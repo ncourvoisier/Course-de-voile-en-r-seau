@@ -6,6 +6,7 @@
 #include "ServerNetworkHandler.h"
 
 #include "Managers.h"
+#include "../Constants.h"
 
 void printUsage(char* execName)
 {
@@ -68,23 +69,23 @@ int main(int argc, char* argv[])
 
     /// Game loop ///
 
-    static constexpr int TicksPerSecond = 20;
-    static constexpr int TickLength = 1000 / TicksPerSecond;
-    static constexpr gf::Time Timeout = gf::milliseconds(TickLength);
-
     gf::Clock clock;
+    gf::Time nextFrameTime = gf::Time::Zero;
 
     while (game.isStarted() && running)
     {
-        uint64_t timeNow = sinceEpochMs();
+        nextFrameTime += sail::FrameTime;
 
         networkHandler.processPackets();
-        networkHandler.sendPositions(Timeout); // TODO : fixed or variable DT here?
+        networkHandler.sendPositions(sail::FrameTime);
 
-        while (sinceEpochMs() < timeNow + TickLength)
+        while (clock.getElapsedTime() < nextFrameTime)
         {
             networkHandler.receivePackets(gf::Time::Zero);
         }
+
+        for (sail::Player& player : game.getOnlinePlayers())
+            std::cout << "Received from " << player.getName() << " : " << player.getPendingPackets().size() << "\n";
     }
 
     std::cout << "Closing the server.\n";
