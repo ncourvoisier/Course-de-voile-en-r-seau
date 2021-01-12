@@ -64,7 +64,6 @@ namespace sail
         double newLength = boat.getSheetLength() + SheetStep;
         if (newLength > SheetMaxLength)
             newLength = SheetMaxLength;
-        std::cout << "moving with sheet : " << newLength << "\n";
         boat.setSheetLength(newLength);
     }
 
@@ -73,7 +72,6 @@ namespace sail
         double newLength = boat.getSheetLength() - SheetStep;
         if (newLength < SheetMinLength)
             newLength = SheetMinLength;
-        std::cout << "moving with sheet : " << newLength << "\n";
         boat.setSheetLength(newLength);
     }
 

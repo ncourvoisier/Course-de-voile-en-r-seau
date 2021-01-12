@@ -274,9 +274,11 @@ int main(int argc, char *argv[])
         /*if (lastActionSail != sail::PlayerAction::Type::None
              || lastActionRubber != sail::PlayerAction::Type::None)
         {*/
-            clientHandler.send(action);
-            lastActionSail = sail::PlayerAction::Type::None;
-            lastActionRubber = sail::PlayerAction::Type::None;
+        clientHandler.send(action);
+        lastActionSail = sail::PlayerAction::Type::None;
+        lastActionRubber = sail::PlayerAction::Type::None;
+
+        int lastAck = -1;
 
         while (clock.getElapsedTime() < nextFrameTime)
         {
@@ -299,6 +301,7 @@ int main(int argc, char *argv[])
                         }
 
                         engine.reconciliate(state.lastAckActionId);
+                        lastAck = state.lastAckActionId;
                         break;
                     }
                     case sail::PlayerEvent::type:
@@ -326,6 +329,9 @@ int main(int argc, char *argv[])
             /////////////////////////
 
         }
+
+        if (lastAck != -1)
+            std::cout << "Packet delay : " << action.id - lastAck << "\n";
 
         // Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });

@@ -76,9 +76,9 @@ namespace sail
             gf::TcpSocket& socket = p.getSocket();
             auto& pendingQueue = p.getPendingPackets();
             gf::Packet packet;
-            if (! pendingQueue.empty())
-            {
-                packetsNb++;
+            while (! pendingQueue.empty()) // If we use an "if" here : no roll-back will be ever felt by the client :D, BUT, the server
+            {                              // will slowly become late as Ticks are being skipped in server overload condition, without any way those
+                packetsNb++;               // those Ticks can be catch again : BAD IDEA NUMBER 7821
                 packet = pendingQueue.front();
                 pendingQueue.pop_front();
                 switch (packet.getType())
