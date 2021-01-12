@@ -82,9 +82,9 @@ int main(int argc, char* argv[])
             continue;
         }
 
+        networkHandler.receivePackets(gf::Time::Zero);
         while (clock.getElapsedTime() < nextFrameTime)
         {
-            networkHandler.receivePackets(gf::Time::Zero);
         }
     }
 
