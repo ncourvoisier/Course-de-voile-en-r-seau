@@ -164,11 +164,11 @@ int main(int argc, char *argv[])
             }
             else if (waitingP.getType() == sail::WorldData::type)
             {
-                auto ready (waitingP.as<sail::WorldData>());
+                /*auto ready (waitingP.as<sail::WorldData>());
                 endingPos = ready.endingPosition;
                 localBoat.setLongitude(ready.startingPosition.x);
                 localBoat.setLatitude(ready.startingPosition.y);
-                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
+                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);*/
                 //break;
             }
             else if (waitingP.getType() == sail::GameStart::type)
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 
 
     // Adding references to entities
-    for (auto it = players.begin(); it != players.end(); ++it)
+    /*for (auto it = players.begin(); it != players.end(); ++it)
     {
         mainEntities.addEntity((it->second).getBoat());
     }
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     sail::Banner banner({5000, 5000}, gf::Color::White, hudView);
     hudEntities.addEntity(banner);
 
-    banner.displayText("START");
+    banner.displayText("START");*/
 
     // Launching the thread
     clientHandler.run();
@@ -207,20 +207,25 @@ int main(int argc, char *argv[])
 
     bool rudderActive = false;
 
-    sail::PredictionEngine engine(localBoat, terrain);
+    sail::PredictionEngine engine/*(localBoat, terrain)*/;
 
-    if (! enablePrediction)
-        engine.disable();
+    /*if (! enablePrediction)
+        engine.disable();*/
 
     gf::Clock clock;
     gf::Time nextFrameTime = gf::Time::Zero;
+
+    static const sail::PlayerAction::Type availableAction[] = { sail::PlayerAction::Type::None,
+                                                                sail::PlayerAction::Type::Left,
+                                                                sail::PlayerAction::Type::Right,
+                                                                sail::PlayerAction::Type::Center };
 
     while (window.isOpen())
     {
         nextFrameTime += sail::FrameTime;
 
         // 1. input
-        struct gf::Event event;
+        /*struct gf::Event event;
         while (window.pollEvent(event))
         {
             actions.processEvent(event);
@@ -267,10 +272,11 @@ int main(int argc, char *argv[])
         if (fullRenderAction.isActive())
         {
             terrain.setFullRender(true);
-        }
+        }*/
 
+        sail::PlayerAction action { availableAction[rand() % 4], availableAction[rand() % 4] };
 
-        sail::PlayerAction action { lastActionSail, lastActionRubber };
+        //sail::PlayerAction action { lastActionSail, lastActionRubber };
 
         engine.pushAction(action);
 
@@ -279,8 +285,8 @@ int main(int argc, char *argv[])
              || lastActionRubber != sail::PlayerAction::Type::None)
         {*/
         clientHandler.send(action);
-        lastActionSail = sail::PlayerAction::Type::None;
-        lastActionRubber = sail::PlayerAction::Type::None;
+        /*lastActionSail = sail::PlayerAction::Type::None;
+        lastActionRubber = sail::PlayerAction::Type::None;*/
 
         int lastAck = -1;
 
@@ -298,13 +304,13 @@ int main(int argc, char *argv[])
                     case sail::GameState::type:
                     {
                         sail::GameState state {packet.as<sail::GameState>()};
-                        for (auto& boat : state.boats)
+                        /*for (auto& boat : state.boats)
                         {
                             sail::ClientBoat& entity = players.at(boat.playerId).getBoat();
                             entity.fromBoatData(boat);
                         }
 
-                        engine.reconciliate(state.lastAckActionId);
+                        engine.reconciliate(state.lastAckActionId);*/
                         lastAck = state.lastAckActionId;
                         break;
                     }
@@ -335,9 +341,9 @@ int main(int argc, char *argv[])
         }
 
         if (lastAck != -1)
-            std::cout << "Packet delay : " << action.id - lastAck << "\n";
+            std::cout << "Packet delay : " << action.id - lastAck << " (sent: " << action.id << ", last ack: " << lastAck << ")\n";
 
-        // Centering the view
+        /*// Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });
 
         // 2. update
@@ -351,7 +357,7 @@ int main(int argc, char *argv[])
         renderer.setView(hudView);
         hudEntities.render(renderer);
         renderer.display();
-        actions.reset();
+        actions.reset();*/
     }
     return 0;
 

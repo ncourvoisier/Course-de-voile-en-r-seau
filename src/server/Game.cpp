@@ -95,11 +95,11 @@ namespace sail
 
     WorldData Game::getWorldData()
     {
-        return { m_world.getTerrain(),
+        return { /*m_world.getTerrain(),
                  m_world.getWindDirectionArray(),
                  m_world.getWindSpeedArray(),
                  m_world.getStartingPosition(),
-                 m_world.getEndingPosition() };
+                 m_world.getEndingPosition()*/ };
     }
 
     GameState Game::update(gf::Time dt)

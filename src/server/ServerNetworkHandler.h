@@ -21,7 +21,7 @@ namespace sail
         void broadcast(const gf::Packet& packet);
 
         void receivePackets(gf::Time timeout);
-        void processPackets();
+        int processPackets();
 
         void sendPositions(gf::Time dt);
 

@@ -3,10 +3,10 @@
 namespace sail
 {
 
-    PredictionEngine::PredictionEngine(ClientBoat& boat, Terrain& terrain)
-    : m_boat(boat)
+    PredictionEngine::PredictionEngine(/*ClientBoat& boat, Terrain& terrain*/)
+    : /*m_boat(boat)
     , m_terrain(terrain)
-    , m_lastActionId(0)
+    , */m_lastActionId(0)
     , m_actionsHistory()
     , m_boatController()
     , m_enabled(true)
@@ -16,27 +16,27 @@ namespace sail
 
     void PredictionEngine::update(gf::Time dt)
     {
-        m_boatController.updateBoatPosition(
+        /*m_boatController.updateBoatPosition(
                 m_boat,
                 m_terrain.getWindSpeedArray(),
                 m_terrain.getWindDirectionArray(),
-                dt);
+                dt);*/
     }
 
     void PredictionEngine::pushAction(PlayerAction &action)
     {
         action.id = m_lastActionId++;
-        if (m_enabled)
+        /*if (m_enabled)
         {
             m_actionsHistory.push_back(action);
             m_boatController.processPlayerAction(m_boat, action);
             update(sail::FrameTime);
-        }
+        }*/
     }
 
     void PredictionEngine::reconciliate(unsigned int lastAckActionId)
     {
-        if (! m_enabled)
+        /*if (! m_enabled)
             return;
         while (! m_actionsHistory.empty() && m_actionsHistory.front().id <= lastAckActionId)
         {
@@ -47,7 +47,7 @@ namespace sail
         {
             m_boatController.processPlayerAction(m_boat, *it);
             update(sail::FrameTime);
-        }
+        }*/
     }
 
     void PredictionEngine::enable()

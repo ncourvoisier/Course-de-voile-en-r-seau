@@ -13,7 +13,7 @@ namespace sail
     class PredictionEngine
     {
     public:
-        PredictionEngine(ClientBoat& boat, Terrain& terrain);
+        PredictionEngine(/*ClientBoat& boat, Terrain& terrain*/);
 
         void pushAction(PlayerAction& action);
         void reconciliate(unsigned int lastAckActionId);
@@ -30,8 +30,8 @@ namespace sail
         unsigned int m_lastActionId;
         std::deque<PlayerAction> m_actionsHistory;
 
-        ClientBoat& m_boat;
-        Terrain& m_terrain;
+        //ClientBoat& m_boat;
+        //Terrain& m_terrain;
 
         BoatController m_boatController;
     };

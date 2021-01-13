@@ -11,7 +11,7 @@
 
 void printUsage(char* execName)
 {
-    std::cout << "Usage: " << execName << " [port] [players number (2-10)]\n";
+    std::cout << "Usage: " << execName << " [port] [players number (2+)]\n";
 }
 
 std::sig_atomic_t running(true);
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     int playersNb = std::stoi(argv[2]);
 
-    if (playersNb < 2 || playersNb > 10)
+    if (playersNb < 2 /*|| playersNb > 10*/)
     {
         printUsage(argv[0]);
         exit(2);
@@ -67,11 +67,15 @@ int main(int argc, char* argv[])
     gf::Clock clock;
     gf::Time nextFrameTime = gf::Time::Zero;
 
+    int totalPacketsProcessed = 0;
+    int totalTicks = -1;
+
     while (game.isStarted() && running)
     {
         nextFrameTime += sail::FrameTime;
 
-        networkHandler.processPackets();
+        totalTicks++;
+        totalPacketsProcessed += networkHandler.processPackets();
         networkHandler.sendPositions(sail::FrameTime);
 
         if (clock.getElapsedTime() >= nextFrameTime)
@@ -90,5 +94,6 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_for(span);
     }
 
+    std::cout << "Processed " << totalPacketsProcessed << " packets in " << totalTicks << " Ticks : " << (totalPacketsProcessed * 1.0) / totalTicks << " packets per Tick";
     std::cout << "Closing the server.\n";
 }

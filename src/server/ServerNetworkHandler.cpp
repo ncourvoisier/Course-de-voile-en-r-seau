@@ -68,11 +68,11 @@ namespace sail
         }
     }
 
-    void ServerNetworkHandler::processPackets()
+    int ServerNetworkHandler::processPackets()
     {
+        int packetsNb = 0;
         for (Player& p : m_game.getOnlinePlayers())
         {
-            int packetsNb = 0;
             gf::TcpSocket& socket = p.getSocket();
             auto& pendingQueue = p.getPendingPackets();
             gf::Packet packet;
@@ -141,6 +141,7 @@ namespace sail
             /*if (packetsNb > 0)
                 std::cout << packetsNb << " packets processed\n";*/
         }
+        return packetsNb;
     }
 
     void ServerNetworkHandler::receivePackets(gf::Time timeout)
