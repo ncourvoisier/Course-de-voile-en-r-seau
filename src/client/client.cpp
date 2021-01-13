@@ -169,6 +169,10 @@ int main(int argc, char *argv[])
                 localBoat.setLongitude(ready.startingPosition.x);
                 localBoat.setLatitude(ready.startingPosition.y);
                 terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
+                //break;
+            }
+            else if (waitingP.getType() == sail::GameStart::type)
+            {
                 break;
             }
         }

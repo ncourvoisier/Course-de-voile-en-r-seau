@@ -181,6 +181,16 @@ namespace sail {
         return ar | data.sailAction | data.rudderAction | data.id;
     }
 
+    struct GameStart
+    {
+        static constexpr gf::Id type = "GameStart"_id;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, GameStart& data) {
+        return ar;
+    }
+
 }
 
 #endif //SAILINSANE_PROTOCOL_H

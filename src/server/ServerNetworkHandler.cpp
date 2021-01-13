@@ -116,8 +116,14 @@ namespace sail
                             worldPacket.is(m_game.getWorldData());
                             std::cout << "Ready packet built\n";
                             broadcast(worldPacket);
+
                             m_game.start();
+
                             std::cout << "Starting the game\n"; // BUT NOT HERE
+                            GameStart start;
+                            gf::Packet startPacket;
+                            startPacket.is(start);
+                            broadcast(startPacket);
                         }
                         std::cout << "New player : " << p.getId() << " with name : " << p.getName() << "\n";
                         break;
