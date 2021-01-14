@@ -1,7 +1,3 @@
-//
-// Created by augustin on 02/11/2020.
-//
-
 #ifndef SAILINSANE_CLIENTPLAYER_H
 #define SAILINSANE_CLIENTPLAYER_H
 

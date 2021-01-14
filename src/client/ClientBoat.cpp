@@ -108,4 +108,9 @@ namespace sail
         return m_y * WorldScale;
     }
 
+    const std::string& ClientBoat::getName()
+    {
+        return m_name;
+    }
+
 }

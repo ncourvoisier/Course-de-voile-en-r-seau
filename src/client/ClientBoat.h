@@ -26,6 +26,8 @@ namespace sail
         double getScaledX();
         double getScaledY();
 
+        const std::string& getName();
+
     private:
         const gf::Texture& m_texture;
         std::string m_name;

@@ -192,10 +192,8 @@ int main(int argc, char *argv[])
     sail::NavigationArrow endArrow (endingPos, localBoat, hudView);
     hudEntities.addEntity(endArrow);
 
-    sail::Banner banner({5000, 5000}, gf::Color::White, hudView);
+    sail::Banner banner(hudView);
     hudEntities.addEntity(banner);
-
-    banner.displayText("START");
 
     // Launching the thread
     clientHandler.run();
@@ -311,16 +309,17 @@ int main(int argc, char *argv[])
                     case sail::PlayerEvent::type:
                     {
                         auto eventPacket {packet.as<sail::PlayerEvent>()};
+                        auto& name = players.at(eventPacket.id).getBoat().getName();
                         switch (eventPacket.event)
                         {
                             case sail::PlayerEvent::EventType::Death:
-                                std::cout << "A player is dead\n";
+                                banner.displayText(name + " is dead!");
                                 break;
                             case sail::PlayerEvent::EventType::Finish:
-                                std::cout << "A player finished\n";
+                                banner.displayText(name + " won!");
                                 break;
                             case sail::PlayerEvent::EventType::Checkpoint:
-                                std::cout << "Player found a checkpoint\n";
+                                banner.displayText(name + " found a checkpoint!");
                                 break;
                             default:
                                 std::cout << "Received unknown PlayerEvent type\n";
@@ -334,8 +333,8 @@ int main(int argc, char *argv[])
 
         }
 
-        if (lastAck != -1)
-            std::cout << "Packet delay : " << action.id - lastAck << "\n";
+        /*if (lastAck != -1)
+            std::cout << "Packet delay : " << action.id - lastAck << "\n";*/
 
         // Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });

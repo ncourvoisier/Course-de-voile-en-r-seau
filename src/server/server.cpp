@@ -71,20 +71,18 @@ int main(int argc, char* argv[])
     {
         nextFrameTime += sail::FrameTime;
 
+        networkHandler.receivePackets(gf::Time::Zero);
+
         networkHandler.processPackets();
         networkHandler.sendPositions(sail::FrameTime);
 
         if (clock.getElapsedTime() >= nextFrameTime)
         {
             auto criticalTime = (clock.getElapsedTime() - nextFrameTime).asMilliseconds();
-            gf::Log::warning("Server running %d Ticks / %d Ms after real time, clearing pending packets to catch up\n",
-                    (criticalTime / sail::FrameTime.asMilliseconds()), criticalTime);
-            for (sail::Player& player : game.getOnlinePlayers())
-                player.getPendingPackets().clear();
+            gf::Log::warning("Server running %d Ticks / %d Ms after real time\n",
+                             (criticalTime / sail::FrameTime.asMilliseconds()), criticalTime);
             continue;
         }
-
-        networkHandler.receivePackets(gf::Time::Zero);
 
         std::chrono::milliseconds span((nextFrameTime - clock.getElapsedTime()).asMilliseconds());
         std::this_thread::sleep_for(span);
