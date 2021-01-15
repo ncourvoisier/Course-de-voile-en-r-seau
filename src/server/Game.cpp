@@ -68,6 +68,7 @@ namespace sail
                 break;
             }
         }
+        player.disconnect();
         if (m_onlinePlayers.empty())
             m_started = false;
         return m_started;

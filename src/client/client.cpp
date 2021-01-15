@@ -19,6 +19,7 @@
 #include <gf/Queue.h>
 #include <gf/ResourceManager.h>
 #include <gf/Sprite.h>
+#include <gf/Log.h>
 #include "config.h"
 #include "Terrain.h"
 #include "Banner.h"
@@ -27,6 +28,11 @@
 void printUsage(char* execName)
 {
     std::cout << "Usage: " << execName << " <address> <port> <username> [-predictionOff|-pOff]\n";
+}
+
+void lostConnection()
+{
+    gf::Log::error("Lost connection to server\n");
 }
 
 int main(int argc, char *argv[])
@@ -123,7 +129,7 @@ int main(int argc, char *argv[])
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
     // Establishing connection
-    sail::ClientGreeting greeting = { argv[3] }; // TODO : TEMPORARY
+    sail::ClientGreeting greeting = { argv[3] };
     clientHandler.send(greeting);
     gf::Packet serverGreetingP;
     clientHandler.receive(serverGreetingP);
@@ -276,7 +282,9 @@ int main(int argc, char *argv[])
         /*if (lastActionSail != sail::PlayerAction::Type::None
              || lastActionRubber != sail::PlayerAction::Type::None)
         {*/
-        clientHandler.send(action);
+        if (clientHandler.send(action) != gf::SocketStatus::Data) {
+            exit(2);
+        }
         lastActionSail = sail::PlayerAction::Type::None;
         lastActionRubber = sail::PlayerAction::Type::None;
 
@@ -324,6 +332,14 @@ int main(int argc, char *argv[])
                             default:
                                 std::cout << "Received unknown PlayerEvent type\n";
                         }
+                        break;
+                    }
+                    case sail::PlayerLeaves::type:
+                    {
+                        auto leavePacket {packet.as<sail::PlayerLeaves>()};
+                        auto& boat = players.at(leavePacket.id).getBoat();
+                        mainEntities.removeEntity(&boat);
+                        banner.displayText(boat.getName() + " left the game");
                         break;
                     }
                 }

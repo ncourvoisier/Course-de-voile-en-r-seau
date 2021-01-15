@@ -28,11 +28,11 @@ namespace sail
         gf::SocketStatus receive(gf::Packet& packet);
 
         template <typename T>
-        void send(const T& data)
+        gf::SocketStatus send(const T& data)
         {
             gf::Packet packet;
             packet.is(data);
-            m_socket.sendPacket(packet); // TODO : handle errors
+            return m_socket.sendPacket(packet);
         }
 
         void setBlocking();

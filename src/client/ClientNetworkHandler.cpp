@@ -47,8 +47,8 @@ namespace sail
         {
             gf::Packet packet;
             gf::SocketStatus status = receive(packet);
-            if (status == gf::SocketStatus::Block)
-                continue;
+            if (status != gf::SocketStatus::Data)
+                exit(2);
             queue.push(std::move(packet));
         }
     }
