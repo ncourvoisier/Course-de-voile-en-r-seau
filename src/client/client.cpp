@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
 
         int lastAck = -1;
 
-        while (clock.getElapsedTime() < nextFrameTime)
+        do
         {
             /////////////////////////
             /// Receiving packets ///
@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
             
             /////////////////////////
 
-        }
+        } while (clock.getElapsedTime() < nextFrameTime);
 
         /*if (lastAck != -1)
             std::cout << "Packet delay : " << action.id - lastAck << "\n";*/

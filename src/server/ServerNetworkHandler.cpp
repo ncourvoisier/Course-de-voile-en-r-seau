@@ -193,9 +193,10 @@ namespace sail
         gf::Log::warning("Player '%s' disconnected\n", player.getName().c_str());
         if (m_game.disconnectPlayer(player))
         {
-            m_selector.removeSocket(player.getSocket());
+            Player& oldPlayer = m_game.getOfflinePlayers().back();
+            m_selector.removeSocket(oldPlayer.getSocket());
 
-            PlayerLeaves leave{player.getId()};
+            PlayerLeaves leave{oldPlayer.getId()};
             gf::Packet leavePacket;
             leavePacket.is(leave);
             broadcast(leavePacket);

@@ -29,6 +29,7 @@ namespace sail
         bool disconnectPlayer(Player& player);
 
         std::vector<Player>& getOnlinePlayers();
+        std::vector<Player>& getOfflinePlayers();
 
         void playerAction(Player& player, PlayerAction& action);
 

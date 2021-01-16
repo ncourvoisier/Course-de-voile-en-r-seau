@@ -63,12 +63,12 @@ namespace sail
         {
             if (*it == player)
             {
-                m_onlinePlayers.erase(it);
                 m_offlinePlayers.push_back(std::move(*it));
+                m_onlinePlayers.erase(it);
                 break;
             }
         }
-        player.disconnect();
+        m_offlinePlayers.back().disconnect();
         if (m_onlinePlayers.empty())
             m_started = false;
         return m_started;
@@ -77,6 +77,11 @@ namespace sail
     std::vector<Player>& Game::getOnlinePlayers()
     {
         return m_onlinePlayers;
+    }
+
+    std::vector<Player>& Game::getOfflinePlayers()
+    {
+        return m_offlinePlayers;
     }
 
     void Game::playerAction(Player& player, PlayerAction& action)
