@@ -1,4 +1,4 @@
-#include "World.h"
+#include "ServerWorld.h"
 
 #include "../Constants.h"
 
@@ -8,7 +8,7 @@
 namespace sail
 {
 
-    World::World()
+    ServerWorld::ServerWorld()
     : m_terrain({MapSize, MapSize})
     , m_windDirection({MapSize, MapSize})
     , m_windSpeed({MapSize, MapSize})
@@ -24,12 +24,12 @@ namespace sail
         return (value - waterLevel) / (1.0 - waterLevel) * 0.5 + 0.5;
     }
 
-    void World::generate()
+    void ServerWorld::generate()
     {
         gf::SimplexNoise2D simplex(m_random);
         gf::FractalNoise2D fractal(simplex, 1);
 
-        /// Terrain ///
+        /// ClientWorld ///
 
         for (auto row : m_terrain.getRowRange())
         {
@@ -88,7 +88,7 @@ namespace sail
         while (gf::squareDistance(m_startingPosition, m_endingPosition) < 0.03f);*/
     }
 
-    gf::Vector2d World::randomWaterLocation()
+    gf::Vector2d ServerWorld::randomWaterLocation()
     {
         gf::Vector2d loc;
         unsigned col, row;
@@ -103,15 +103,18 @@ namespace sail
         return loc;
     }
 
-    bool World::isOnLand(double x, double y)
+    bool ServerWorld::isOnLand(double x, double y)
     {
+        if (x < 0 || x >= 0.1 || y < 0 || y >= 0.1)
+            return true;
+
         auto col = static_cast<unsigned>(x / TileDegree);
         auto row = static_cast<unsigned>(y / TileDegree);
 
         return m_terrain({ row, col }) > 0.5f;
     }
 
-    Wind World::getWindAtPosition(double x, double y)
+    Wind ServerWorld::getWindAtPosition(double x, double y)
     {
         auto col = static_cast<unsigned>(x / TileDegree);
         auto row = static_cast<unsigned>(y / TileDegree);
@@ -119,37 +122,34 @@ namespace sail
         return Wind(m_windSpeed({row, col}), m_windDirection({row, col}));
     }
 
-    gf::Array2D<float>& World::getTerrain()
-    {
-        return m_terrain;
-    }
-
-    gf::Vector2f World::getStartingPosition()
+    gf::Vector2f ServerWorld::getStartingPosition()
     {
         return m_startingPosition;
     }
 
-    gf::Vector2f World::getEndingPosition()
+    gf::Vector2f ServerWorld::getEndingPosition()
     {
         return m_endingPosition;
     }
 
-    gf::Array2D<float>& World::getWindDirectionArray()
+    const gf::Array2D<float>& ServerWorld::getWindDirection() const
     {
         return m_windDirection;
     }
 
-    gf::Array2D<float>& World::getWindSpeedArray()
+    const gf::Array2D<float> & ServerWorld::getWindSpeed() const
     {
         return m_windSpeed;
     }
 
-    /*
-     * Plan :
-     * - generating the whole world and sending the whole terrain to the player before the game
-     * - cutting the wind-map in chunks and sending them to player when they get close enough to activate them
-     * - keeping track of the chunks we already sent to players
-     */
+    const gf::Array2D<float>& ServerWorld::getTerrain() const
+    {
+        return m_terrain;
+    }
 
+    const gf::Vector2d ServerWorld::getStartingPosition() const
+    {
+        return m_startingPosition;
+    }
 
 }

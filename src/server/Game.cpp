@@ -21,9 +21,9 @@ namespace sail
     : m_onlinePlayers()
     , m_started(false)
     , m_playersNb(0)
-    , m_boatController()
     , m_fixedWind()
     , m_world()
+    , m_boatController(m_world)
     , m_neededPlayers(neededPlayers)
     {
 
@@ -102,8 +102,8 @@ namespace sail
     WorldData Game::getWorldData()
     {
         return { m_world.getTerrain(),
-                 m_world.getWindDirectionArray(),
-                 m_world.getWindSpeedArray(),
+                 m_world.getWindDirection(),
+                 m_world.getWindSpeed(),
                  m_world.getStartingPosition(),
                  m_world.getEndingPosition() };
     }
@@ -116,12 +116,15 @@ namespace sail
         {
             if (player.isConnected())
             {
-                m_boatController.updateBoatPosition(
+                 if (! m_boatController.updateBoatPosition(
                         player.getBoat(),
-                        m_world.getWindSpeedArray(),
-                        m_world.getWindDirectionArray(),
-                        dt);
-                checkCoordinates(player);
+                        dt))
+                 {
+                     PlayerDied pDIed;
+                     pDIed.id = player.getId();
+                     gMessageManager().sendMessage(&pDIed);
+                 }
+                playerFinished(player);
                 boatsData.push_back(player.getBoat().getBoatData());
             }
         }
@@ -129,23 +132,16 @@ namespace sail
         return { boatsData };
     }
 
-    void Game::checkCoordinates(Player &player)
+    void Game::playerFinished(Player& player)
     {
         Boat& boat = player.getBoat();
-        if (m_world.isOnLand(boat.getLongitude(), boat.getLatitude()))
-        {
-            boat.reset(m_world.getStartingPosition().x,
-                    m_world.getStartingPosition().y);
-            PlayerDied pDIed;
-            pDIed.id = player.getId();
-            gMessageManager().sendMessage(&pDIed);
-        }
-        if (gf::euclideanDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
+        if (! player.finished() && gf::euclideanDistance({static_cast<float>(boat.getLongitude()), static_cast<float>(boat.getLatitude()) },
                 m_world.getEndingPosition()) < 0.0005f) // == 50m
         {
             PlayerFinished pFinished;
             pFinished.id = player.getId();
             gMessageManager().sendMessage(&pFinished);
+            player.setFinished();
         }
     }
 
@@ -174,7 +170,7 @@ namespace sail
                     {
                         sailing_physics_update(player.getBoat(), wind, physicGranularity);
                     }
-                    checkCoordinates(player);
+                    playerFinished(player);
                 }
             }
 

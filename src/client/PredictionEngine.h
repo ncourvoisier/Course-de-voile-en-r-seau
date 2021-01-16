@@ -5,7 +5,7 @@
 #include "../Protocol.h"
 #include "../physics/Boat.h"
 #include "../physics/BoatController.h"
-#include "Terrain.h"
+#include "ClientWorld.h"
 
 namespace sail
 {
@@ -13,7 +13,7 @@ namespace sail
     class PredictionEngine
     {
     public:
-        PredictionEngine(ClientBoat& boat, Terrain& terrain);
+        PredictionEngine(ClientBoat& boat, ClientWorld& terrain);
 
         void pushAction(PlayerAction& action);
         void reconciliate(unsigned int lastAckActionId);
@@ -31,7 +31,7 @@ namespace sail
         std::deque<PlayerAction> m_actionsHistory;
 
         ClientBoat& m_boat;
-        Terrain& m_terrain;
+        ClientWorld& m_terrain;
 
         BoatController m_boatController;
     };

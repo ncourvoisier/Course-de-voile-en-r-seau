@@ -6,6 +6,7 @@
 
 #include "Boat.h"
 #include "../Protocol.h"
+#include "World.h"
 
 namespace sail
 {
@@ -13,16 +14,23 @@ namespace sail
     class BoatController
     {
     public:
+        BoatController(World& world);
+
+        void processPlayerAction(Boat& boat, const PlayerAction& action);
+        bool updateBoatPosition(Boat& boat, gf::Time dt);
+
+    private:
         void moveRudderRight(Boat& boat);
         void moveRudderLeft(Boat& boat);
         void centerRudder(Boat& boat);
         void sheetOut(Boat& boat);
         void sheetIn(Boat& boat);
 
-        void processPlayerAction(Boat& boat, const PlayerAction& action);
-        void updateBoatPosition(Boat& boat, gf::Array2D<float>& windSpeed, gf::Array2D<float>& windDirection, gf::Time dt);
+        bool isOnLand(double x, double y);
 
     private:
+        World& m_world;
+
         static constexpr int RudderStepsNumber = 10;
         static constexpr int SheetStepsNumber = 10;
 

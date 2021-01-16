@@ -3,12 +3,12 @@
 namespace sail
 {
 
-    PredictionEngine::PredictionEngine(ClientBoat& boat, Terrain& terrain)
+    PredictionEngine::PredictionEngine(ClientBoat& boat, ClientWorld& terrain)
     : m_boat(boat)
     , m_terrain(terrain)
     , m_lastActionId(0)
     , m_actionsHistory()
-    , m_boatController()
+    , m_boatController(terrain)
     , m_enabled(true)
     {
 
@@ -18,8 +18,6 @@ namespace sail
     {
         m_boatController.updateBoatPosition(
                 m_boat,
-                m_terrain.getWindSpeedArray(),
-                m_terrain.getWindDirectionArray(),
                 dt);
     }
 

@@ -32,7 +32,7 @@ add_executable(server
         src/physics/Physics.cpp
         src/physics/Physics.h
         src/physics/BoatController.cpp
-        src/physics/BoatController.h src/server/World.cpp src/server/World.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
+        src/physics/BoatController.h src/server/ServerWorld.cpp src/server/ServerWorld.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
 
 add_executable(client
         src/client/client.cpp
@@ -54,7 +54,7 @@ add_executable(client
         src/client/Singletons.cpp
         src/client/Singletons.h
         src/client/NavigationArrow.cpp
-        src/client/NavigationArrow.h src/client/Terrain.cpp src/client/Terrain.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h src/client/Banner.h src/client/Banner.cpp src/LoggingUtils.h src/client/PredictionEngine.cpp src/client/PredictionEngine.h)
+        src/client/NavigationArrow.h src/client/ClientWorld.cpp src/client/ClientWorld.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h src/client/Banner.h src/client/Banner.cpp src/LoggingUtils.h src/client/PredictionEngine.cpp src/client/PredictionEngine.h src/physics/World.h)
 
 target_include_directories(client
         PRIVATE

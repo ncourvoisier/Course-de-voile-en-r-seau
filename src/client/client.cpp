@@ -21,7 +21,7 @@
 #include <gf/Sprite.h>
 #include <gf/Log.h>
 #include "config.h"
-#include "Terrain.h"
+#include "ClientWorld.h"
 #include "Banner.h"
 #include "PredictionEngine.h"
 
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     gf::EntityContainer hudEntities;
     // add entities to hudEntities
     // game loop
-    renderer.clear(gf::Color::White);
+    renderer.clear(gf::Color::Black);
 
     // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
 
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     sail::ClientBoat& localBoat =  localPlayer.getBoat();
 
     // Defining the terrain entity
-    sail::Terrain terrain(localBoat);
+    sail::ClientWorld terrain(localBoat);
 
     for (auto& p : serverGreeting.players)
     {
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
                     endingPos = ready.endingPosition;
                     localBoat.setLongitude(ready.startingPosition.x);
                     localBoat.setLatitude(ready.startingPosition.y);
-                    terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
+                    terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.startingPosition, ready.endingPosition);
                     break;
                 }
                 case sail::GameStart::type:

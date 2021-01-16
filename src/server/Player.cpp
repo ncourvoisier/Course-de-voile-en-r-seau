@@ -7,6 +7,7 @@ namespace sail {
     , m_boat()
     , m_connected(false)
     , m_lastAckActionId(0)
+    , m_finished(false)
     {
 
     }
@@ -27,7 +28,7 @@ namespace sail {
         return m_connected;
     }
 
-    void Player::connect(gf::Id id, std::string name, World& world)
+    void Player::connect(gf::Id id, std::string name, ServerWorld& world)
     {
         m_connected = true;
         m_id = id;
@@ -70,6 +71,16 @@ namespace sail {
     void Player::setLastAckActionId(unsigned int lastAck)
     {
         m_lastAckActionId = lastAck;
+    }
+
+    bool Player::finished()
+    {
+        return m_finished;
+    }
+
+    void Player::setFinished()
+    {
+        m_finished = true;
     }
 
 }

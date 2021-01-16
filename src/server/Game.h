@@ -8,7 +8,7 @@
 
 #include "Player.h"
 #include "../physics/BoatController.h"
-#include "World.h"
+#include "ServerWorld.h"
 
 namespace sail
 {
@@ -42,22 +42,21 @@ namespace sail
 
         void simulation();
 
-        void checkCoordinates(Player& player);
+        void playerFinished(Player& player);
 
     private:
         static constexpr float Speed = 25.0f;
         static constexpr float MaxSpeed = Speed * 4;
 
         int m_neededPlayers;
+        int m_playersNb;
 
-        World m_world;
+        ServerWorld m_world;
 
         BoatController m_boatController;
-
         std::vector<Player> m_onlinePlayers;
-        std::vector<Player> m_offlinePlayers;
 
-        int m_playersNb;
+        std::vector<Player> m_offlinePlayers;
 
         bool m_started;
 

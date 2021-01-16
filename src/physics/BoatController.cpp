@@ -26,8 +26,13 @@ namespace sail
      *
      * */
 
+    BoatController::BoatController(World& world)
+    : m_world(world)
+    {
+    }
+
     void BoatController::moveRudderRight(Boat &boat)
-    { // TODO : a problem remains, the boat control sensibility makes it hard to send 1 single key control, hard to center the rudder on 0
+    {
         double angle = boat.getRudderAngle();
         if (angle < 0 && angle > - 2 * RudderStep)
         {
@@ -110,7 +115,7 @@ namespace sail
         }
     }
 
-    void BoatController::updateBoatPosition(Boat& boat, gf::Array2D<float>& windSpeed, gf::Array2D<float>& windDirection, gf::Time dt)
+    bool BoatController::updateBoatPosition(Boat& boat, gf::Time dt)
     {
         constexpr double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
         double loopsAmount = dt.asSeconds() / physicGranularity;
@@ -118,12 +123,32 @@ namespace sail
         auto col = static_cast<unsigned>(boat.getLongitude() / TileDegree);
         auto row = static_cast<unsigned>(boat.getLatitude() / TileDegree);
 
-        Wind wind(windSpeed({row, col}), windDirection({row, col}));
+        Wind wind(m_world.getWindSpeed()({row, col}), m_world.getWindDirection()({row, col}));
 
         for (int i = 0; i < loopsAmount; i++)
         {
             sailing_physics_update(boat, wind, physicGranularity);
         }
+
+        if (isOnLand(boat.getLongitude(), boat.getLatitude()))
+        {
+            boat.reset(m_world.getStartingPosition().x,
+                       m_world.getStartingPosition().y);
+            return false;
+        }
+
+        return true;
+    }
+
+    bool BoatController::isOnLand(double x, double y)
+    {
+        if (x < 0 || x >= 0.1 || y < 0 || y >= 0.1)
+            return true;
+
+        auto col = static_cast<unsigned>(x / TileDegree);
+        auto row = static_cast<unsigned>(y / TileDegree);
+
+        return m_world.getTerrain()({ row, col }) > 0.5f;
     }
 
 }

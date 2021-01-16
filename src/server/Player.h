@@ -8,7 +8,7 @@
 
 #include "ServerBoat.h"
 #include "../Protocol.h"
-#include "World.h"
+#include "ServerWorld.h"
 
 namespace sail
 {
@@ -27,7 +27,7 @@ namespace sail
         ServerBoat& getBoat();
 
         bool isConnected() const;
-        void connect(gf::Id id, std::string name, World& world);
+        void connect(gf::Id id, std::string name, ServerWorld& world);
 
         void disconnect();
 
@@ -40,6 +40,9 @@ namespace sail
         std::deque<gf::Packet>& getPendingPackets();
 
         unsigned int getLastAckActionId();
+
+        bool finished();
+        void setFinished();
 
         void setLastAckActionId(unsigned int mLastAckActionId);
 
@@ -55,6 +58,8 @@ namespace sail
         ServerBoat m_boat;
 
         bool m_connected;
+
+        bool m_finished;
 
         unsigned int m_lastAckActionId;
     };

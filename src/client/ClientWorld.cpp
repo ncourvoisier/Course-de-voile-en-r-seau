@@ -1,4 +1,4 @@
-#include "Terrain.h"
+#include "ClientWorld.h"
 
 #include <gf/ColorRamp.h>
 #include <gf/Unused.h>
@@ -11,7 +11,7 @@
 namespace sail
 {
 
-    Terrain::Terrain(ClientBoat& playerBoat)
+    ClientWorld::ClientWorld(ClientBoat& playerBoat)
     : m_playerBoat(playerBoat)
     , m_terrain({MapSize, MapSize})
     , m_oldPosition({0, 0})
@@ -26,7 +26,7 @@ namespace sail
         m_endingSpot.setOutlineColor(gf::Color::fromRgba32(0, 140, 30, 230));
     }
 
-    void Terrain::load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d end)
+    void ClientWorld::load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d start, gf::Vector2d end)
     {
         gf::ColorRamp rampTerrain;
         rampTerrain.addColorStop(0.250f, gf::Color::fromRgba32(  9,  62,  92)); // Deep Water
@@ -48,16 +48,17 @@ namespace sail
         m_windDirection = windD;
         m_windSpeed = windS;
 
+        m_startingPos = start;
         m_endingPos = end;
         m_endingSpot.setPosition(m_endingPos * WorldScale);
     }
 
-    void Terrain::setFullRender(bool fullRender)
+    void ClientWorld::setFullRender(bool fullRender)
     {
         m_fullRender = fullRender;
     }
 
-    void Terrain::update(gf::Time time)
+    void ClientWorld::update(gf::Time time)
     {
         gf::unused(time);
 
@@ -154,7 +155,7 @@ namespace sail
                                             static_cast<float>(m_playerBoat.getLatitude())}, m_endingPos) < 0.02;
     }
 
-    void Terrain::render(gf::RenderTarget &target, const gf::RenderStates& states)
+    void ClientWorld::render(gf::RenderTarget &target, const gf::RenderStates& states)
     {
         target.draw(m_vertices, states);
         for (auto& arrow : m_arrows)
@@ -165,14 +166,23 @@ namespace sail
             target.draw(m_endingSpot);
     }
 
-    gf::Array2D<float>& Terrain::getWindDirectionArray()
+    const gf::Array2D<float>& ClientWorld::getWindDirection() const
     {
         return m_windDirection;
     }
 
-    gf::Array2D<float>& Terrain::getWindSpeedArray()
+    const gf::Array2D<float>& ClientWorld::getWindSpeed() const
     {
         return m_windSpeed;
     }
 
+    const gf::Array2D<float>& ClientWorld::getTerrain() const
+    {
+        return m_elevations;
+    }
+
+    const gf::Vector2d ClientWorld::getStartingPosition() const
+    {
+        return m_startingPos;
+    }
 }

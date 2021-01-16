@@ -1,5 +1,5 @@
-#ifndef SAILINSANE_TERRAIN_H
-#define SAILINSANE_TERRAIN_H
+#ifndef SAILINSANE_CLIENTWORLD_H
+#define SAILINSANE_CLIENTWORLD_H
 
 #include <gf/Array2D.h>
 #include <gf/Entity.h>
@@ -10,19 +10,20 @@
 
 #include "ClientBoat.h"
 #include "WindArrow.h"
+#include "../physics/World.h"
 
 namespace sail
 {
 
-    class Terrain: public gf::Entity
+    class ClientWorld: public gf::Entity, public World
     {
     public:
         static constexpr unsigned DisplayHalfRange = 100;
         static constexpr float TileSize = TileDegree * WorldScale; // 5.0f
 
-        Terrain(ClientBoat& playerBoat);
+        ClientWorld(ClientBoat& playerBoat);
 
-        void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d end);
+        void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d start, gf::Vector2d end);
 
         void setFullRender(bool fullRender);
 
@@ -30,9 +31,10 @@ namespace sail
 
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
-        gf::Array2D<float>& getWindDirectionArray();
-
-        gf::Array2D<float>& getWindSpeedArray();
+        const gf::Array2D<float>& getWindDirection() const;
+        const gf::Array2D<float>& getWindSpeed() const;
+        const gf::Array2D<float>& getTerrain() const;
+        const gf::Vector2d getStartingPosition() const override;
 
     private:
         gf::Array2D<float> m_elevations;
@@ -46,6 +48,7 @@ namespace sail
         std::vector<WindArrow> m_arrows;
 
         gf::Vector2f m_endingPos; // TODO : do a CheckPointManager for those instead
+        gf::Vector2d m_startingPos;
 
         gf::CircleShape m_endingSpot;
 
@@ -59,4 +62,4 @@ namespace sail
 
 }
 
-#endif //SAILINSANE_TERRAIN_H
+#endif //SAILINSANE_CLIENTWORLD_H

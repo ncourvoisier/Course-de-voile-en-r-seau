@@ -1,33 +1,35 @@
-#ifndef SAILINSANE_WORLD_H
-#define SAILINSANE_WORLD_H
+#ifndef SAILINSANE_SERVERWORLD_H
+#define SAILINSANE_SERVERWORLD_H
 
 #include <gf/Array2D.h>
 #include <gf/Random.h>
 #include "../Protocol.h"
 #include "../physics/Wind.h"
+#include "../physics/World.h"
 
 namespace sail
 {
 
-    class World
+    class ServerWorld: public World
     {
     public:
         static constexpr double Scale = 15.0;
         static constexpr double WindScale = 5.0;
         static constexpr double SeaLevel = 0.65;
 
-        World();
+        ServerWorld();
 
-        gf::Array2D<float>& getTerrain();
         gf::Vector2f getStartingPosition();
         gf::Vector2f getEndingPosition();
-
         gf::Vector2d randomWaterLocation();
+
         bool isOnLand(double x, double y);
         Wind getWindAtPosition(double x, double y);
 
-        gf::Array2D<float>& getWindDirectionArray();
-        gf::Array2D<float>& getWindSpeedArray();
+        const gf::Array2D<float>& getTerrain() const;
+        const gf::Array2D<float>& getWindDirection() const;
+        const gf::Array2D<float>& getWindSpeed() const;
+        const gf::Vector2d getStartingPosition() const override;
 
     private:
         void generate();
@@ -45,4 +47,4 @@ namespace sail
 
 }
 
-#endif //SAILINSANE_WORLD_H
+#endif //SAILINSANE_SERVERWORLD_H
