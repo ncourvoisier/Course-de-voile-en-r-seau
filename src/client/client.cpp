@@ -131,9 +131,20 @@ int main(int argc, char *argv[])
     // Establishing connection
     sail::ClientGreeting greeting = { argv[3] };
     clientHandler.send(greeting);
-    gf::Packet serverGreetingP;
-    clientHandler.receive(serverGreetingP);
-    auto serverGreeting {serverGreetingP.as<sail::ServerGreeting>()};
+    gf::Packet serverResponseP;
+    clientHandler.receive(serverResponseP);
+    if (serverResponseP.getType() == sail::GameRunning::type)
+    {
+        gf::Log::error("A game is already running on this server.\n");
+        exit(3);
+    }
+    else if (serverResponseP.getType() != sail::ServerGreeting::type)
+    {
+        gf::Log::error("Invalid server greeting received.\n");
+        exit(4);
+    }
+
+    auto serverGreeting {serverResponseP.as<sail::ServerGreeting>()};
 
     // Defining players Datas
 
@@ -156,30 +167,39 @@ int main(int argc, char *argv[])
 
     gf::Vector2d endingPos;
 
-    for (;;)
+    bool start = false;
+    while (! start)
     {
         gf::Packet waitingP;
         if (clientHandler.receive(waitingP) == gf::SocketStatus::Data)
         {
-            if (waitingP.getType() == sail::PlayerJoins::type)
+            switch (waitingP.getType())
             {
-                auto waiting (waitingP.as<sail::PlayerJoins>());
-                std::cout << "Opponent connected : " << waiting.player.name << "\n";
-                players.insert(std::pair<gf::Id, sail::ClientPlayer>(waiting.player.id,
-                        sail::ClientPlayer(waiting.player.id, waiting.player.name)));
-            }
-            else if (waitingP.getType() == sail::WorldData::type)
-            {
-                auto ready (waitingP.as<sail::WorldData>());
-                endingPos = ready.endingPosition;
-                localBoat.setLongitude(ready.startingPosition.x);
-                localBoat.setLatitude(ready.startingPosition.y);
-                terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
-                //break;
-            }
-            else if (waitingP.getType() == sail::GameStart::type)
-            {
-                break;
+                case sail::PlayerJoins::type:
+                {
+                    auto waiting(waitingP.as<sail::PlayerJoins>());
+                    std::cout << "Opponent connected : " << waiting.player.name << "\n";
+                    players.insert(std::pair<gf::Id, sail::ClientPlayer>(waiting.player.id,
+                                                                         sail::ClientPlayer(waiting.player.id,
+                                                                                            waiting.player.name)));
+                    break;
+                }
+                case sail::WorldData::type:
+                {
+                    auto ready(waitingP.as<sail::WorldData>());
+                    endingPos = ready.endingPosition;
+                    localBoat.setLongitude(ready.startingPosition.x);
+                    localBoat.setLatitude(ready.startingPosition.y);
+                    terrain.load(ready.terrain, ready.windDirection, ready.windSpeed, ready.endingPosition);
+                    break;
+                }
+                case sail::GameStart::type:
+                {
+                    start = true;
+                    break;
+                }
+                default:
+                    gf::Log::error("Unexpected packet type received from server.\n");
             }
         }
     }

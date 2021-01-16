@@ -167,6 +167,16 @@ namespace sail
                 std::cout << "Attempt to connect\n";
                 // the listener is ready, accept a new connection
                 gf::TcpSocket socket = m_listener.accept();
+                if (m_game.isStarted())
+                {
+                    gf::Packet p;
+                    socket.recvPacket(p); // So the client can receive the GameRunning packet
+                    GameRunning gr;
+                    gf::Packet grPacket;
+                    grPacket.is(gr);
+                    socket.sendPacket(grPacket);
+                    return;
+                }
                 Player player(std::move(socket));
                 m_game.getOnlinePlayers().push_back(std::move(player));
                 //gf::Id newId = m_game.addPlayer(std::move(socket));

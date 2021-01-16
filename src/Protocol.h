@@ -191,6 +191,16 @@ namespace sail {
         return ar;
     }
 
+    struct GameRunning
+    {
+        static constexpr gf::Id type = "GameRunning"_id;
+    };
+
+    template<typename Archive>
+    Archive operator|(Archive& ar, GameRunning& data) {
+        return ar;
+    }
+
 }
 
 #endif //SAILINSANE_PROTOCOL_H

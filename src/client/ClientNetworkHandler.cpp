@@ -1,3 +1,4 @@
+#include <gf/Log.h>
 #include "ClientNetworkHandler.h"
 #include "../Protocol.h"
 
@@ -21,7 +22,13 @@ namespace sail
 
     gf::SocketStatus ClientNetworkHandler::receive(gf::Packet& packet)
     {
-        return m_socket.recvPacket(packet);
+        gf::SocketStatus status = m_socket.recvPacket(packet);
+        if (status != gf::SocketStatus::Data)
+        {
+            gf::Log::error("Couldn't receive packets from server.\n");
+            exit(2);
+        }
+        return status;
     }
 
     bool ClientNetworkHandler::isConnected() { return m_connected; }
@@ -46,9 +53,7 @@ namespace sail
         for (;;)
         {
             gf::Packet packet;
-            gf::SocketStatus status = receive(packet);
-            if (status != gf::SocketStatus::Data)
-                exit(2);
+            receive(packet);
             queue.push(std::move(packet));
         }
     }
