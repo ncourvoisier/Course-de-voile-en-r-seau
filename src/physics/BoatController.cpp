@@ -95,6 +95,8 @@ namespace sail
                 sheetIn(boat);
                 break;
             }
+            default:
+                break;
         }
 
         switch (action.rudderAction)
@@ -113,6 +115,8 @@ namespace sail
             {
                 centerRudder(boat);
             }
+            default:
+                break;
         }
     }
 

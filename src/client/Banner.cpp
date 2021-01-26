@@ -15,12 +15,12 @@ namespace sail {
 
     Banner::Banner(gf::View& view)
     : gf::Entity(1)
-    , m_view(view)
-    , m_textColor(gf::Color::White)
-    , m_text()
     , m_rectangle()
     , m_rectangleColor(gf::Color::fromRgba32(130, 130, 130, 150))
+    , m_text()
+    , m_textColor(gf::Color::White)
     , m_clock()
+    , m_view(view)
     , m_display(false)
     {
         gf::Font& font = gResourceManager().getFont("arial.ttf");

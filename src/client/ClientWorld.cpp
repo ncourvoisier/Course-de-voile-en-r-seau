@@ -11,12 +11,11 @@ namespace sail
 {
 
     ClientWorld::ClientWorld(ClientBoat& playerBoat)
-    : m_playerBoat(playerBoat)
-    , m_terrain({MapSize, MapSize})
-    , m_oldPosition({0, 0})
-    , m_fullRender(false)
+    : m_terrain({MapSize, MapSize})
     , m_vertices(gf::PrimitiveType::Triangles)
     , m_arrows()
+    , m_oldPosition({0, 0})
+    , m_playerBoat(playerBoat)
     {
         m_endingSpot = gf::CircleShape(50);
         m_endingSpot.setAnchor(gf::Anchor::Center);
@@ -52,11 +51,6 @@ namespace sail
         m_endingSpot.setPosition(m_endingPos * WorldScale);
     }
 
-    void ClientWorld::setFullRender(bool fullRender)
-    {
-        m_fullRender = fullRender;
-    }
-
     void ClientWorld::update(gf::Time time)
     {
         gf::unused(time);
@@ -70,39 +64,6 @@ namespace sail
         m_oldPosition = { newCol, newRow };
 
         m_vertices.clear();
-
-        if (m_fullRender)
-        {
-            for (unsigned row = 0; row < MapSize; ++row)
-            {
-                for (unsigned col = 0; col < MapSize; ++col)
-                {
-                    gf::Vertex vertices[4];
-
-                    vertices[0].position = { col * 1.0f,row * 1.0f };
-                    vertices[1].position = {(col + 1) * 1.0f,row * 1.0f };
-                    vertices[2].position = {col * 1.0f,(row + 1) * 1.0f };
-                    vertices[3].position = {(col + 1) * 1.0f,(row + 1) * 1.0f };
-
-                    vertices[0].color = m_terrain({ row, col });
-                    vertices[1].color = m_terrain({ row,col + 1 });
-                    vertices[2].color = m_terrain({row + 1, col });
-                    vertices[3].color = m_terrain({row + 1,col + 1 });
-
-                    // first triangle
-                    m_vertices.append(vertices[0]);
-                    m_vertices.append(vertices[1]);
-                    m_vertices.append(vertices[2]);
-
-                    // second triangle
-                    m_vertices.append(vertices[2]);
-                    m_vertices.append(vertices[1]);
-                    m_vertices.append(vertices[3]);
-                }
-            }
-
-            return;
-        }
 
         unsigned rowMin = (newRow > DisplayHalfRange) ? (newRow - DisplayHalfRange) : 0;
         unsigned rowMax = (newRow + DisplayHalfRange < MapSize) ? (newRow + DisplayHalfRange) : MapSize - 1;

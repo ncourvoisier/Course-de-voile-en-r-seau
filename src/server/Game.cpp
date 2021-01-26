@@ -1,9 +1,4 @@
-//
-// Created by augustin on 01/11/2020.
-//
-
 #include <iostream>
-#include <thread>
 
 #include <gf/Random.h>
 #include <gf/Clock.h>
@@ -18,13 +13,13 @@ namespace sail
 {
 
     Game::Game(int neededPlayers)
-    : m_onlinePlayers()
-    , m_started(false)
+    : m_neededPlayers(neededPlayers)
     , m_playersNb(0)
-    , m_fixedWind()
     , m_world()
     , m_boatController(m_world)
-    , m_neededPlayers(neededPlayers)
+    , m_onlinePlayers()
+    , m_started(false)
+    , m_fixedWind()
     {
     }
 

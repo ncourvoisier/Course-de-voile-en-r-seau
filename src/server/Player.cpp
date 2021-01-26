@@ -6,8 +6,8 @@ namespace sail {
     : m_socket(std::move(socket))
     , m_boat()
     , m_connected(false)
-    , m_lastAckActionId(0)
     , m_finished(false)
+    , m_lastAckActionId(0)
     {
 
     }

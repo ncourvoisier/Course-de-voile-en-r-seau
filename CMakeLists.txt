@@ -12,6 +12,8 @@ project(SAILINSANE
 
 find_package(gf REQUIRED COMPONENTS graphics net)
 
+add_compile_options(-Wall)
+
 add_executable(server
         src/server/server.cpp src/Protocol.h
         src/server/ServerNetworkHandler.cpp

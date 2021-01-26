@@ -25,8 +25,6 @@ namespace sail
 
         void load(gf::Array2D<float> elevations, gf::Array2D<float> windD, gf::Array2D<float> windS, gf::Vector2d start, gf::Vector2d end);
 
-        void setFullRender(bool fullRender);
-
         void update(gf::Time time) override;
 
         void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
@@ -56,7 +54,6 @@ namespace sail
 
         ClientBoat& m_playerBoat;
 
-        bool m_fullRender;
         bool m_showEnding;
     };
 

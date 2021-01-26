@@ -9,8 +9,8 @@ namespace sail
 
     WindArrow::WindArrow(double speed, double angle, double distanceToBoat)
     : m_arrow(gf::PrimitiveType::Triangles, 6)
-    , m_direction(angle)
     , m_speed(speed)
+    , m_direction(angle)
     {
         gf::Vertex arrowVertices[4];
         arrowVertices[0].position = { 3, 0 };

@@ -13,9 +13,9 @@ namespace sail
 {
 
     ServerNetworkHandler::ServerNetworkHandler(std::string service, Game& game)
-    : m_listener(service)
+    : m_game(game)
+    , m_listener(service)
     , m_selector()
-    , m_game(game)
     {
         m_selector.addSocket(m_listener);
 

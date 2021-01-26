@@ -4,12 +4,12 @@ namespace sail
 {
 
     PredictionEngine::PredictionEngine(ClientBoat& boat, ClientWorld& terrain)
-    : m_boat(boat)
-    , m_terrain(terrain)
+    : m_enabled(true)
     , m_lastActionId(0)
     , m_actionsHistory()
+    , m_boat(boat)
+    , m_terrain(terrain)
     , m_boatController(terrain)
-    , m_enabled(true)
     {
 
     }

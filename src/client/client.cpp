@@ -107,10 +107,6 @@ int main(int argc, char *argv[])
     gf::Action rudderCenterAction("Rudder center");
     rudderCenterAction.addScancodeKeyControl(gf::Scancode::Space);
     actions.addAction(rudderCenterAction);
-    gf::Action fullRenderAction("Full render");
-    fullRenderAction.addScancodeKeyControl(gf::Scancode::Tab);
-    fullRenderAction.setContinuous();
-    actions.addAction(fullRenderAction);
 
     // entities
     gf::EntityContainer mainEntities;
@@ -278,13 +274,6 @@ int main(int argc, char *argv[])
         {
             lastActionRubber = sail::PlayerAction::Type::Center;
         }
-
-
-        if (fullRenderAction.isActive())
-        {
-            terrain.setFullRender(true);
-        }
-
 
         sail::PlayerAction action { lastActionSail, lastActionRubber };
 

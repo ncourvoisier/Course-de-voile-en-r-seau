@@ -14,10 +14,10 @@ namespace sail
 {
 
     ClientBoat::ClientBoat(std::string name)
-    : gf::Entity(1)
-    , Boat(0, 0)
-    , m_name(std::move(name))
+    : Boat(0, 0)
+    , gf::Entity(1)
     , m_texture(gTextureAtlas().getTexture())
+    , m_name(std::move(name))
     , m_boat(gTextureAtlas().getTextureRect("boat"))
     , m_sail(gTextureAtlas().getTextureRect("sail"))
     , m_rudder(gTextureAtlas().getTextureRect("rudder"))

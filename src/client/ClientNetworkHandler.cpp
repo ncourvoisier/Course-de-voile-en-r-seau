@@ -15,8 +15,7 @@ namespace sail
                                        const std::string& service)
     {
         m_socket = gf::TcpSocket(hostname, service);
-        m_connected = false || socket;
-        m_socket.setBlocking();
+        m_connected = false || m_socket;
     }
 
     gf::SocketStatus ClientNetworkHandler::receive(gf::Packet& packet)

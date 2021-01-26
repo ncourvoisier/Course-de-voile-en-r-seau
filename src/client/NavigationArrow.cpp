@@ -10,10 +10,10 @@ namespace sail
 
     NavigationArrow::NavigationArrow(gf::Vector2f target, ClientBoat& boat, gf::View& view)
     : gf::Entity(2)
-    , m_target(target)
-    , m_view(view)
-    , m_boat(boat)
     , m_arrow(3)
+    , m_target(target)
+    , m_boat(boat)
+    , m_view(view)
     {
         m_arrow.setPoint(0, { 1, 0 });
         m_arrow.setPoint(1, { 0, 3 });
