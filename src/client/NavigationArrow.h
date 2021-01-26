@@ -17,9 +17,8 @@ namespace sail
         public:
             NavigationArrow(gf::Vector2f target, ClientBoat& boat, gf::View& view);
 
-        void update(gf::Time time) override;
-
-        void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
+            void update(gf::Time time) override;
+            void render(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
     private:
             gf::ConvexShape m_arrow;

@@ -1,10 +1,9 @@
-#include <gf/Shapes.h>
 #include <gf/RenderTarget.h>
-#include <iostream>
 #include <gf/Sprite.h>
 #include <gf/Text.h>
 
 #include <string>
+#include <utility>
 
 #include "../Constants.h"
 
@@ -17,23 +16,18 @@ namespace sail
     ClientBoat::ClientBoat(std::string name)
     : gf::Entity(1)
     , Boat(0, 0)
-    , m_name(name)
+    , m_name(std::move(name))
     , m_texture(gTextureAtlas().getTexture())
     , m_boat(gTextureAtlas().getTextureRect("boat"))
     , m_sail(gTextureAtlas().getTextureRect("sail"))
     , m_rudder(gTextureAtlas().getTextureRect("rudder"))
     {
-
     }
 
-    ClientBoat::~ClientBoat()
-    {
-
-    }
+    ClientBoat::~ClientBoat() = default;
 
     void ClientBoat::update(gf::Time time)
     {
-        // TODO : prediction
     }
 
     void ClientBoat::render(gf::RenderTarget &target, const gf::RenderStates &states)
@@ -43,7 +37,7 @@ namespace sail
         gf::Sprite spriteBoat;
         spriteBoat.setTexture(m_texture);
         spriteBoat.setPosition(position);
-        spriteBoat.setScale(0.2f); // TODO : ADAPT THIS
+        spriteBoat.setScale(0.2f);
         spriteBoat.setTextureRect(m_boat);
         spriteBoat.setAnchor(gf::Anchor::Center);
         spriteBoat.setRotation(angle + M_PI);

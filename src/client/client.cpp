@@ -16,23 +16,17 @@
 #include "ClientPlayer.h"
 #include "Singletons.h"
 #include "NavigationArrow.h"
-#include <gf/Queue.h>
 #include <gf/ResourceManager.h>
-#include <gf/Sprite.h>
 #include <gf/Log.h>
 #include "config.h"
 #include "ClientWorld.h"
 #include "Banner.h"
 #include "PredictionEngine.h"
+#include "ClientStringConstants.h"
 
 void printUsage(char* execName)
 {
     std::cout << "Usage: " << execName << " <address> <port> <username> [-predictionOff|-pOff]\n";
-}
-
-void lostConnection()
-{
-    gf::Log::error("Lost connection to server\n");
 }
 
 int main(int argc, char *argv[])
@@ -126,8 +120,6 @@ int main(int argc, char *argv[])
     // game loop
     renderer.clear(gf::Color::Black);
 
-    // THE FOLLOWING IS QUICK AND DIRTY CODE, WILL BE MOVED IN OTHER PARTS
-
     // Establishing connection
     sail::ClientGreeting greeting = { argv[3] };
     clientHandler.send(greeting);
@@ -135,12 +127,12 @@ int main(int argc, char *argv[])
     clientHandler.receive(serverResponseP);
     if (serverResponseP.getType() == sail::GameRunning::type)
     {
-        gf::Log::error("A game is already running on this server.\n");
+        gf::Log::error(sail::ClientStringConstants::GameAlreadyRunning);
         exit(3);
     }
     else if (serverResponseP.getType() != sail::ServerGreeting::type)
     {
-        gf::Log::error("Invalid server greeting received.\n");
+        gf::Log::error(sail::ClientStringConstants::InvalidServerGreeting);
         exit(4);
     }
 
@@ -148,7 +140,7 @@ int main(int argc, char *argv[])
 
     // Defining players Datas
 
-    std::cout << "Server sent ID : " << serverGreeting.playerId << "\n";
+    gf::Log::info(sail::ClientStringConstants::GreetingId, serverGreeting.playerId);
     std::map<gf::Id, sail::ClientPlayer> players;
 
     players.insert(std::pair<gf::Id, sail::ClientPlayer>(serverGreeting.playerId, sail::ClientPlayer(serverGreeting.playerId, argv[3])));
@@ -160,9 +152,9 @@ int main(int argc, char *argv[])
 
     for (auto& p : serverGreeting.players)
     {
-        std::cout << "Player already here : " << p.name << "\n";
+        gf::Log::info(sail::ClientStringConstants::PlayerAlreadyHere, p.name.c_str());
         players.insert(std::pair<gf::Id, sail::ClientPlayer>(p.id,
-                sail::ClientPlayer(p.id, p.name))); // TODO : create a player manager
+                sail::ClientPlayer(p.id, p.name)));
     }
 
     gf::Vector2d endingPos;
@@ -178,7 +170,7 @@ int main(int argc, char *argv[])
                 case sail::PlayerJoins::type:
                 {
                     auto waiting(waitingP.as<sail::PlayerJoins>());
-                    std::cout << "Opponent connected : " << waiting.player.name << "\n";
+                    gf::Log::info(sail::ClientStringConstants::PlayerConnected, waiting.player.name.c_str());
                     players.insert(std::pair<gf::Id, sail::ClientPlayer>(waiting.player.id,
                                                                          sail::ClientPlayer(waiting.player.id,
                                                                                             waiting.player.name)));
@@ -199,12 +191,12 @@ int main(int argc, char *argv[])
                     break;
                 }
                 default:
-                    gf::Log::error("Unexpected packet type received from server.\n");
+                    gf::Log::error(sail::ClientStringConstants::UnexpectedPacketType);
             }
         }
     }
 
-    std::cout << "Game is ready\n";
+    gf::Log::info(sail::ClientStringConstants::GameReady);
 
 
     // Adding references to entities
@@ -298,17 +290,13 @@ int main(int argc, char *argv[])
 
         engine.pushAction(action);
 
-        /**********  20 packets per second are sent, otherwise the prediction doesn't work efficiently *******/
-        /*if (lastActionSail != sail::PlayerAction::Type::None
-             || lastActionRubber != sail::PlayerAction::Type::None)
-        {*/
+        // 20 packets per second are sent, otherwise the prediction doesn't work efficiently
+
         if (clientHandler.send(action) != gf::SocketStatus::Data) {
             exit(2);
         }
         lastActionSail = sail::PlayerAction::Type::None;
         lastActionRubber = sail::PlayerAction::Type::None;
-
-        int lastAck = -1;
 
         do
         {
@@ -331,7 +319,6 @@ int main(int argc, char *argv[])
                         }
 
                         engine.reconciliate(state.lastAckActionId);
-                        lastAck = state.lastAckActionId;
                         break;
                     }
                     case sail::PlayerEvent::type:
@@ -350,7 +337,7 @@ int main(int argc, char *argv[])
                                 banner.displayText(name + " found a checkpoint!");
                                 break;
                             default:
-                                std::cout << "Received unknown PlayerEvent type\n";
+                                gf::Log::error(sail::ClientStringConstants::UnknownPlayerEvent);
                         }
                         break;
                     }
@@ -369,9 +356,6 @@ int main(int argc, char *argv[])
 
         } while (clock.getElapsedTime() < nextFrameTime);
 
-        /*if (lastAck != -1)
-            std::cout << "Packet delay : " << action.id - lastAck << "\n";*/
-
         // Centering the view
         mainView.setCenter({ static_cast<float>(localBoat.getScaledX()), static_cast<float>(localBoat.getScaledY()) });
 
@@ -382,7 +366,6 @@ int main(int argc, char *argv[])
         renderer.clear();
         renderer.setView(mainView);
         mainEntities.render(renderer);
-        //std::cout << "rendering entities \n";
         renderer.setView(hudView);
         hudEntities.render(renderer);
         renderer.display();

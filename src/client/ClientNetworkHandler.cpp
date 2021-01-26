@@ -16,7 +16,6 @@ namespace sail
     {
         m_socket = gf::TcpSocket(hostname, service);
         m_connected = false || socket;
-        //m_socket.setNonBlocking(); // TODO : just an idea
         m_socket.setBlocking();
     }
 
@@ -31,23 +30,6 @@ namespace sail
         return status;
     }
 
-    bool ClientNetworkHandler::isConnected() { return m_connected; }
-
-    void ClientNetworkHandler::setBlocking()
-    {
-        m_socket.setBlocking();
-    }
-
-    void ClientNetworkHandler::setNonBlocking()
-    {
-        m_socket.setNonBlocking();
-    }
-
-    gf::TcpSocket &ClientNetworkHandler::getSocket()
-    {
-        return m_socket;
-    }
-
     void ClientNetworkHandler::packetHandling()
     {
         for (;;)
@@ -60,7 +42,7 @@ namespace sail
 
     void ClientNetworkHandler::run()
     {
-        thread = std::thread(&ClientNetworkHandler::packetHandling, this);
+        m_thread = std::thread(&ClientNetworkHandler::packetHandling, this);
     }
 
     gf::Queue<gf::Packet> &ClientNetworkHandler::getQueue()

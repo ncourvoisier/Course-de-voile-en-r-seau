@@ -3,7 +3,6 @@
 #include "../Constants.h"
 
 #include <gf/Noises.h>
-#include <iostream>
 
 namespace sail
 {
@@ -82,10 +81,7 @@ namespace sail
         }
 
         m_startingPosition = randomWaterLocation();
-        /*do {*/
-            m_endingPosition = randomWaterLocation();
-        /*}
-        while (gf::squareDistance(m_startingPosition, m_endingPosition) < 0.03f);*/
+        m_endingPosition = randomWaterLocation();
     }
 
     gf::Vector2d ServerWorld::randomWaterLocation()
@@ -101,25 +97,6 @@ namespace sail
         }
         while(m_terrain({ row, col }) > 0.25f);
         return loc;
-    }
-
-    bool ServerWorld::isOnLand(double x, double y)
-    {
-        if (x < 0 || x >= 0.1 || y < 0 || y >= 0.1)
-            return true;
-
-        auto col = static_cast<unsigned>(x / TileDegree);
-        auto row = static_cast<unsigned>(y / TileDegree);
-
-        return m_terrain({ row, col }) > 0.5f;
-    }
-
-    Wind ServerWorld::getWindAtPosition(double x, double y)
-    {
-        auto col = static_cast<unsigned>(x / TileDegree);
-        auto row = static_cast<unsigned>(y / TileDegree);
-
-        return Wind(m_windSpeed({row, col}), m_windDirection({row, col}));
     }
 
     gf::Vector2f ServerWorld::getStartingPosition()

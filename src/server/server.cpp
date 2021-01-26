@@ -8,6 +8,7 @@
 
 #include "Managers.h"
 #include "../Constants.h"
+#include "ServerStringConstants.h"
 
 void printUsage(char* execName)
 {
@@ -23,7 +24,6 @@ void terminationHandler(int signum)
 
 int main(int argc, char* argv[])
 {
-
     /// Arguments ///
 
     if (argc != 3)
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
     sail::Game game(playersNb);
 
-    std::cout << "Game started on port " << argv[1] << " : waiting for " << playersNb << " players\n";
+    gf::Log::info(sail::ServerStringConstants::GameStarted, argv[1], playersNb);
 
     sail::ServerNetworkHandler networkHandler(argv[1], game);
 
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         if (clock.getElapsedTime() >= nextFrameTime)
         {
             auto criticalTime = (clock.getElapsedTime() - nextFrameTime).asMilliseconds();
-            gf::Log::warning("Server running %d Ticks / %d Ms after real time\n",
+            gf::Log::warning(sail::ServerStringConstants::ServerLate,
                              (criticalTime / sail::FrameTime.asMilliseconds()), criticalTime);
             continue;
         }
@@ -88,5 +88,5 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_for(span);
     }
 
-    std::cout << "Closing the server.\n";
+    gf::Log::info(sail::ServerStringConstants::ServerClosing);
 }

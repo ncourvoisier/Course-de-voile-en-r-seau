@@ -3,7 +3,6 @@
 #include <gf/ColorRamp.h>
 #include <gf/Unused.h>
 #include <gf/RenderTarget.h>
-#include <iostream>
 #include <gf/Shape.h>
 #include <gf/Polygon.h>
 #include <gf/Shapes.h>
@@ -110,8 +109,6 @@ namespace sail
         unsigned colMin = (newCol > DisplayHalfRange) ? (newCol - DisplayHalfRange) : 0;
         unsigned colMax = (newCol + DisplayHalfRange < MapSize) ? (newCol + DisplayHalfRange) : MapSize - 1;
 
-        //std::cout << "rowMin : " << rowMin << ", rowMax : " << rowMax << ", colMin : " << colMin << ", colMax : " << colMax << "\n";
-
         m_arrows.clear();
 
         for (unsigned row = rowMin; row < rowMax; ++row)
@@ -140,11 +137,11 @@ namespace sail
                 m_vertices.append(vertices[1]);
                 m_vertices.append(vertices[3]);
 
-                if (row % 10 == 0 && col % 10 == 0 && m_elevations({ row, col }) < 0.5f) // TODO : temporary, need to pick the radius more wisely, otherwise most triangle will be invisible
+                if (row % 10 == 0 && col % 10 == 0 && m_elevations({ row, col }) < 0.5f)
                 {
                     WindArrow arrow(m_windSpeed({ row, col }),
                             m_windDirection({ row, col }),
-                            sqrt(pow(abs(newRow - row), 2) + pow(abs(newCol - col), 2)));
+                            gf::euclideanDistance(m_oldPosition, { col, row }));
                     arrow.setPosition({ col * TileSize, row * TileSize });
                     m_arrows.push_back(arrow);
                 }

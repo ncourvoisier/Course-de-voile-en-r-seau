@@ -1,5 +1,3 @@
-#include <gf/RenderTarget.h>
-#include <iostream>
 #include "ServerBoat.h"
 
 namespace sail

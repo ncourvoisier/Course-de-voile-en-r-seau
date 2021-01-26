@@ -26,13 +26,11 @@ namespace sail
     , m_boatController(m_world)
     , m_neededPlayers(neededPlayers)
     {
-
     }
 
     void Game::start()
     {
         m_started = true;
-        //runSimulation();
     }
 
     bool Game::isStarted()
@@ -40,15 +38,6 @@ namespace sail
         return m_started;
     }
 
-    /*  gf::Id Game::addPlayer(gf::TcpSocket socket)
-      {
-          gf::Random rand;
-          gf::Id newId {rand.computeId()};
-          Player player(std::move(socket), newId);
-          m_players.push_back(std::move(player));
-          return newId;
-      }
-  */
     bool Game::connectPlayer(Player &player, gf::Id id, std::string userName)
     {
         if (m_started)
@@ -88,15 +77,12 @@ namespace sail
     {
         if (! m_started )
             return;
-        //std::cout << "Action of : " << player.getName() << "\n";
-        ServerBoat& boat = player.getBoat();
 
-        //m_simulationMutex.lock(); Works fine without mutex
+        ServerBoat& boat = player.getBoat();
 
         m_boatController.processPlayerAction(boat, action);
 
         player.setLastAckActionId(action.id);
-        //m_simulationMutex.unlock();
     }
 
     WorldData Game::getWorldData()
@@ -143,49 +129,6 @@ namespace sail
             gMessageManager().sendMessage(&pFinished);
             player.setFinished();
         }
-    }
-
-    void Game::runSimulation()
-    {
-        m_simulationRunning = true;
-        m_simulationThread = std::thread(&Game::simulation, this); //TODO : might be good to close this someday
-    }
-
-    void Game::simulation()
-    {
-        gf::Clock clock;
-        double updateSec = 0.05;
-        double physicGranularity = 0.01; // Any granularity above this one can * sometimes * creates very unpredictable movements
-        double loopsAmount = updateSec / physicGranularity; // TODO : some experimental things here
-
-        while(m_simulationRunning) {
-            clock.restart();
-            m_simulationMutex.lock();
-
-            for (auto& player : m_onlinePlayers) {
-                if (player.isConnected())
-                {
-                    Wind wind = m_world.getWindAtPosition(player.getBoat().getLongitude(), player.getBoat().getLatitude());
-                    for (int i = 0; i < loopsAmount; i++)
-                    {
-                        sailing_physics_update(player.getBoat(), wind, physicGranularity);
-                    }
-                    playerFinished(player);
-                }
-            }
-
-            m_simulationMutex.unlock();
-            double elapsed = clock.restart().asSeconds();
-            std::cout << "Simulation " << (elapsed * 100.0) / updateSec << "% loaded\n";
-            double sleepTime = updateSec - elapsed;
-
-            assert(sleepTime >= 0); // Assert if the simulation is late compared to real world time (shouldn't be)
-            // With granularity = 0.01s, 50ms requires 5 loops, taking around 0.004-0.006ms per player in the game
-
-            std::chrono::milliseconds span((int)(sleepTime * 1000));
-            std::this_thread::sleep_for(span);
-        }
-
     }
 
 }

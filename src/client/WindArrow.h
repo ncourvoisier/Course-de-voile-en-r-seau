@@ -15,7 +15,7 @@ namespace sail
         void draw(gf::RenderTarget &target, const gf::RenderStates &states) override;
 
     private:
-        static constexpr double MaxDistance = /*75*/50;
+        static constexpr double MaxDistance = 50;
 
         gf::VertexArray m_arrow;
 

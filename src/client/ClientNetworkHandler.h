@@ -35,20 +35,14 @@ namespace sail
             return m_socket.sendPacket(packet);
         }
 
-        void setBlocking();
-
-        void setNonBlocking();
-
-        gf::TcpSocket &getSocket();
-
-        gf::Queue<gf::Packet> &getQueue();
+        gf::Queue<gf::Packet>& getQueue();
 
     private:
         gf::TcpSocket m_socket;
 
         bool m_connected;
 
-        std::thread thread;
+        std::thread m_thread;
 
         gf::Queue<gf::Packet> queue;
     };

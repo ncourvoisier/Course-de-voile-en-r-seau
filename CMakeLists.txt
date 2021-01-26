@@ -12,9 +12,6 @@ project(SAILINSANE
 
 find_package(gf REQUIRED COMPONENTS graphics net)
 
-add_executable(sailinsane
-        sailinsane.cpp src/Protocol.h)
-
 add_executable(server
         src/server/server.cpp src/Protocol.h
         src/server/ServerNetworkHandler.cpp
@@ -32,7 +29,14 @@ add_executable(server
         src/physics/Physics.cpp
         src/physics/Physics.h
         src/physics/BoatController.cpp
-        src/physics/BoatController.h src/server/ServerWorld.cpp src/server/ServerWorld.h src/Constants.h src/server/GameMessages.h src/server/Managers.cpp src/server/Managers.h)
+        src/physics/BoatController.h
+        src/server/ServerWorld.cpp
+        src/server/ServerWorld.h
+        src/Constants.h
+        src/server/GameMessages.h
+        src/server/Managers.cpp
+        src/server/Managers.h
+        src/server/ServerStringConstants.h)
 
 add_executable(client
         src/client/client.cpp
@@ -54,14 +58,23 @@ add_executable(client
         src/client/Singletons.cpp
         src/client/Singletons.h
         src/client/NavigationArrow.cpp
-        src/client/NavigationArrow.h src/client/ClientWorld.cpp src/client/ClientWorld.h src/Constants.h src/client/WindArrow.cpp src/client/WindArrow.h src/client/Banner.h src/client/Banner.cpp src/LoggingUtils.h src/client/PredictionEngine.cpp src/client/PredictionEngine.h src/physics/World.h)
+        src/client/NavigationArrow.h
+        src/client/ClientWorld.cpp
+        src/client/ClientWorld.h
+        src/Constants.h
+        src/client/WindArrow.cpp
+        src/client/WindArrow.h
+        src/client/Banner.h
+        src/client/Banner.cpp
+        src/LoggingUtils.h
+        src/client/PredictionEngine.cpp
+        src/client/PredictionEngine.h
+        src/physics/World.h
+        src/client/ClientStringConstants.h)
 
 target_include_directories(client
         PRIVATE
           ${CMAKE_CURRENT_BINARY_DIR})
-
-target_link_libraries(sailinsane
-        gf::graphics)
 
 target_link_libraries(server
         gf::net)

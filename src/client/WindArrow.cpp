@@ -47,14 +47,14 @@ namespace sail
                 assert(false);
         }
 
-        for (int i = 0; i < 4; i++)
+        for (auto& vertex : arrowVertices)
         {
             double transparency;
             if (distanceToBoat >= MaxDistance)
                 transparency = 0;
             else
                 transparency = (1.0 - distanceToBoat / MaxDistance) * 230.0;
-            arrowVertices[i].color = gf::Color::fromRgba32(red, green, blue, transparency);
+            vertex.color = gf::Color::fromRgba32(red, green, blue, transparency);
         }
         // Left Half
         m_arrow[0] = arrowVertices[0];

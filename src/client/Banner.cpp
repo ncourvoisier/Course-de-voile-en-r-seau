@@ -2,6 +2,7 @@
 #include <gf/Sprite.h>
 #include <gf/RenderTarget.h>
 #include <iostream>
+#include <utility>
 #include "Banner.h"
 #include "Singletons.h"
 
@@ -26,7 +27,7 @@ namespace sail {
         m_text.setCharacterSize(45);
         m_text.setColor(m_textColor);
         m_text.setParagraphWidth(800);
-        //m_text.setAlignment(gf::Alignment::Center);
+
         m_text.setFont(font);
         m_text.setLetterSpacing(5.0f);
         m_text.setOutlineColor(gf::Color::Black);
@@ -42,7 +43,7 @@ namespace sail {
     }
 
     void Banner::displayText(std::string text) {
-        m_text.setString(text);
+        m_text.setString(std::move(text));
         m_display = true;
         m_clock.restart();
     }
@@ -50,7 +51,7 @@ namespace sail {
     void Banner::render(gf::RenderTarget& target, const gf::RenderStates &states) {
         if (! m_display)
             return;
-        // TODO : see how to scale those better with the view size
+
         gf::Vector2f vSize = m_view.getSize();
 
         m_rectangle.setPosition({ 0, vSize.y * 0.8f });

@@ -22,8 +22,6 @@ namespace sail
 
         bool isStarted();
 
-       // gf::Id addPlayer(gf::TcpSocket socket);
-
         bool connectPlayer(Player& player, gf::Id id, std::string userName);
 
         bool disconnectPlayer(Player& player);
@@ -38,16 +36,9 @@ namespace sail
         GameState update(gf::Time dt);
 
     private:
-        void runSimulation();
-
-        void simulation();
-
         void playerFinished(Player& player);
 
     private:
-        static constexpr float Speed = 25.0f;
-        static constexpr float MaxSpeed = Speed * 4;
-
         int m_neededPlayers;
         int m_playersNb;
 
@@ -61,12 +52,6 @@ namespace sail
         bool m_started;
 
         Wind m_fixedWind;
-
-        std::thread m_simulationThread;
-
-        std::mutex m_simulationMutex;
-
-        std::atomic_bool m_simulationRunning;
     };
 
 }

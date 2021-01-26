@@ -47,7 +47,7 @@ namespace sail
 
         std::vector<WindArrow> m_arrows;
 
-        gf::Vector2f m_endingPos; // TODO : do a CheckPointManager for those instead
+        gf::Vector2f m_endingPos;
         gf::Vector2d m_startingPos;
 
         gf::CircleShape m_endingSpot;

@@ -1,7 +1,6 @@
 #include <gf/Sprite.h>
 #include <gf/RenderTarget.h>
 #include <gf/Unused.h>
-#include <iostream>
 
 #include "NavigationArrow.h"
 #include "Singletons.h"

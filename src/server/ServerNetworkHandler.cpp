@@ -1,20 +1,13 @@
-//
-// Created by augustin on 28/10/2020.
-//
-
 #include <gf/Packet.h>
 #include <gf/Random.h>
-#include <iostream>
-#include <csignal>
-#include <chrono>
 #include <gf/Clock.h>
 #include <gf/Log.h>
 
 #include "ServerNetworkHandler.h"
-#include "../Protocol.h"
 #include "../LoggingUtils.h"
 #include "Managers.h"
 #include "GameMessages.h"
+#include "ServerStringConstants.h"
 
 namespace sail
 {
@@ -37,7 +30,7 @@ namespace sail
         PlayerEvent death { died->id, PlayerEvent::EventType::Death };
         gf::Packet deathP;
         deathP.is<PlayerEvent>(death);
-        broadcast(deathP); // TODO : sockets are currently binded to player objects, but they should only be located in the ServerNetworkHandler, in a map
+        broadcast(deathP);
         return gf::MessageStatus::Keep;
     }
 
@@ -58,12 +51,10 @@ namespace sail
         {
             if (player.isConnected())
             {
-                //std::cout << "Before sending packet of size : " << packet.bytes.size() << " (type: " << humanizePacketType(packet.type) << ")\n";
                 if (auto status = player.getSocket().sendPacket(packet); status != gf::SocketStatus::Data)
                 {
-                    gf::Log::error("Couldn't send packet to '%s'\n", player.getName().c_str());
+                    gf::Log::error(ServerStringConstants::PacketNotSending, player.getName().c_str());
                 }
-                //std::cout << "After sending\n";
             }
         }
     }
@@ -78,7 +69,7 @@ namespace sail
             gf::Packet packet;
             while (! pendingQueue.empty()) // If we use an "if" here : no roll-back will be ever felt by the client, BUT, the server
             {                              // will slowly become late as Ticks are being skipped in server overload condition, without any way those
-                packetsNb++;               // those Ticks can be catch again : BAD IDEA NUMBER 7821
+                packetsNb++;               // those Ticks can be catch again
                 packet = pendingQueue.front();
                 pendingQueue.pop_front();
                 switch (packet.getType())
@@ -86,46 +77,40 @@ namespace sail
                     case ClientGreeting::type:
                     {
                         ClientGreeting clientG{packet.as<ClientGreeting>()};
-                        std::cout << "New user : " << clientG.username << "\n";
+                        gf::Log::info(ServerStringConstants::UserGreeting, clientG.username.c_str());
                         gf::Random rand;
                         gf::Id newId{rand.computeId()};
                         std::vector<PlayerData> playersData;
-                        for (auto &p : m_game.getOnlinePlayers())
+                        for (auto &po : m_game.getOnlinePlayers())
                         {
-                            if (p.isConnected())
+                            if (po.isConnected())
                             {
-                                playersData.push_back(p.getPlayerData());
-                                std::cout << "Player already here : " << p.getName() << "\n";
+                                playersData.push_back(po.getPlayerData());
                             }
                         }
-                        ServerGreeting serverG = {newId, playersData}; ////
+                        ServerGreeting serverG = {newId, playersData};
                         gf::Packet serverGPacket;
                         serverGPacket.is(serverG);
                         socket.sendPacket(serverGPacket);
-                        std::cout << "Sent server greeting\n";
 
                         gf::Packet broadcastPacket;
                         broadcastPacket.is<PlayerJoins>(PlayerJoins{{newId, clientG.username}});
                         broadcast(broadcastPacket);
-                        std::cout << "Sent player joined broadcats\n";
 
                         if (m_game.connectPlayer(p, newId, clientG.username))
                         {
-                            std::cout << "Sending the world datas to players\n"; // REACHES HERE
                             gf::Packet worldPacket;
                             worldPacket.is(m_game.getWorldData());
-                            std::cout << "Ready packet built\n";
                             broadcast(worldPacket);
 
                             m_game.start();
 
-                            std::cout << "Starting the game\n"; // BUT NOT HERE
                             GameStart start;
                             gf::Packet startPacket;
                             startPacket.is(start);
                             broadcast(startPacket);
                         }
-                        std::cout << "New player : " << p.getId() << " with name : " << p.getName() << "\n";
+                        gf::Log::info(ServerStringConstants::PlayerGivenId, p.getName().c_str(), p.getId());
                         break;
                     }
                     case PlayerAction::type:
@@ -138,8 +123,6 @@ namespace sail
                     }
                 }
             }
-            /*if (packetsNb > 0)
-                std::cout << packetsNb << " packets processed\n";*/
         }
     }
 
@@ -164,7 +147,6 @@ namespace sail
             }
             if (m_selector.isReady(m_listener))
             {
-                std::cout << "Attempt to connect\n";
                 // the listener is ready, accept a new connection
                 gf::TcpSocket socket = m_listener.accept();
                 if (m_game.isStarted())
@@ -179,9 +161,7 @@ namespace sail
                 }
                 Player player(std::move(socket));
                 m_game.getOnlinePlayers().push_back(std::move(player));
-                //gf::Id newId = m_game.addPlayer(std::move(socket));
                 m_selector.addSocket(m_game.getOnlinePlayers().back().getSocket());
-                std::cout << "Socket added to selector : " << m_game.getOnlinePlayers().back().getSocket() << "\n";
             }
         }
     }
@@ -200,7 +180,7 @@ namespace sail
 
     void ServerNetworkHandler::disconnectPlayer(Player& player)
     {
-        gf::Log::warning("Player '%s' disconnected\n", player.getName().c_str());
+        gf::Log::info(ServerStringConstants::PlayerDisconnected, player.getName().c_str());
         if (m_game.disconnectPlayer(player))
         {
             Player& oldPlayer = m_game.getOfflinePlayers().back();

@@ -20,7 +20,7 @@ namespace sail {
         double sailAngle;
         double rudderAngle;
 
-        double sheetLength; // TODO : those data are only important for the localPlayer (currently he receives all the other players ones)
+        double sheetLength;
         double rotationalVelocity;
         double velocity;
     };
@@ -43,19 +43,6 @@ namespace sail {
     Archive operator|(Archive& ar, PlayerData& data)
     {
         return ar | data.id | data.name;
-    }
-
-    struct WindData
-    {
-        static constexpr gf::Id type = "WindData"_id;
-        double speed;
-        double direction;
-    };
-
-    template<typename Archive>
-    Archive operator|(Archive& ar, WindData& data)
-    {
-        return ar | data.speed | data.direction;
     }
 
     struct PlayerEvent

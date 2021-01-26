@@ -23,9 +23,6 @@ namespace sail
         gf::Vector2f getEndingPosition();
         gf::Vector2d randomWaterLocation();
 
-        bool isOnLand(double x, double y);
-        Wind getWindAtPosition(double x, double y);
-
         const gf::Array2D<float>& getTerrain() const;
         const gf::Array2D<float>& getWindDirection() const;
         const gf::Array2D<float>& getWindSpeed() const;

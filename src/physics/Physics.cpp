@@ -64,11 +64,7 @@ namespace sail {
     }
 
     bool mainsheet_is_tight(const Boat& boat, const Wind& wind) {
-        if (cos(apparent_wind_direction(boat, wind)) + cos(boat.getSheetLength()) < 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return cos(apparent_wind_direction(boat, wind)) + cos(boat.getSheetLength()) < 0;
     }
 
     double force_on_rudder(const Boat& boat, const Wind& wind) {
@@ -81,11 +77,7 @@ namespace sail {
     }
 
     bool sail_is_bounds(const Boat& boat) {
-        if (boat.getSheetLength() > -M_PI_2 && boat.getSheetLength() < M_PI_2) {
-            return true;
-        } else {
-            return false;
-        }
+        return boat.getSheetLength() > -M_PI_2 && boat.getSheetLength() < M_PI_2;
     }
 
     double delta_y(const Boat& boat, const Wind& wind) {
@@ -121,7 +113,7 @@ namespace sail {
     double delta_velocity(const Boat& boat, const Wind& wind) {
         return (sin(boat.getSailAngle())
             * force_on_sail(boat, wind)
-            /*- sin(boat.getRudderAngle())
+            /*- sin(boat.getRudderAngle()) // Modification aiming to let the boat move when it's rotating
             * force_on_rudder(boat, wind)*/
             - boat.getTangentialFriction()
             * boat.getVelocity()
