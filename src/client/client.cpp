@@ -363,6 +363,8 @@ int main(int argc, char *argv[])
         actions.reset();
     }
 
+    gf::Log::info(sail::ClientStringConstants::DisconnectedFromServer);
+
     // Closing the thread
     clientHandler.close();
 

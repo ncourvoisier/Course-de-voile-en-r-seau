@@ -24,7 +24,7 @@ namespace sail
         gf::SocketStatus status = m_socket.recvPacket(packet);
         if (status != gf::SocketStatus::Data)
         {
-            gf::Log::error(ClientStringConstants::PacketsNotReceiving);
+            gf::Log::info(ClientStringConstants::LostConnection);
             close();
             exit(2);
         }

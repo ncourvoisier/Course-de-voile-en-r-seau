@@ -2,6 +2,7 @@
 #include <gf/Random.h>
 #include <gf/Clock.h>
 #include <gf/Log.h>
+#include <csignal>
 
 #include "ServerNetworkHandler.h"
 #include "../LoggingUtils.h"
@@ -21,6 +22,10 @@ namespace sail
 
         gMessageManager().registerHandler<PlayerDied>(&ServerNetworkHandler::onPlayerDied, this);
         gMessageManager().registerHandler<PlayerFinished>(&ServerNetworkHandler::onPlayerFinished, this);
+
+        signal(SIGPIPE, SIG_IGN); // Prevents the server from terminating if sending data to a closed socket
+        // when a player disconnects, he is removed from the 'online players' vector, however, it occurs that
+        // the program reaches to the packet sending point before the player disconnection was yet acknowledged, which ends up in a SIGPIPE
     }
 
     gf::MessageStatus ServerNetworkHandler::onPlayerDied(gf::Id id, gf::Message *msg)

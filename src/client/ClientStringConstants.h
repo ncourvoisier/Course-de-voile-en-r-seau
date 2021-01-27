@@ -7,7 +7,8 @@ namespace sail
     struct ClientStringConstants
     {
 
-        static constexpr auto PacketsNotReceiving = "Couldn't receive packets from server\n";
+        static constexpr auto DisconnectedFromServer = "Disconnected from server\n";
+        static constexpr auto LostConnection = "Lost connection with server\n";
         static constexpr auto PacketsNotSending = "Couldn't send packets to server\n";
         static constexpr auto GameAlreadyRunning = "A game is already running on this server\n";
         static constexpr auto InvalidServerGreeting = "Invalid server greeting received\n";
