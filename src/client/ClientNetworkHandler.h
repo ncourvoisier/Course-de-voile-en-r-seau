@@ -19,9 +19,8 @@ namespace sail
         void connect(const std::string& hostname,
                 const std::string& service);
 
-        bool isConnected();
-
         void run();
+        void close();
 
         void packetHandling();
 
@@ -43,6 +42,7 @@ namespace sail
         bool m_connected;
 
         std::thread m_thread;
+        std::atomic_bool m_running;
 
         gf::Queue<gf::Packet> queue;
     };

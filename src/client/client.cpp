@@ -282,6 +282,8 @@ int main(int argc, char *argv[])
         // 20 packets per second are sent, otherwise the prediction doesn't work efficiently
 
         if (clientHandler.send(action) != gf::SocketStatus::Data) {
+            gf::Log::error(sail::ClientStringConstants::PacketsNotSending);
+            clientHandler.close();
             exit(2);
         }
         lastActionSail = sail::PlayerAction::Type::None;
@@ -360,6 +362,9 @@ int main(int argc, char *argv[])
         renderer.display();
         actions.reset();
     }
-    return 0;
 
+    // Closing the thread
+    clientHandler.close();
+
+    return 0;
 }

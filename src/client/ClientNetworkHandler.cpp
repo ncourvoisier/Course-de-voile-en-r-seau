@@ -1,12 +1,13 @@
 #include <gf/Log.h>
 #include "ClientNetworkHandler.h"
-#include "../Protocol.h"
+#include "ClientStringConstants.h"
 
 namespace sail
 {
 
     ClientNetworkHandler::ClientNetworkHandler()
     : m_connected(false)
+    , m_running(false)
     {
 
     }
@@ -23,7 +24,8 @@ namespace sail
         gf::SocketStatus status = m_socket.recvPacket(packet);
         if (status != gf::SocketStatus::Data)
         {
-            gf::Log::error("Couldn't receive packets from server.\n");
+            gf::Log::error(ClientStringConstants::PacketsNotReceiving);
+            close();
             exit(2);
         }
         return status;
@@ -31,7 +33,7 @@ namespace sail
 
     void ClientNetworkHandler::packetHandling()
     {
-        for (;;)
+        while (m_running)
         {
             gf::Packet packet;
             receive(packet);
@@ -41,7 +43,14 @@ namespace sail
 
     void ClientNetworkHandler::run()
     {
+        m_running = true;
         m_thread = std::thread(&ClientNetworkHandler::packetHandling, this);
+        m_thread.detach();
+    }
+
+    void ClientNetworkHandler::close()
+    {
+        m_running = false;
     }
 
     gf::Queue<gf::Packet> &ClientNetworkHandler::getQueue()
